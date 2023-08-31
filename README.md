@@ -14,4 +14,4 @@
 
 ## Navigation and project usage
 
-To run project on phone emulator: ![Like this](https://imgur.com/5ZbF4zE)
+* To run project on phone emulator: ![Like this](https://imgur.com/5ZbF4zE)
