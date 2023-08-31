@@ -12,3 +12,7 @@
  
 * .NET Multi-platform App UI development ![.NET Multi-platform App UI development](https://user-images.githubusercontent.com/939291/189329197-0fe2678c-eb57-4177-a3a1-0dbbcada946c.png
 
+## Navigation and project usage
+
+To run project on phone emulator: 
+![run it with android](https://imgur.com/a/O0wyeHg)
