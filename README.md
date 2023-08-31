@@ -4,6 +4,7 @@
 ## Installations
 
 ### .NET
+> These are easiest to install and manage with Visual Studio Installer
 
 * .NET desktop development ![.net desktop development]https://static.javatpoint.com/tutorial/vb-net/images/vb-net-download-and-install-visual-studio8.png
 
