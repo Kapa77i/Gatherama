@@ -14,4 +14,4 @@
 
 ## Navigation and project usage
 
-* To run project on phone emulator ![Debugg with android emulator](https://imgur.com/5ZbF4zE)
+![Debugg with android emulator](https://imgur.com/5ZbF4zE)
