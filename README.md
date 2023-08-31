@@ -15,4 +15,4 @@
 ## Navigation and project usage
 
 To run project on phone emulator: 
-![run it with android](https://imgur.com/a/O0wyeHg)
+![](https://imgur.com/a/O0wyeHg)
