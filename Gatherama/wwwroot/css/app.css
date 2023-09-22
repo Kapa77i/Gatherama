@@ -1,20 +1,32 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #829b88;
+    color: #332100 !important;
 }
 
 h1:focus {
     outline: none;
 }
 
+font-face {
+    font-family: 'Times New Roman', Times, serif;
+    color: #332100 !important;
+}
+
 a, .btn-link {
-    color: #0071c1;
+    font-family: 'Times New Roman', Times, serif;
+    color: #fbcd38 !important;
+}
+
+table {
+    color: #332100 !important;
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
+    color: #fde69c;
+    background-color: #043313;
     border-color: #1861ac;
 }
 
