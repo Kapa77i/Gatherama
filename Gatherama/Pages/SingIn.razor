@@ -1,0 +1,39 @@
+﻿@using Gatherama.ViewModels;
+@inject NavigationManager NavigationManager
+<h3>Sing In</h3>
+
+<EditForm Model="@loginViewModel" OnValidSubmit="@Submit">
+    <DataAnnotationsValidator />
+    <div class="col-lg-4 col-md-12">
+        <label for="Email">
+            Email:
+        </label>
+        <Input id="Email" class="form-control" placeholder="Enter email" @bind="@loginViewModel.UserName"/>
+        <ValidationMessage For="@(() => loginViewModel.UserName)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="password">
+            Password:
+        </label>
+        <Input id="password" type="password" class="form-control" placeholder="Enter password" @bind-="@loginViewModel.Password"/>
+        <ValidationMessage For="@(() => loginViewModel.Password)" />
+    </div>
+    <div>
+        
+            <button class="btn btn-primary" type="submit">Sing in</button>
+        
+            @*This button is just here for demo purposes. It needs to be moved later on from this EditForm. Otherwise it will trigger ValidationMessages*@
+            <button class="btn btn-primary" @onclick='() => NavigationManager.NavigateTo("register")'>Register</button>
+        
+    </div>    
+</EditForm>
+
+@code {
+    LoginViewModel loginViewModel = new LoginViewModel();
+
+    private void Submit()
+    {
+        
+    }
+}

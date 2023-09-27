@@ -1,0 +1,48 @@
+﻿@page "/register"
+@using Gatherama.ViewModels;
+
+<h3>Register</h3>
+
+    <EditForm Model="@registerViewModel" OnValidSubmit="@Submit">
+        <DataAnnotationsValidator/>
+    <div class="col-lg-4 col-md-12">
+        <label for="Username">
+            Username:
+        </label>
+        <Input id="Username" class="form-control" @bind="@registerViewModel.UserName"/>
+        <ValidationMessage For="@(() => registerViewModel.UserName)"/>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="Email">
+            Email:
+        </label>
+        <Input id="Email" class="form-control" @bind="@registerViewModel.Email"/>
+        <ValidationMessage For="@(() => registerViewModel.Email)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="password">
+            Password:
+        </label>
+        <Input id="password" type="password" class="form-control" @bind="@registerViewModel.Password"/>
+        <ValidationMessage For="@(() => registerViewModel.Password)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="repeatPassword">
+            Repeat password:
+        </label>
+        <Input id="repeatPassword" type="password" class="form-control" @bind="@registerViewModel.RepeatPassword"/>
+        <ValidationMessage For="@(() => registerViewModel.RepeatPassword)" />
+    </div>
+    @*Dont know how to present succesfull registeration to user. Pop-up when you click ok it redirects you to index page?*@
+    <button class="btn btn-primary" type="submit">Register</button>
+</EditForm>
+@code {
+    RegisterViewModel registerViewModel = new();
+
+    private void Submit()
+    {
+
+    }
+
+}
