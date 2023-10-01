@@ -1,11 +1,26 @@
 ﻿@page "/"
 
 
-<h1>Hello, Group-2!</h1>
+<section>
+    <div>
+        <center>
+            <img src="@imageSource" width="300px" height="300px" align="center" alt="Logo" />
+        </center>
+    </div>
+</section>
+
+<Card Color="CardColor.Light" Class="mb-4" Style="width:22rem;">
+    <CardBody>
+        <CardTitle><strong>Welcome to Gatherama!</strong></CardTitle>
+        The best hunter/gatherer app out there in the cyberspace!
+    </CardBody>
+</Card>
 
 
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-
+<p></p>
 <SingIn />
+
+@code{
+     private string imageSource = $"Gatherama_wbg.png";
+
+}

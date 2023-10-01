@@ -50,6 +50,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Blazor.Bootstrap" Version="1.10.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     </ItemGroup>
 
