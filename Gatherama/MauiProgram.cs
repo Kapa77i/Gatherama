@@ -1,5 +1,7 @@
 ﻿using Gatherama.Data;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace Gatherama
 {
