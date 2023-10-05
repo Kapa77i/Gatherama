@@ -50,8 +50,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor.Bootstrap" Version="1.10.2" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+        <PackageReference Include="MongoDB.Bson" Version="2.21.0" />
+        <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
     </ItemGroup>
 
 </Project>
