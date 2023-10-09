@@ -5,6 +5,13 @@ VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama", "Gatherama\Gatherama.csproj", "{908B678E-F7FF-4F2A-9B10-7C996601CF89}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Server", "Gatherama.Server\Gatherama.Server.csproj", "{B0BB58CD-BEC2-4974-9AD9-22E065E7C85A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{908B678E-F7FF-4F2A-9B10-7C996601CF89} = {908B678E-F7FF-4F2A-9B10-7C996601CF89}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Shared", "Gatherama.Shared\Gatherama.Shared.csproj", "{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +24,14 @@ Global
 		{908B678E-F7FF-4F2A-9B10-7C996601CF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{908B678E-F7FF-4F2A-9B10-7C996601CF89}.Release|Any CPU.Build.0 = Release|Any CPU
 		{908B678E-F7FF-4F2A-9B10-7C996601CF89}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{B0BB58CD-BEC2-4974-9AD9-22E065E7C85A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BB58CD-BEC2-4974-9AD9-22E065E7C85A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BB58CD-BEC2-4974-9AD9-22E065E7C85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BB58CD-BEC2-4974-9AD9-22E065E7C85A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

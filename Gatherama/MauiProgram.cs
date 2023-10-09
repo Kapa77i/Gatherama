@@ -1,7 +1,5 @@
 ﻿using Gatherama.Data;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
-using MongoDB.Bson;
 
 namespace Gatherama
 {
@@ -17,16 +15,14 @@ namespace Gatherama
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
-
             builder.Services.AddMauiBlazorWebView();
-            builder.Services.AddBlazorBootstrap(); // Add this line
+            //builder.Services.AddBlazorBootstrap(); // Add this line EI TOIMI!!!!
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
-
 
             return builder.Build();
         }

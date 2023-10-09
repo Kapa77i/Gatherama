@@ -1,5 +1,9 @@
 ﻿@using Gatherama.ViewModels;
 @inject NavigationManager NavigationManager
+@using Gatherama.Shared
+@using System.Net.Http
+@using System.Text.Json
+
 <h3>Login</h3>
 
 <EditForm Model="@loginViewModel" OnValidSubmit="@Submit">
@@ -29,11 +33,13 @@
     </div>    
 </EditForm>
 
+
 @code {
     LoginViewModel loginViewModel = new LoginViewModel();
 
+
     private void Submit()
     {
-        
+
     }
 }

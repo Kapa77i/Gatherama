@@ -1,7 +1,4 @@
 {
-  "ConnectiongStrings": {
-    "DefaultConnection":  "Server=localhost\\SQLEXPRESSDatabase=GatheramaTest;Trusted_Connection=True;"
-  }
   "profiles": {
     "Windows Machine": {
       "commandName": "MsixPackage",
