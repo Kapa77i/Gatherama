@@ -26,7 +26,7 @@ namespace Gatherama.Services
         /*PERSONS*/
         #region 
         // GET all items
-        public async Task<List<PersonDto>> FetchPersonsAsync()
+        public async Task<List<PersonDto>> GetPersonsAsync()
         {
             persons = await _httpClient.GetFromJsonAsync<List<PersonDto>>("api/Person");
             return persons;

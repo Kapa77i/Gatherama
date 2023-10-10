@@ -25,12 +25,12 @@ namespace Gatherama.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PlaceDto>> GetPlace(string id)
         {
-            var item = await _context.Place.Find<Place>(i => i.Id == id).FirstOrDefaultAsync();
-            if (item == null)
+            var place = await _context.Place.Find<Place>(i => i.Id == id).FirstOrDefaultAsync();
+            if (place == null)
             {
                 return NotFound();
             }
-            return Ok(item);
+            return Ok(place);
         }
         // POST: api/items
         [HttpPost]
@@ -41,7 +41,7 @@ namespace Gatherama.Server.Controllers
         }
         // PUT: api/items/1
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(string id, Place place)
+        public async Task<IActionResult> PutPlace(string id, Place place)
         {
             var updateResult = await _context.Place.ReplaceOneAsync(t => t.Id == id, place);
 

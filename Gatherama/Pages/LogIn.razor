@@ -3,29 +3,31 @@
 @using Gatherama.Shared
 @using System.Net.Http
 @using System.Text.Json
+@using System.Net.Http.Json;
+@inject IJSRuntime js
 
 <h3>Login</h3>
 
-<EditForm Model="@loginViewModel" OnValidSubmit="@Submit">
+<EditForm Model="@person" OnValidSubmit="@Submit">
     <DataAnnotationsValidator />
     <div class="col-lg-4 col-md-12">
-        <label class="form-label" for="Email">
-            Email:
+        <label class="form-label" for="UserName">
+            Username:
         </label>
-        <Input id="Email" class="form-control" placeholder="Enter email" @bind="@loginViewModel.UserName"/>
-        <ValidationMessage For="@(() => loginViewModel.UserName)" />
+        <InputText id="UserName" class="form-control" placeholder="Enter username" @bind-Value="@person.username"/>
+        <ValidationMessage For="@(() => person.username)" />
     </div>
 
     <div class="col-lg-4 col-md-12">
         <label class="form-label" for="password">
             Password:
         </label>
-        <Input id="password" type="password" class="form-control" placeholder="Enter password" @bind-="@loginViewModel.Password"/>
-        <ValidationMessage For="@(() => loginViewModel.Password)" />
+        <InputText id="password" type="password" class="form-control" placeholder="Enter password" @bind-Value="@person.password"/>
+        <ValidationMessage For="@(() => person.password)" />
     </div>
     <div>
           <p></p>
-            <button class="btn btn-primary" type="submit">Login</button>
+            <button class="btn btn-primary" type="submit" @* @onclick='(Submit)' *@>Login</button>
         
             @*This button is just here for demo purposes. It needs to be moved later on from this EditForm. Otherwise it will trigger ValidationMessages*@
             <button class="btn btn-primary" @onclick='() => NavigationManager.NavigateTo("register")'>Register</button>
@@ -36,10 +38,20 @@
 
 @code {
     LoginViewModel loginViewModel = new LoginViewModel();
+    private PersonDto person = new PersonDto();
 
-
-    private void Submit()
+    private async void Submit()
     {
-
+        using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5000/") };
+        var response = await httpClient.PostAsJsonAsync("api/Person", person);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Onnistui!");
+            NavigationManager.NavigateTo("/ownspots", true);
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert", "kirjautuminen ei onnistunut, tarkista sähköposti ja salasana");
+        }
     }
 }
