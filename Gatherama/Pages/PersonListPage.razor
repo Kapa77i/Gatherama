@@ -11,6 +11,11 @@
 <!--TÄMÄ ON TESTAUKSEEN-->
 <h3>Moikka moi</h3>
 
+@if (persons == null){
+    <p>No vielä ei näy mittään :(((</p>
+}
+else
+{
 <table class="table">
     <thead>
         <tr>
@@ -18,7 +23,7 @@
             <th>Last Name</th>
         </tr>
     </thead>
-    @* <tbody>
+    <tbody>
         @foreach (var item in persons)
         {
             <tr>
@@ -26,8 +31,9 @@
                 <td>@item.lastName</td>
             </tr>
         }
-    </tbody> *@
+    </tbody>
 </table>
+}
 @* <CollectionView ItemsSource="{Binding persons}">
     <CollectionView.ItemTemplate>
         <DataTemplate>
