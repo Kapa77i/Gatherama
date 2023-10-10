@@ -1,4 +1,6 @@
 ﻿using Gatherama.Data;
+using Gatherama.Services;
+using Gatherama.Shared;
 using Microsoft.Extensions.Logging;
 
 namespace Gatherama
@@ -16,6 +18,9 @@ namespace Gatherama
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddSingleton<HttpClient>();
+            builder.Services.AddTransient<ApiService>();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5000") });
             //builder.Services.AddBlazorBootstrap(); // Add this line EI TOIMI!!!!
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

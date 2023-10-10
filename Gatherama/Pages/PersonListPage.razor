@@ -6,28 +6,11 @@
 @using System
 @using System.Threading.Tasks
 @using Microsoft.Maui.Controls
-@inject HttpClient HttpClient;
+@using Gatherama.Services
+@inject ApiService apiService
 
 <!--TÄMÄ ON TESTAUKSEEN-->
 <h3>Moikka moi</h3>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in persons)
-        {
-            <tr>
-                <td>@item.firstName</td>
-                <td>@item.lastName</td>
-            </tr>
-        }
-    </tbody>
-</table>
 @* <CollectionView ItemsSource="{Binding persons}">
     <CollectionView.ItemTemplate>
         <DataTemplate>
@@ -61,10 +44,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         //NÄMÄ PITÄISI TOIMIA
-        /* using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7286/") } */;
-        persons = await HttpClient.GetFromJsonAsync<List<PersonDto>>("api/Person");
-        places = await HttpClient.GetFromJsonAsync<List<PlaceDto>>("api/Place");
-        Console.WriteLine(persons);
+        /*using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5000/") };
+        persons = await httpClient.GetFromJsonAsync<List<PersonDto>>("api/Person");
+        places = await httpClient.GetFromJsonAsync<List<PlaceDto>>("api/Place");*/
+        //Console.WriteLine(persons);
+        persons = await apiService.FetchPersonsAsync();
     }
 }
