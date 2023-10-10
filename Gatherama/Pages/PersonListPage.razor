@@ -6,7 +6,7 @@
 @using System
 @using System.Threading.Tasks
 @using Microsoft.Maui.Controls
-@inject HttpClient HttpClient;
+@* @inject HttpClient HttpClient; ei oo varmuutta toimiiko*@
 
 <!--TÄMÄ ON TESTAUKSEEN-->
 <h3>Moikka moi</h3>
@@ -18,7 +18,7 @@
             <th>Last Name</th>
         </tr>
     </thead>
-    <tbody>
+    @* <tbody>
         @foreach (var item in persons)
         {
             <tr>
@@ -26,7 +26,7 @@
                 <td>@item.lastName</td>
             </tr>
         }
-    </tbody>
+    </tbody> *@
 </table>
 @* <CollectionView ItemsSource="{Binding persons}">
     <CollectionView.ItemTemplate>
@@ -62,9 +62,9 @@
     protected override async Task OnInitializedAsync()
     {
         //NÄMÄ PITÄISI TOIMIA
-        /* using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7286/") } */;
-        persons = await HttpClient.GetFromJsonAsync<List<PersonDto>>("api/Person");
-        places = await HttpClient.GetFromJsonAsync<List<PlaceDto>>("api/Place");
+        using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5000/") };
+        persons = await httpClient.GetFromJsonAsync<List<PersonDto>>("api/Person");
+        places = await httpClient.GetFromJsonAsync<List<PlaceDto>>("api/Place");
         Console.WriteLine(persons);
     }
 }

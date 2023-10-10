@@ -23,7 +23,7 @@ namespace Gatherama
 #endif
 
             builder.Services.AddSingleton<WeatherForecastService>();
-
+            
             return builder.Build();
         }
     }
