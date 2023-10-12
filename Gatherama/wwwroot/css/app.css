@@ -20,6 +20,19 @@ a, .btn-link {
     color: #fde69c !important;
 }
 
+  /*  .btn-link:hover  {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #043313 !important;
+        background-color: #fde69c;
+    }
+*/
+ /*   a:hover {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #043313 !important;
+        background-color: #fde69c;
+    }
+*/
+
 table {
     color: #332100 !important;
 }
@@ -29,6 +42,50 @@ table {
     background-color: #043313;
     border-color: #1861ac;
 }
+
+    .btn-primary:hover, .btn-primary:focus, .open > .dropdown-toggle.btn-primary {
+        color: #043313;
+        background-color: #fde69c;
+        border-color: #1861ac;
+    }
+
+
+
+/*    Card juttuja*/
+.card, .card-body {
+    color: #fde69c;
+    background-color: #043313;
+    border-color: #1861ac;
+}
+
+
+/*OwnSpots Collaps divien CSS*/
+.accordion-button collapsed:active {
+    color: #043313;
+    background-color: #fde69c;
+    border-color: #1861ac;
+}
+
+/*.accordion-collapse collapse show, .accordion-header, .accordion, .accordion-button collapsed,
+.accordion-button.collapsed::after, .accordion-button.collapsed {
+    color: #043313;
+    background-color: #fde69c;
+    border-color: #1861ac;
+}*/
+
+.accordion-button:not(.collapsed) {
+    color: #043313;
+    background-color: #fde69c;
+    border-color: #1861ac;
+}
+
+.accordion-item, .accordion-body, .accordion-button, .accordion-button collapsed {
+color: #fde69c;
+background-color: #043313;
+border-color: #1861ac;
+}
+
+
 
 .content {
     padding-top: 1.1rem;
