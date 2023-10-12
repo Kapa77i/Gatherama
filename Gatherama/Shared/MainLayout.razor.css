@@ -14,11 +14,9 @@ main {
     background-color: #043610;
 /*    color: #332100 !important;*/
     border-bottom: 1px solid #d6d5d5;
-    border-bottom: 1px solid #d6d5d5;
 }
 
 .top-row {
- 
     border-bottom: 1px solid #043610;
     justify-content: flex-end;
     height: 3.5rem;
