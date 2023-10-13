@@ -1,12 +1,12 @@
 ﻿<nav class="navbar navbar-expand-md navbar-dark mb-4" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%)">
     <div class="container-fluid">
-        <a class="navbar-brand" href=""> <img src="@imageSource" width="300px" height="60px" align="center" alt="Logo" /></a>
+        <a class="navbar-brand" href=""> <img src="@imageSource" width="170px" height="40px" align="center" alt="Logo" /></a>
         <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
           @*       <li class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -28,6 +28,18 @@
                     </NavLink>
                 </li>
                 
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <NavLink class="nav-link" href="addspots">
+                        <a href="LogIn"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink class="nav-link" href="addspots">
+                        <a href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                    </NavLink>
+                </li>
             </ul>
         </div>
     </div>
