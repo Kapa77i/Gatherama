@@ -85,6 +85,59 @@ background-color: #043313;
 border-color: #1861ac;
 }
 
+
+
+/* Karuasellit*/
+/* Carousel styling */
+#introCarousel,
+.carousel-inner,
+.carousel-item,
+.carousel-item.active {
+    height: 100vh;
+}
+
+    .carousel-item:nth-child(1) {
+        background-image: url('../shroomsandberries1.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center bottom;
+    }
+
+    .carousel-item:nth-child(2) {
+        background-image: url('../shroomsandberries2.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+    }
+
+    .carousel-item:nth-child(3) {
+        background-image: url('../donotbetravolta.png');
+        background-repeat: no-repeat;
+        background-size: auto;
+        background-position: center top;
+    }
+
+/* Height for devices larger than 576px */
+@media (min-width: 992px) {
+    #introCarousel {
+        margin-top: -60.59px;
+    }
+
+    #introCarousel,
+    .carousel-inner,
+    .carousel-item,
+    .carousel-item.active {
+        height: 50vh;
+    }
+}
+
+.navbar .nav-link {
+    color: #fff !important;
+}
+
+
+
+
 .content {
     padding-top: 1.1rem;
 }
