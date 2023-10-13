@@ -87,7 +87,6 @@ border-color: #1861ac;
 
 
 
-/* Karuasellit*/
 /* Carousel styling */
 #introCarousel,
 .carousel-inner,
@@ -113,7 +112,7 @@ border-color: #1861ac;
     .carousel-item:nth-child(3) {
         background-image: url('../donotbetravolta.png');
         background-repeat: no-repeat;
-        background-size: auto;
+        background-size: cover;
         background-position: center top;
     }
 
@@ -130,6 +129,19 @@ border-color: #1861ac;
         height: 50vh;
     }
 }
+
+/*Möbile device carousel height*/
+@media (max-width: 480px) {
+    #introCarousel {
+        margin-top: -60.59px;
+    }
+
+    #introCarousel,
+    .carousel-inner,
+    .carousel-item,
+    .carousel-item.active {
+        height: 20vh;
+    }
 
 .navbar .nav-link {
     color: #fff !important;
