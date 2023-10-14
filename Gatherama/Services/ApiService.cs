@@ -23,7 +23,7 @@ namespace Gatherama.Services
         public List<FriendshipDto> friendships { get; private set; }
         public List<MediaDto> media { get; private set; }
         public List<SpeciesDto> species { get; private set; }
-        /*PERSONS*/
+        //PERSONS
         #region 
         // GET all items
         public async Task<List<PersonDto>> GetPersonsAsync()
