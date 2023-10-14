@@ -11,6 +11,7 @@ namespace Gatherama
         {
 
             var builder = MauiApp.CreateBuilder();
+
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
