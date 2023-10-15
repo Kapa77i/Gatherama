@@ -42,7 +42,7 @@ namespace Gatherama.Services
         // POST a new item
         public async Task<PersonDto> PostPersonAsync(PersonDto personDto)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseEndpoint, personDto);
+            var response = await _httpClient.PostAsJsonAsync("api/Person/register/", personDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PersonDto>();
         }

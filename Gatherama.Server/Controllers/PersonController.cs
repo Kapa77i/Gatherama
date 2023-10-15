@@ -40,12 +40,12 @@ namespace Gatherama.Server.Controllers
             return Ok(item);
         }
         // POST: api/items
-/*        [HttpPost]
-        public async Task<ActionResult<PersonDto>> PostPerson(Person person)
+        [HttpPost("register")]
+        public async Task<ActionResult<PersonDto>> PostPerson([FromBody] Person person)
         {
             await _context.Persons.InsertOneAsync(person);
             return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
-        }*/
+        }
         // PUT: api/items/1
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPerson(string id, Person person)
@@ -72,7 +72,7 @@ namespace Gatherama.Server.Controllers
 
             return NoContent();
         }
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> GetPerson([FromBody] PersonDto person)
         {
             var filter = Builders<Person>.Filter.Eq(u => u.username, person.username) & Builders<Person>.Filter.Eq(u => u.password, person.password);

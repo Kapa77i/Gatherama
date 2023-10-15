@@ -31,14 +31,15 @@
             <button class="btn btn-primary" type="submit" @* @onclick='(Submit)' *@>Login</button>
         
             @*This button is just here for demo purposes. It needs to be moved later on from this EditForm. Otherwise it will trigger ValidationMessages*@
+            
             <button class="btn btn-primary" @onclick='() => NavigationManager.NavigateTo("register")'>Register</button>
-        
     </div>    
 </EditForm>
 
 
+
 @code {
-    LoginViewModel loginViewModel = new LoginViewModel();
+
     private PersonDto person = new PersonDto();
 
     private async void Submit()
