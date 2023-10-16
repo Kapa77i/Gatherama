@@ -61,7 +61,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="wwwroot\shroomsandberries1.png">
+      <Content Update="wwwroot\Images_Index\shroomsandberries1.png">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>

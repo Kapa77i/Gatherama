@@ -6,6 +6,17 @@ html, body {
     color: #332100 !important;
 }
 
+footer {
+    /* color: #fde69c;
+    background-color: #043313;
+    border-color: #1861ac;*/
+
+    background-image: linear-gradient(180deg, #043610 0%, #173043 50%);
+    background-color: #043610;
+    color: #fde69c !important;
+    border-bottom: 1px solid #d6d5d5
+}
+
 h1:focus {
     outline: none;
 }
@@ -19,6 +30,9 @@ a, .btn-link {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #fde69c !important;
 }
+.p {
+  
+}
 
   /*  .btn-link:hover  {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -26,14 +40,13 @@ a, .btn-link {
         background-color: #fde69c;
     }
 */
- /*   a:hover {
+    /*   a:hover {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #043313 !important;
         background-color: #fde69c;
     }
 */
-
-table {
+    table {
     color: #332100 !important;
 }
 
@@ -93,27 +106,28 @@ border-color: #1861ac;
 .carousel-item,
 .carousel-item.active {
     height: 100vh;
+    color: #332100 !important;
 }
 
     .carousel-item:nth-child(1) {
-        background-image: url('../shroomsandberries1.png');
+        background-image: url('../Images_Index/shroomsandberries14.png');
         background-repeat: no-repeat;
         background-size: cover;
-        background-position: center bottom;
+        background-position: center center;
     }
 
     .carousel-item:nth-child(2) {
-        background-image: url('../shroomsandberries2.png');
+        background-image: url('../Images_Index/shroomsandberries2.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center center;
     }
 
     .carousel-item:nth-child(3) {
-        background-image: url('../donotbetravolta.png');
+        background-image: url('../Images_Index/shroomsandberries3.png');
         background-repeat: no-repeat;
         background-size: cover;
-        background-position: center top;
+        background-position: center center;
     }
 
 /* Height for devices larger than 576px */
