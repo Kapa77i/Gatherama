@@ -17,7 +17,8 @@ namespace Gatherama
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                });
+                })
+                .UseMauiMaps();
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddSingleton<HttpClient>();
             builder.Services.AddTransient<ApiService>();
