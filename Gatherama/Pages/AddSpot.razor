@@ -1,10 +1,66 @@
 @page "/addspots"
 @using Gatherama.Shared
+@using Microsoft.Maui.Controls.Maps
+@inject IJSRuntime JS
 
 
 <h1>Add Gathering Spot</h1>
 
 <p>Here you can add your new gathering spot!</p>
+
+<!--MAPS SEKOILUJA-->
+
+
+<div>
+    <!--https://www.w3schools.com/graphics/google_maps_intro.asp-->
+    N‰yt‰ kartta t‰ss‰:
+   
+    <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    <script>
+       /* function myMap() {
+            var mapProp = {
+                center: new google.maps.LatLng(62.8925, 27.6783),
+                zoom: 5,
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+        }*/
+
+        function initMap() {
+            const myLatLng = {
+                lat: 62.8893928527832,
+                lng: 27.6920166015625
+            };
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 14,
+                center: myLatLng,
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false
+            });
+            new google.maps.Marker({
+                position: myLatLng,
+                map,
+                title: "My location"
+            });
+        }
+    </script>
+
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg"></script> - -->
+
+    
+</div>
+
+<head>
+    <title>Simple Marker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js"></script>
+</head>
+<body>
+    <div id="googleMap"></div>
+</body>
 
 @* <EditForm >
      <div class="col-lg-4 col-md-12">
@@ -41,22 +97,38 @@
 
 
 @code {
-
     //GOOGLE MAPS API KEY (KATA): AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg
 
     /*NOTES:
-     * 
-     * Pyyd‰ lupa gps:‰‰n?
-     * 
-     * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa.
-     * 
-     * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan
-     * 
-     * Anna hakea paikan nimell‰ (ja koordinaateilla?)
-     * 
-     * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?)
-     * 
-     * Opastus pinnipaikalle/osoitteeseen.
+    * 
+    * Pyyd‰ lupa gps:‰‰n?
+    * 
+    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa.
+    * 
+    * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan
+    * 
+    * Anna hakea paikan nimell‰ (ja koordinaateilla?)
+    * 
+    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?)
+    * 
+    * Opastus pinnipaikalle/osoitteeseen.
      */
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("myMap");
+        } catch(Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    Map map = new Map
+    {
+        MapType = Microsoft.Maui.Maps.MapType.Satellite
+    };
+    
 
 }
