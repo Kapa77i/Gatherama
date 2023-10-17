@@ -106,7 +106,7 @@ border-color: #1861ac;
 .carousel-item,
 .carousel-item.active {
     height: 100vh;
-    color: #332100 !important;
+  /*  color: #332100 !important;*/
 }
 
     .carousel-item:nth-child(1) {
@@ -131,7 +131,7 @@ border-color: #1861ac;
     }
 
 /* Height for devices larger than 576px */
-@media (min-width: 992px) {
+@media (min-width: 481px) {
     #introCarousel {
         margin-top: -60.59px;
     }
@@ -156,12 +156,6 @@ border-color: #1861ac;
     .carousel-item.active {
         height: 20vh;
     }
-
-.navbar .nav-link {
-    color: #fff !important;
-}
-
-
 
 
 .content {
