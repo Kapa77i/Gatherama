@@ -45,7 +45,7 @@
     private async void Submit()
     {
         using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5000/") };
-        var response = await httpClient.PostAsJsonAsync("api/Person", person);
+        var response = await httpClient.PostAsJsonAsync("api/Person/login", person);
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Onnistui!");
