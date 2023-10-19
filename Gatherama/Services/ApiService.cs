@@ -102,7 +102,7 @@ namespace Gatherama.Services
         #endregion
         //FINDINGS
         #region
-        public async Task<List<FindingDto>> FetchFindingsAsync()
+        public async Task<List<FindingDto>> GetFindingsAsync()
         {
             findings = await _httpClient.GetFromJsonAsync<List<FindingDto>>("api/Finding");
             return findings;
@@ -139,7 +139,7 @@ namespace Gatherama.Services
         #endregion
         //FRIENDSHIPS
         #region
-        public async Task<List<FriendshipDto>> FetchFriendshipsAsync()
+        public async Task<List<FriendshipDto>> GetFriendshipsAsync()
         {
             friendships = await _httpClient.GetFromJsonAsync<List<FriendshipDto>>("api/Friendship");
             return friendships;
@@ -213,7 +213,7 @@ namespace Gatherama.Services
         #endregion
         //SPECIES
         #region
-        public async Task<List<SpeciesDto>> FetchSpeciesAsync()
+        public async Task<List<SpeciesDto>> GetSpeciesAsync()
         {
             species = await _httpClient.GetFromJsonAsync<List<SpeciesDto>>("api/Species");
             return species;

@@ -24,97 +24,101 @@
 </div>
 
 @* Collaps Divit*@
-<p></p>
-<div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Accordion Item #1
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Accordion Item #2
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Accordion Item #3
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-            </div>
-        </div>
-    </div>
-</div>
-@*Weather forecast thingy*@
-@* @using Gatherama.Data
-@inject WeatherForecastService ForecastService
-<h1>Show all your Spots</h1>
 
-@if (forecasts == null)
+@if (findings != null)
 {
-    <p><em>Loading...</em></p>
+    @foreach (var item in findings)
+    {
+        headingNbr++;
+        collapsingNbr++;
+
+        collabId += collapsingNbr;
+        headingId += collapsingNbr;
+        itemId += collapsingNbr;
+
+        specie = species.FirstOrDefault(m => m.Id == item.Species.ToString());
+        person = persons.FirstOrDefault(j => j.Id == item.Person.Id);
+
+        <p></p>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingId">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#id-@collabId" aria-expanded="false" aria-controls="id-@collabId">
+                        @item.datetime @* @item.Place.country.ToString(); *@
+                    </button>
+                </h2>
+                <div id="id-@collabId" class="accordion-collapse collapse" aria-labelledby="headingId" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        @item.Person.firstName.ToString(); @item.Person.lastName.ToString();
+                      @*   @item.Species.category.ToString();
+                        @item.Species.subCategory.ToString(); *@
+                       @item.memo
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    }
+    
+       @*  <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Accordion Item #2
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Accordion Item #3
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div> *@
+   
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p></p>
+    <div class="d-flex justify-content-center">
+        <div>Loading...</div>
+        <div></div>
+        <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
 }
 
-@code {
-    private WeatherForecast[] forecasts;
-
-    protected override async Task OnInitializedAsync()
-    {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-    }
-}
- *@
+ 
 @code {
 
     public List<FindingDto> findings { get; private set; }
+    public List<PersonDto> persons { get; private set; }
+    public List<SpeciesDto> species { get; private set; }
+    private SpeciesDto specie;
+    private PersonDto person;
+    int collapsingNbr = 0;
+    int headingNbr = 0;
+
+    string collabId = "test";
+    string headingId = "test";
+    string itemId = "testi";
 
     protected override async Task OnInitializedAsync()
     {
-        // findings = await apiService.GetFindingsAsync();
+        persons = await apiService.GetPersonsAsync();
+        findings = await apiService.GetFindingsAsync();
+        species = await apiService.GetSpeciesAsync();
     }
-
-    
 
 }
