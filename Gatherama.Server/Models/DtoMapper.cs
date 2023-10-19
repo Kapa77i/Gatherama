@@ -9,7 +9,7 @@ namespace Gatherama.Server.Models
             return new FindingDto
             {
                 Id = finding.Id,
-                Private = finding.Private,
+                Private = finding._private,
                 datetime = finding.datetime,
                 amount = finding.amount,
                 memo = finding.memo,

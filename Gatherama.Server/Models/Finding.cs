@@ -9,15 +9,18 @@ namespace Gatherama.Server.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        [BsonElement("memo")]
-        [JsonPropertyName("memo")]
-        public int? Private { get; set; }
+     
+        public int? _private { get; set; }
         public DateTime? datetime { get; set; } = null!;
         public string? amount { get; set; } = null!;
+
+           [BsonElement("memo")]
+        [JsonPropertyName("memo")]
         public string? memo { get; set; } = null!;
 
-        public virtual Species Species { get; set; } = null!;
-        public virtual Person Person { get; set; } = null!;
-        public virtual Place Place { get; set; } = null!;
+
+        public virtual Species _idSpecies { get; set; } = null!;
+        public virtual Person _idPerson { get; set; } = null!;
+        public virtual Place _idPlace { get; set; } = null!;
     }
 }

@@ -15,12 +15,14 @@ namespace Gatherama.Server.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FindingDto>>> GetFindings()
         {
             var findings = await _context.Findings.Find(_ => true).ToListAsync();
             return Ok(findings);
         }
+
         // GET: api/items/1
         [HttpGet("{id}")]
         public async Task<ActionResult<FindingDto>> GetFinding(string id)

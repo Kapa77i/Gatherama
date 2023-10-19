@@ -9,11 +9,14 @@ namespace Gatherama.Server.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        [BsonElement("s_name")]
-        [JsonPropertyName("s_name")]
+      
         public string? category { get; set; } = null!;
         public string? subCategory { get; set; } = null!;
+
+        [BsonElement("s_name")]
+        [JsonPropertyName("s_name")]
         public string? s_name { get; set; } = null!;
         public string? latin_name { get; set; } = null!;
+
     }
 }
