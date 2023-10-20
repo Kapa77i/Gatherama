@@ -1,7 +1,15 @@
 @page "/addspots"
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
+@using System.Net.Http
+@using System.Text.Json
+@using System.Net.Http.Json;
+@using System
+@using System.Threading.Tasks
+@using Microsoft.Maui.Controls
+@using Gatherama.Services
 @inject IJSRuntime JS
+@inject ApiService apiService
 
 
 <h1>Add Gathering Spot</h1>
@@ -12,15 +20,80 @@
 
 
 <div>
+
+    <div>
+        <input type="text" id="lat" placeholder="Lat" value="@myLat.ToString()"/> <!-- Vain double arvot sopivia -->
+        <input type="text" id="lng" placeholder="Long" value="@myLng.ToString()"/>
+    </div>
+
     <div id="googleMap" style="width:100%;height:400px;"></div>
 
     <script>
+    /*
+        async function initMap() { 
+            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
+            const berry_icon = '../Images_index/berry_icon.png';
+            // Request needed libraries.
+           // const { Map } = await google.maps.importLibrary("maps");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                zoom: 14,
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false,
+                mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
+            });
+
+            const infoWindow = new google.maps.InfoWindow();
+
+            const marker = new AdvancedMarkerElement({
+                position: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                map,
+                gmpDraggable: true,
+               // icon: mush_icon,
+               // title: "Finding"
+            });
+
+            marker.addListener("dragend", (event) => {
+                const position = marker.position;
+
+                infoWindow.close();
+                infoWindow.setContent(
+                    `Pin dropped at: ${position.lat()}, ${position.lng()}`,
+                );
+                infoWindow.open(marker.map, marker);
+            });
+        }
+
+        initMap();  */
 
         function initMap() {
-            const myLatLng = {
+            var myLatLng = {
+
                 lat: 62.8893928527832,
                 lng: 27.6920166015625
             };
+           // var myLat = document.getElementById("lat");
+           // var myLong = document.getElementById("lng");
+
+           /* EI TOIMI 
+           
+           if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
+                myLatLng = {
+
+                    lat: 62.8893928527832,
+                    lng: 27.6920166015625
+                };
+            }
+            else {
+
+                myLatLng = {
+                    lat: Double.Parse(myLat.value), //tryparse
+                    lng: Double.Parse(myLong.value)
+                };
+            };*/
+
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 14,
                 center: myLatLng,
@@ -32,8 +105,10 @@
             const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
             const berry_icon = '../Images_index/berry_icon.png';
         
+            //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
 
-            const mush_marker = new google.maps.Marker({
+            //testimarker
+            var mush_marker = new google.maps.Marker({
                 position: myLatLng,
                 map,
                 icon: mush_icon,
@@ -113,10 +188,85 @@
     * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?)
     * 
     * Opastus pinnipaikalle/osoitteeseen.
-     */
+    */
 
-  
-   
-    
+    //test
+    public async Task<string> GetCachedLocation()
+    {
+        try
+        {
+            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+
+            if (location != null)
+                return $"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}";
+        }
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            // Handle not supported on device exception
+        }
+        catch (FeatureNotEnabledException fneEx)
+        {
+            // Handle not enabled on device exception
+        }
+        catch (PermissionException pEx)
+        {
+            // Handle permission exception
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+        }
+
+        return "None";
+    }
+
+    private CancellationTokenSource _cancelTokenSource;
+    private bool _isCheckingLocation;
+    double myLat;
+    double myLng;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetCurrentLocation();
+    }
+
+    public async Task GetCurrentLocation()
+    {
+        try
+        {
+            _isCheckingLocation = true;
+
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+            _cancelTokenSource = new CancellationTokenSource();
+
+            Location currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+
+            if (currentlocation != null){
+                Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
+                myLat = currentlocation.Latitude;
+                myLng = currentlocation.Longitude;
+            }
+                
+        }
+        // Catch one of the following exceptions:
+        //   FeatureNotSupportedException
+        //   FeatureNotEnabledException
+        //   PermissionException
+        catch (Exception ex)
+        {
+            // Unable to get location
+        }
+        finally
+        {
+            _isCheckingLocation = false;
+        }
+    }
+
+    public void CancelRequest()
+    {
+        if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
+            _cancelTokenSource.Cancel();
+    }
 
 }
