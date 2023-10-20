@@ -12,8 +12,6 @@
 
 
 <div>
-    N‰yt‰ kartta t‰ss‰:
-   
     <div id="googleMap" style="width:100%;height:400px;"></div>
 
     <script>
@@ -30,11 +28,27 @@
                 zoomControl: true,
                 streetViewControl: false
             });
-            new google.maps.Marker({
+            
+            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
+            const berry_icon = '../Images_index/berry_icon.png';
+        
+
+            const mush_marker = new google.maps.Marker({
                 position: myLatLng,
                 map,
-                title: "My location"
+                icon: mush_icon,
+                title: "Finding"
             });
+
+            //toinen testimarker
+
+            const berry_marker = new google.maps.Marker({
+                position: { lat: 62.908551, lng: 27.659310 },
+                map,
+                icon: berry_icon,
+                title: "BERRIES!"
+            });
+           
         }
     </script>
   
@@ -90,9 +104,9 @@
     * 
     * Pyyd‰ lupa gps:‰‰n?
     * 
-    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa.
+    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan).
     * 
-    * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan
+    * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
     * 
     * Anna hakea paikan nimell‰ (ja koordinaateilla?)
     * 
