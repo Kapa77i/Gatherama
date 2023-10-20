@@ -22,8 +22,8 @@
 <div>
 
     <div>
-        <input type="text" id="lat" placeholder="Lat" value="@myLat.ToString()"/> <!-- Vain double arvot sopivia -->
-        <input type="text" id="lng" placeholder="Long" value="@myLng.ToString()"/>
+        <input type="text" id="lat" placeholder="Lat" value="@myLat"/> <!-- Vain double arvot sopivia -->
+        <input type="text" id="lng" placeholder="Long" value="@myLng"/>
     </div>
 
     <div id="googleMap" style="width:100%;height:400px;"></div>
@@ -227,7 +227,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        GetCurrentLocation();
+        await GetCurrentLocation();
     }
 
     public async Task GetCurrentLocation()
