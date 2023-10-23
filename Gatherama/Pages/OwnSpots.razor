@@ -11,7 +11,7 @@
 @inject ApiService apiService
 
 @* Collaps Button*@
-<p>
+@* <p>
     <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
         Button with data-bs-target
     </button>
@@ -21,9 +21,11 @@
         Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
     </div>
     <p></p>
-</div>
+</div> *@
 
 @* Collaps Divit*@
+
+<h4>Your own Gathering Spots</h4>
 
 @if (findings != null)
 {
@@ -36,23 +38,28 @@
         headingId += collapsingNbr;
         itemId += collapsingNbr;
 
-        specie = species.FirstOrDefault(m => m.Id == item.Species.ToString());
-        person = persons.FirstOrDefault(j => j.Id == item.Person.Id);
+        specie = species.FirstOrDefault(m => m.Id == item._idSpecies.Id);
+        person = persons.FirstOrDefault(j => j.Id == item._idPerson.Id);
+        place = places.FirstOrDefault(k => k.Id == item._idPlace.Id);
 
         <p></p>
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingId">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#id-@collabId" aria-expanded="false" aria-controls="id-@collabId">
-                        @item.datetime @* @item.Place.country.ToString(); *@
+                        @place.city.ToString(), @place.country.ToString(), @item.datetime.ToString().Replace("9.00.00", "")
                     </button>
                 </h2>
                 <div id="id-@collabId" class="accordion-collapse collapse" aria-labelledby="headingId" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
-                        @item.Person.firstName.ToString(); @item.Person.lastName.ToString();
-                      @*   @item.Species.category.ToString();
-                        @item.Species.subCategory.ToString(); *@
-                       @item.memo
+                        <strong>Gatherer:</strong>
+                        @person.firstName.ToString() @person.lastName.ToString()<br />
+                        <strong>Species Category:</strong>
+                        @specie.category.ToString()<br />
+                        <strong>Species Subcategory:</strong>
+                        @specie.subCategory.ToString()<br />
+                        <strong>Memo log:</strong>
+                        @item.memo<br />
                     </div>
                 </div>
             </div>
@@ -105,8 +112,10 @@ else
     public List<FindingDto> findings { get; private set; }
     public List<PersonDto> persons { get; private set; }
     public List<SpeciesDto> species { get; private set; }
+    public List<PlaceDto> places { get; private set; }
     private SpeciesDto specie;
     private PersonDto person;
+    private PlaceDto place;
     int collapsingNbr = 0;
     int headingNbr = 0;
 
@@ -116,9 +125,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        persons = await apiService.GetPersonsAsync();
         findings = await apiService.GetFindingsAsync();
+
+
+        persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
+        places = await apiService.GetPlacesAsync();
+
     }
 
 }

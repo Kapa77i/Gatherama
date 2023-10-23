@@ -63,7 +63,7 @@ namespace Gatherama.Services
         #endregion
         //PLACES
         #region
-        public async Task<List<PlaceDto>> FetchPlacesAsync()
+        public async Task<List<PlaceDto>> GetPlacesAsync()
         {
             places = await _httpClient.GetFromJsonAsync<List<PlaceDto>>("api/Place");
             return places;
