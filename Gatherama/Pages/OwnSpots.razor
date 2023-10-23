@@ -54,12 +54,35 @@
                     <div class="accordion-body">
                         <strong>Gatherer:</strong>
                         @person.firstName.ToString() @person.lastName.ToString()<br />
+
                         <strong>Species Category:</strong>
                         @specie.category.ToString()<br />
+
                         <strong>Species Subcategory:</strong>
                         @specie.subCategory.ToString()<br />
+
+                        <strong>Latin Name:</strong>
+                        @specie.latin_name.ToString()<br />
+
+                        <strong>Name:</strong>
+                        @specie.s_name.ToString()<br />
+                    
+                       
+                        <strong>Amount of Finding:</strong>
+                        @item.amount.ToString()<br />
+
                         <strong>Memo log:</strong>
                         @item.memo<br />
+
+                        <strong>Pictures?</strong>
+                        @* @media.photo<br /> 
+                            Tarvii GET koodit vielä tämä
+                        *@
+
+                        <strong>Map?</strong>
+                        @* @place.lng + @place.lat<br />
+                        *@
+                       
                     </div>
                 </div>
             </div>
