@@ -203,18 +203,22 @@
         catch (FeatureNotSupportedException fnsEx)
         {
             // Handle not supported on device exception
+            Console.WriteLine("ERROR: " + fnsEx);
         }
         catch (FeatureNotEnabledException fneEx)
         {
             // Handle not enabled on device exception
+            Console.WriteLine("ERROR: " + fneEx);
         }
         catch (PermissionException pEx)
         {
             // Handle permission exception
+            Console.WriteLine("ERROR: " + pEx);
         }
         catch (Exception ex)
         {
             // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
         }
 
         return "None";
