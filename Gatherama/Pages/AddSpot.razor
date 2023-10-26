@@ -247,15 +247,24 @@
                 myLat = currentlocation.Latitude;
                 myLng = currentlocation.Longitude;
             }
-                
+
         }
-        // Catch one of the following exceptions:
-        //   FeatureNotSupportedException
-        //   FeatureNotEnabledException
-        //   PermissionException
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch(FeatureNotEnabledException fneEx)
+        {
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch(PermissionException pEx)
+        {
+            Console.WriteLine("ERROR: " + pEx);
+        }
         catch (Exception ex)
         {
             // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
         }
         finally
         {
