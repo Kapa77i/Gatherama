@@ -90,7 +90,80 @@
 
         
     }
-    
+
+
+    <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
+        <DataAnnotationsValidator />
+  
+        <div class="col-lg-4 col-md-12">
+            <label for="findingDate"> </label>
+            <InputDate id="findingDate" @bind-Value="@newFinding.datetime" class="form-control"></InputDate>
+            <ValidationMessage For="@(() => newFinding.datetime)" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="findindAmount"> Amount </label>
+            <InputText id="findindAmount" @bind-Value="@newFinding.amount" class="form-control">How much did you find?</InputText>
+            <ValidationMessage For="@(() => newFinding.amount)" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="findingMemo"> Memo </label>
+            <InputText id="findingMemo" @bind-Value="@newFinding.memo" class="form-control">Enter memolog here</InputText>
+            <ValidationMessage For="@(() => newFinding.memo)" />
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+            <label for="findindPrivate"> Private or not? </label>
+            <InputRadioGroup id="findindPrivate" @bind-Value="@newFinding.Private" class="form-control">
+                <br />
+                <InputRadio id="0" Value="0" />Private <br />
+                <InputRadio id="1" Value="1" />Public
+            </InputRadioGroup>
+            <ValidationMessage For="@(() => newFinding.Private)" />
+        </div>
+
+         <div class="col-lg-4 col-md-12">
+            <label for="city"> City </label>
+            <InputText id="city" @bind-Value="newFinding._idPlace.city" class="form-control">Enter the City name here</InputText>
+            <ValidationMessage For="@(() => newFinding._idPlace.city)" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="country"> country </label>
+            <InputText id="country" @bind-Value="newFinding._idPlace.country" class="form-control">Enter the country name here</InputText>
+            <ValidationMessage For="@(() => newFinding._idPlace.country)" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="lat"> Latitude </label>
+            <InputNumber id="lat" @bind-Value="newFinding._idPlace.lat" class="form-control">Enter latitude</InputNumber>
+            <ValidationMessage For="@(() => newFinding._idPlace.lat)" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="lng"> Longitude </label>
+            <InputNumber id="lng" @bind-Value="newFinding._idPlace.lng" class="form-control">Enter longitude</InputNumber>
+            <ValidationMessage For="@(() => newFinding._idPlace.lng)" />
+        </div>
+
+
+        <div class="col-lg-4 col-md-12">
+            <label for="speciesCategory"> Species Category </label>
+            <InputText id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control">Enter the Category name here</InputText>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="speciesSubCategory"> Species Sub Category </label>
+            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="s_name"> S_name </label>
+            <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <label for="latin_name"> Latin name </label>
+            <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Add a Finding!</button>
+    </EditForm>  
+
+
        @*  <div class="accordion-item">
             <h2 class="accordion-header" id="headingTwo">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -131,6 +204,12 @@ else
 
  
 @code {
+    private FindingDto newFinding = new FindingDto()
+        {
+            _idPlace = new PlaceDto { },
+            _idSpecies = new SpeciesDto { }
+    };
+
 
     public List<FindingDto> findings { get; private set; }
     public List<PersonDto> persons { get; private set; }
@@ -155,6 +234,11 @@ else
         species = await apiService.GetSpeciesAsync();
         places = await apiService.GetPlacesAsync();
 
+    }
+
+    protected async void SubmitFinding()
+    {
+        await apiService.PostFindingAsync(newFinding);
     }
 
 }
