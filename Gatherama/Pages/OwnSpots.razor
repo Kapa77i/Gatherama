@@ -94,7 +94,9 @@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
-  
+@*         <InputText class="form-control" id="personPosting" disabled @bind-Value="@personPosting" /><br /> *@
+        <InputText class="form-control" id="personPosting" disabled @bind-Value="@newFinding._idPerson.Id">"6515332fc07d1bda1e96c476"</InputText>
+
         <div class="col-lg-4 col-md-12">
             <label for="findingDate"> </label>
             <InputDate id="findingDate" @bind-Value="@newFinding.datetime" class="form-control"></InputDate>
@@ -207,9 +209,11 @@ else
     private FindingDto newFinding = new FindingDto()
         {
             _idPlace = new PlaceDto { },
-            _idSpecies = new SpeciesDto { }
+            _idSpecies = new SpeciesDto { },
+            _idPerson = new PersonDto { }
     };
 
+    string personPosting = "6515332fc07d1bda1e96c476";
 
     public List<FindingDto> findings { get; private set; }
     public List<PersonDto> persons { get; private set; }
