@@ -189,16 +189,39 @@
     * 
     * Opastus pinnipaikalle/osoitteeseen.
     */
+    private CancellationTokenSource _cancelTokenSource;
+    private bool _isCheckingLocation;
+    Location currentlocation;
+    Location cachedlocation;
+    double myLat;
+    double myLng;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentLocation();
+        if(currentlocation == null)
+        {
+            await GetCachedLocation();
+            if(cachedlocation == null)
+            {
+                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
+            }
+        }
+    }
     //test
     public async Task<string> GetCachedLocation()
     {
         try
         {
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
 
-            if (location != null)
-                return $"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}";
+            if (cachedlocation != null)
+            {
+                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
+                myLat = cachedlocation.Latitude;
+                myLng = cachedlocation.Longitude;
+            }
+            
         }
         catch (FeatureNotSupportedException fnsEx)
         {
@@ -224,15 +247,7 @@
         return "None";
     }
 
-    private CancellationTokenSource _cancelTokenSource;
-    private bool _isCheckingLocation;
-    double myLat;
-    double myLng;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetCurrentLocation();
-    }
+    
 
     public async Task GetCurrentLocation()
     {
@@ -244,7 +259,7 @@
 
             _cancelTokenSource = new CancellationTokenSource();
 
-            Location currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
 
             if (currentlocation != null){
                 Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
