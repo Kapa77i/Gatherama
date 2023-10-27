@@ -112,19 +112,26 @@
             //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
 
             //testimarker
-            /*var mush_marker = new google.maps.Marker({
+            var mush_marker = new google.maps.Marker({
                 position: myLatLng,
                 map,
-                icon: mush_icon,
-                title: "Finding"
-            });*/
+                icon: {
+                    url: mush_icon,
+                    scaledSize: new google.maps.Size(36, 36)
+                },
+                title: "Finding",
+                
+            });
 
             //toinen testimarker
 
             const berry_marker = new google.maps.Marker({
                 position: { lat: 62.908551, lng: 27.659310 },
                 map,
-                icon: berry_icon,
+                icon: {
+                    url: berry_icon,
+                    scaledSize: new google.maps.Size(46, 46)
+                },
                 title: "BERRIES!"
             });
 
