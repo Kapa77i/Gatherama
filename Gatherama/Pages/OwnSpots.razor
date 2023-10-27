@@ -8,6 +8,7 @@
 @using Microsoft.Maui.Controls
 @using Gatherama.Services;
 @using Gatherama.Shared
+@using MongoDB.Bson;
 @inject ApiService apiService
 
 @* Collaps Button*@
@@ -45,27 +46,29 @@
         <p></p>
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
+
                 <h2 class="accordion-header" id="headingId">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#id-@collabId" aria-expanded="false" aria-controls="id-@collabId">
-                        @place.city.ToString(), @place.country.ToString(), @item.datetime.ToString().Replace("9.00.00", "")
+                        @item._idPlace.city.ToString(), @item._idPlace.country.ToString(), @item.datetime.ToString().Replace("21.00.00", "")
                     </button>
                 </h2>
+
                 <div id="id-@collabId" class="accordion-collapse collapse" aria-labelledby="headingId" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <strong>Gatherer:</strong>
-                        @person.firstName.ToString() @person.lastName.ToString()<br />
+                     @*    @item._idPerson.firstName.ToString() @item._idPerson.lastName.ToString()<br /> *@
 
-                        <strong>Species Category:</strong>
-                        @specie.category.ToString()<br />
+                       <strong>Species Category:</strong>
+                        @item._idSpecies.category.ToString()<br /> 
 
                         <strong>Species Subcategory:</strong>
-                        @specie.subCategory.ToString()<br />
+                        @item._idSpecies.subCategory.ToString()<br />
 
                         <strong>Latin Name:</strong>
-                        @specie.latin_name.ToString()<br />
+                        @item._idSpecies.latin_name.ToString()<br /> 
 
                         <strong>Name:</strong>
-                        @specie.s_name.ToString()<br />
+                        @item._idSpecies.s_name.ToString()<br />
                     
                        
                         <strong>Amount of Finding:</strong>
@@ -94,8 +97,11 @@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
-@*         <InputText class="form-control" id="personPosting" disabled @bind-Value="@personPosting" /><br /> *@
-        <InputText class="form-control" id="personPosting" disabled @bind-Value="@newFinding._idPerson.Id">"6515332fc07d1bda1e96c476"</InputText>
+        <div class="col-lg-4 col-md-12">
+        <strong>Username:</strong>
+            <InputText id="personPosting" @bind-Value="@newFinding._idPerson.Id" class="form-control">"6515332fc07d1bda1e96c476"</InputText>
+            <ValidationMessage For="@(() => newFinding._idPerson.Id)" />
+        </div>
 
         <div class="col-lg-4 col-md-12">
             <label for="findingDate"> </label>
@@ -122,7 +128,7 @@
             </InputRadioGroup>
             <ValidationMessage For="@(() => newFinding.Private)" />
         </div>
-
+@*         <div hidden> "@newFinding._idPlace.Id = ObjectId.GenerateNewId()"" </div> *@
          <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
             <InputText id="city" @bind-Value="newFinding._idPlace.city" class="form-control">Enter the City name here</InputText>
@@ -213,6 +219,8 @@ else
             _idPerson = new PersonDto { }
     };
 
+    private FindingDto postFinding = new FindingDto();
+
     string personPosting = "6515332fc07d1bda1e96c476";
 
     public List<FindingDto> findings { get; private set; }
@@ -233,6 +241,10 @@ else
     {
         findings = await apiService.GetFindingsAsync();
 
+        // It is not pretty but this is how I got it working the ID thingy
+        newFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
+        newFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
+        newFinding._idPerson = new PersonDto { Id = ObjectId.GenerateNewId().ToString() };
 
         persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
@@ -240,8 +252,11 @@ else
 
     }
 
+
     protected async void SubmitFinding()
     {
+        await apiService.PostPlaceAsync(newFinding._idPlace);
+        await apiService.PostSpeciesAsync(newFinding._idSpecies);
         await apiService.PostFindingAsync(newFinding);
     }
 

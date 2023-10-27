@@ -77,16 +77,16 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<PlaceDto>();
         }
         // POST a new item
-        public async Task<PlaceDto> PostPlaceAsync(PersonDto personDto)
+        public async Task<PlaceDto> PostPlaceAsync(PlaceDto placeDto)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseEndpoint, personDto);
+            var response = await _httpClient.PostAsJsonAsync("api/Place/", placeDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PlaceDto>();
         }
         // PUT (update) an item
-        public async Task<PlaceDto> PutPlaceAsync(int id, PersonDto personDto)
+        public async Task<PlaceDto> PutPlaceAsync(int id, PlaceDto placeDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", personDto);
+            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", placeDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PlaceDto>();
         }
@@ -229,7 +229,7 @@ namespace Gatherama.Services
         // POST a new item
         public async Task<SpeciesDto> PostSpeciesAsync(SpeciesDto speciesDto)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseEndpoint, speciesDto);
+            var response = await _httpClient.PostAsJsonAsync("api/Species/", speciesDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<SpeciesDto>();
         }
