@@ -98,6 +98,7 @@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
+        <ValidationSummary/>
         <div class="col-lg-4 col-md-12">
         <strong>Username:</strong>
             <InputText id="personPosting" @bind-Value="@newFinding._idPerson.Id" class="form-control">"6515332fc07d1bda1e96c476"</InputText>
@@ -109,9 +110,10 @@
             <InputDate id="findingDate" @bind-Value="@newFinding.datetime" class="form-control"></InputDate>
             <ValidationMessage For="@(() => newFinding.datetime)" />
         </div>
+
         <div class="col-lg-4 col-md-12">
             <label for="findindAmount"> Amount </label>
-            <InputText id="findindAmount" @bind-Value="@newFinding.amount" class="form-control">How much did you find?</InputText>
+            <InputText id="findindAmount" @bind-Value="@newFinding.amount"class="form-control"></InputText>
             <ValidationMessage For="@(() => newFinding.amount)" />
         </div>
         <div class="col-lg-4 col-md-12">
