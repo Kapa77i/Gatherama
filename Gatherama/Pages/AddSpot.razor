@@ -1,6 +1,8 @@
 @page "/addspots"
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using Map = Microsoft.Maui.Controls.Maps.Map
 @using System.Net.Http
 @using System.Text.Json
 @using System.Net.Http.Json;
@@ -101,6 +103,7 @@
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 14,
                 center: myLatLng,
+                IsShowingUser: true, //turha
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -112,12 +115,12 @@
             //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
 
             //testimarker
-            var mush_marker = new google.maps.Marker({
+            /*var mush_marker = new google.maps.Marker({
                 position: myLatLng,
                 map,
                 icon: mush_icon,
                 title: "Finding"
-            });
+            });*/
 
             //toinen testimarker
 
@@ -127,10 +130,17 @@
                 icon: berry_icon,
                 title: "BERRIES!"
             });
+
+            
            
         }
     </script>
   
+
+    Pin pin = new Pin{
+        Location = new Location(@myLat, @myLng)
+    };
+    map.Pins.Add(pin);
 </div>
 
 <head>
@@ -301,4 +311,8 @@
             _cancelTokenSource.Cancel();
     }
 
+    void OnMapClicked(object sender, MapClickedEventArgs e)
+    {
+        System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
+    }
 }

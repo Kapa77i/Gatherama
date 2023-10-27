@@ -118,7 +118,7 @@ namespace Gatherama.Services
         // POST a new item
         public async Task<FindingDto> PostFindingAsync(FindingDto findingDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/Finding/ownspots/", findingDto);
+            var response = await _httpClient.PostAsJsonAsync("api/Finding/", findingDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FindingDto>();
         }
