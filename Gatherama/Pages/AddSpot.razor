@@ -24,55 +24,52 @@
     että näyttää myös kaverien jakamat paikat.
 -->
 
-
-<div>
-
-    <div>
-        <input type="text" id="lat" placeholder="Lat" value="@myLat"/> <!-- Vain double arvot sopivia -->
-        <input type="text" id="lng" placeholder="Long" value="@myLng"/>
-    </div>
-
-    <div id="googleMap" style="width:100%;height:400px;"></div>
+<head>
+    <title>Simple Marker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js"></script>
 
     <script>
-    /*
-        async function initMap() { 
-            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
-            const berry_icon = '../Images_index/berry_icon.png';
-            // Request needed libraries.
-           // const { Map } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-            const map = new google.maps.Map(document.getElementById("googleMap"), {
-                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                zoom: 14,
-                fullscreenControl: false,
-                zoomControl: true,
-                streetViewControl: false,
-                mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
-            });
+        /*
+            async function initMap() {
+                const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
+                const berry_icon = '../Images_index/berry_icon.png';
+                // Request needed libraries.
+               // const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+                const map = new google.maps.Map(document.getElementById("googleMap"), {
+                    center: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                    zoom: 14,
+                    fullscreenControl: false,
+                    zoomControl: true,
+                    streetViewControl: false,
+                    mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
+                });
 
-            const infoWindow = new google.maps.InfoWindow();
+                const infoWindow = new google.maps.InfoWindow();
 
-            const marker = new AdvancedMarkerElement({
-                position: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                map,
-                gmpDraggable: true,
-               // icon: mush_icon,
-               // title: "Finding"
-            });
+                const marker = new AdvancedMarkerElement({
+                    position: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                    map,
+                    gmpDraggable: true,
+                   // icon: mush_icon,
+                   // title: "Finding"
+                });
 
-            marker.addListener("dragend", (event) => {
-                const position = marker.position;
+                marker.addListener("dragend", (event) => {
+                    const position = marker.position;
 
-                infoWindow.close();
-                infoWindow.setContent(
-                    `Pin dropped at: ${position.lat()}, ${position.lng()}`,
-                );
-                infoWindow.open(marker.map, marker);
-            });
-        }
+                    infoWindow.close();
+                    infoWindow.setContent(
+                        `Pin dropped at: ${position.lat()}, ${position.lng()}`,
+                    );
+                    infoWindow.open(marker.map, marker);
+                });
+            }
 
-        initMap();  */
+            initMap();  */
 
         function initMap() {
             var myLatLng = {
@@ -80,25 +77,25 @@
                 lat: 62.8893928527832,
                 lng: 27.6920166015625
             };
-           // var myLat = document.getElementById("lat");
-           // var myLong = document.getElementById("lng");
+            // var myLat = document.getElementById("lat");
+            // var myLong = document.getElementById("lng");
 
-           /* EI TOIMI 
-           
-           if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
-                myLatLng = {
+            /* EI TOIMI
 
-                    lat: 62.8893928527832,
-                    lng: 27.6920166015625
-                };
-            }
-            else {
+            if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
+                 myLatLng = {
 
-                myLatLng = {
-                    lat: Double.Parse(myLat.value), //tryparse
-                    lng: Double.Parse(myLong.value)
-                };
-            };*/
+                     lat: 62.8893928527832,
+                     lng: 27.6920166015625
+                 };
+             }
+             else {
+
+                 myLatLng = {
+                     lat: Double.Parse(myLat.value), //tryparse
+                     lng: Double.Parse(myLong.value)
+                 };
+             };*/
 
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 14,
@@ -108,10 +105,10 @@
                 zoomControl: true,
                 streetViewControl: false
             });
-            
+
             const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
             const berry_icon = '../Images_index/berry_icon.png';
-        
+
             //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
 
             //testimarker
@@ -131,25 +128,34 @@
                 title: "BERRIES!"
             });
 
-            
-           
+
+
         }
+
     </script>
-  
+</head>
+<body>
+    <div>
+
+        <div>
+            <input type="text" id="lat" placeholder="Lat" value="@myLat" /> <!-- Vain double arvot sopivia -->
+            <input type="text" id="lng" placeholder="Long" value="@myLng" />
+        </div>
+
+        <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    </div>
+
 
     Pin pin = new Pin{
-        Location = new Location(@myLat, @myLng)
+    Location = new Location(@myLat, @myLng)
     };
     map.Pins.Add(pin);
-</div>
 
-<head>
-    <title>Simple Marker</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
-    <link rel="stylesheet" href="./style.css" />
-    <script src="./app.js"></script>
-</head>
+</body>
+
+
+
 
 
 @* <EditForm >
@@ -209,6 +215,9 @@
     Location cachedlocation;
     double myLat;
     double myLng;
+
+    //testi
+    Map map = new Map();
 
     protected override async Task OnInitializedAsync()
     {
@@ -314,5 +323,11 @@
     void OnMapClicked(object sender, MapClickedEventArgs e)
     {
         System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
+        //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
+        Pin pin = new Pin
+            {
+                Location = new Location(@myLat, @myLng)
+            };
+        map.Pins.Add(pin);
     }
 }
