@@ -1,6 +1,8 @@
 @page "/addspots"
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using Map = Microsoft.Maui.Controls.Maps.Map
 @using System.Net.Http
 @using System.Text.Json
 @using System.Net.Http.Json;
@@ -16,118 +18,11 @@
 
 <p>Here you can add your new gathering spot!</p>
 
-<!--MAPS SEKOILUJA-->
-
-
-<div>
-
-    <div>
-        <input type="text" id="lat" placeholder="Lat" value="@myLat"/> <!-- Vain double arvot sopivia -->
-        <input type="text" id="lng" placeholder="Long" value="@myLng"/>
-    </div>
-
-    <div id="googleMap" style="width:100%;height:400px;"></div>
-
-    <script>
-    /*
-        async function initMap() { 
-            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
-            const berry_icon = '../Images_index/berry_icon.png';
-            // Request needed libraries.
-           // const { Map } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-            const map = new google.maps.Map(document.getElementById("googleMap"), {
-                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                zoom: 14,
-                fullscreenControl: false,
-                zoomControl: true,
-                streetViewControl: false,
-                mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
-            });
-
-            const infoWindow = new google.maps.InfoWindow();
-
-            const marker = new AdvancedMarkerElement({
-                position: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                map,
-                gmpDraggable: true,
-               // icon: mush_icon,
-               // title: "Finding"
-            });
-
-            marker.addListener("dragend", (event) => {
-                const position = marker.position;
-
-                infoWindow.close();
-                infoWindow.setContent(
-                    `Pin dropped at: ${position.lat()}, ${position.lng()}`,
-                );
-                infoWindow.open(marker.map, marker);
-            });
-        }
-
-        initMap();  */
-
-        function initMap() {
-            var myLatLng = {
-
-                lat: 62.8893928527832,
-                lng: 27.6920166015625
-            };
-           // var myLat = document.getElementById("lat");
-           // var myLong = document.getElementById("lng");
-
-           /* EI TOIMI 
-           
-           if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
-                myLatLng = {
-
-                    lat: 62.8893928527832,
-                    lng: 27.6920166015625
-                };
-            }
-            else {
-
-                myLatLng = {
-                    lat: Double.Parse(myLat.value), //tryparse
-                    lng: Double.Parse(myLong.value)
-                };
-            };*/
-
-            const map = new google.maps.Map(document.getElementById("googleMap"), {
-                zoom: 14,
-                center: myLatLng,
-                fullscreenControl: false,
-                zoomControl: true,
-                streetViewControl: false
-            });
-            
-            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
-            const berry_icon = '../Images_index/berry_icon.png';
-        
-            //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu k‰ytt‰j‰ ja kavereiden jakamat
-
-            //testimarker
-            var mush_marker = new google.maps.Marker({
-                position: myLatLng,
-                map,
-                icon: mush_icon,
-                title: "Finding"
-            });
-
-            //toinen testimarker
-
-            const berry_marker = new google.maps.Marker({
-                position: { lat: 62.908551, lng: 27.659310 },
-                map,
-                icon: berry_icon,
-                title: "BERRIES!"
-            });
-           
-        }
-    </script>
-  
-</div>
+<!--MAPS SEKOILUJA:
+    Tehd‰‰n t‰nne kartta, joka n‰ytt‰‰ vain nykyisen sijainnin ja jossa pystyy syˆtt‰m‰‰n tiedot lˆydˆkselle.
+    OwnSpots sivulle tulee kartta, joka n‰ytt‰‰ kaikki lˆydˆkset mit‰ on henkilˆll‰. Sinne myˆs suodattimet esim lajin perusteella, tai
+    ett‰ n‰ytt‰‰ myˆs kaverien jakamat paikat.
+-->
 
 <head>
     <title>Simple Marker</title>
@@ -135,7 +30,147 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
+
+    <script>
+        /*
+            async function initMap() {
+                const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
+                const berry_icon = '../Images_index/berry_icon.png';
+                // Request needed libraries.
+               // const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+                const map = new google.maps.Map(document.getElementById("googleMap"), {
+                    center: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                    zoom: 14,
+                    fullscreenControl: false,
+                    zoomControl: true,
+                    streetViewControl: false,
+                    mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
+                });
+
+                const infoWindow = new google.maps.InfoWindow();
+
+                const marker = new AdvancedMarkerElement({
+                    position: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                    map,
+                    gmpDraggable: true,
+                   // icon: mush_icon,
+                   // title: "Finding"
+                });
+
+                marker.addListener("dragend", (event) => {
+                    const position = marker.position;
+
+                    infoWindow.close();
+                    infoWindow.setContent(
+                        `Pin dropped at: ${position.lat()}, ${position.lng()}`,
+                    );
+                    infoWindow.open(marker.map, marker);
+                });
+            }
+
+            initMap();  */
+
+        function initMap() {
+            var myLatLng = {
+
+                lat: 62.8893928527832,
+                lng: 27.6920166015625
+            };
+            // var myLat = document.getElementById("lat");
+            // var myLong = document.getElementById("lng");
+
+            /* EI TOIMI
+
+            if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
+                 myLatLng = {
+
+                     lat: 62.8893928527832,
+                     lng: 27.6920166015625
+                 };
+             }
+             else {
+
+                 myLatLng = {
+                     lat: Double.Parse(myLat.value), //tryparse
+                     lng: Double.Parse(myLong.value)
+                 };
+             };*/
+
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 14,
+                center: myLatLng,
+                IsShowingUser: true, //turha
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false
+            });
+
+            const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
+            const berry_icon = '../Images_index/berry_icon.png';
+
+            //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu k‰ytt‰j‰ ja kavereiden jakamat
+
+            //testimarker
+            var mush_marker = new google.maps.Marker({
+                position: myLatLng,
+                map,
+                icon: {
+                    url: mush_icon,
+                    scaledSize: new google.maps.Size(36, 36)
+                },
+                title: "Finding",
+                pickable: true
+
+                //testi‰
+                onClick: (args) => {
+                    console.info('onClick', { args }); 
+                },
+                onHover: (args) => {
+                    console.info('onHover', { args }); 
+                }
+            });
+
+            //toinen testimarker
+
+            const berry_marker = new google.maps.Marker({
+                position: { lat: 62.908551, lng: 27.659310 },
+                map,
+                icon: {
+                    url: berry_icon,
+                    scaledSize: new google.maps.Size(46, 46)
+                },
+                title: "BERRIES!"
+            });
+
+
+
+        }
+
+    </script>
 </head>
+<body>
+    <div>
+
+        <div>
+            <input type="text" id="lat" placeholder="Lat" value="@myLat" /> <!-- Vain double arvot sopivia -->
+            <input type="text" id="lng" placeholder="Long" value="@myLng" />
+        </div>
+
+        <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    </div>
+
+
+    Pin pin = new Pin{
+    Location = new Location(@myLat, @myLng)
+    };
+    map.Pins.Add(pin);
+
+</body>
+
+
+
 
 
 @* <EditForm >
@@ -177,58 +212,80 @@
 
     /*NOTES:
     * 
-    * Pyyd‰ lupa gps:‰‰n?
+    * Pyyd‰ lupa gps:‰‰n? - android ok!
     * 
-    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan).
+    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - koordinaattikent‰t ok, KARTTA EI
     * 
     * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
     * 
     * Anna hakea paikan nimell‰ (ja koordinaateilla?)
     * 
-    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?)
+    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok!
     * 
     * Opastus pinnipaikalle/osoitteeseen.
     */
+    private CancellationTokenSource _cancelTokenSource;
+    private bool _isCheckingLocation;
+    Location currentlocation;
+    Location cachedlocation;
+    double myLat;
+    double myLng;
 
+    //testi
+    Map map = new Map();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentLocation();
+        if(currentlocation == null)
+        {
+            await GetCachedLocation();
+            if(cachedlocation == null)
+            {
+                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
+            }
+        }
+    }
     //test
     public async Task<string> GetCachedLocation()
     {
         try
         {
-            Location location = await Geolocation.Default.GetLastKnownLocationAsync();
+            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
 
-            if (location != null)
-                return $"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}";
+            if (cachedlocation != null)
+            {
+                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
+                myLat = cachedlocation.Latitude;
+                myLng = cachedlocation.Longitude;
+            }
+            
         }
         catch (FeatureNotSupportedException fnsEx)
         {
             // Handle not supported on device exception
+            Console.WriteLine("ERROR: " + fnsEx);
         }
         catch (FeatureNotEnabledException fneEx)
         {
             // Handle not enabled on device exception
+            Console.WriteLine("ERROR: " + fneEx);
         }
         catch (PermissionException pEx)
         {
             // Handle permission exception
+            Console.WriteLine("ERROR: " + pEx);
         }
         catch (Exception ex)
         {
             // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
         }
 
         return "None";
     }
 
-    private CancellationTokenSource _cancelTokenSource;
-    private bool _isCheckingLocation;
-    double myLat;
-    double myLng;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetCurrentLocation();
-    }
+    
 
     public async Task GetCurrentLocation()
     {
@@ -240,22 +297,31 @@
 
             _cancelTokenSource = new CancellationTokenSource();
 
-            Location currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
 
             if (currentlocation != null){
                 Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
                 myLat = currentlocation.Latitude;
                 myLng = currentlocation.Longitude;
             }
-                
+
         }
-        // Catch one of the following exceptions:
-        //   FeatureNotSupportedException
-        //   FeatureNotEnabledException
-        //   PermissionException
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch(FeatureNotEnabledException fneEx)
+        {
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch(PermissionException pEx)
+        {
+            Console.WriteLine("ERROR: " + pEx);
+        }
         catch (Exception ex)
         {
             // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
         }
         finally
         {
@@ -269,4 +335,14 @@
             _cancelTokenSource.Cancel();
     }
 
+    void OnMapClicked(object sender, MapClickedEventArgs e)
+    {
+        System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
+        //t‰m‰ olisi periaatteessa mit‰ haluttaisiin, mutta ei toimi viel‰
+        Pin pin = new Pin
+            {
+                Location = new Location(@myLat, @myLng)
+            };
+        map.Pins.Add(pin);
+    }
 }
