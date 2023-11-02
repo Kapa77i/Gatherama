@@ -13,6 +13,7 @@ namespace Gatherama.Services
     {
         private readonly HttpClient _httpClient;
         private readonly string _baseEndpoint = "https://gatheramaapi.azurewebsites.net";
+        //private readonly string _baseEndpoint = "https://localhost:5000";
 
         public ApiService(HttpClient httpClient)
         {
