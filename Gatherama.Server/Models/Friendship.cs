@@ -14,7 +14,7 @@ namespace Gatherama.Server.Models
         public int friend_request { get; set; }
         public int friend_accept { get; set; }
 
-        public Person _idPerson { get; set; } = null!;
-        public Person _idFriend { get; set; } = null!;
+        public virtual Person _idPerson { get; set; } = null!;
+        public  virtual Person _idFriend { get; set; } = null!;
     }
 }

@@ -13,5 +13,7 @@ namespace Gatherama.Server.Models
         [JsonPropertyName("mediaLocation")]
         public string? mediaLocation { get; set; }
         public string? photo { get; set; }
+
+        public virtual Finding _idFinding { get; set; } = null!;
     }
 }

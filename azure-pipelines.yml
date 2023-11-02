@@ -1,0 +1,22 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: dotnet restore
+  displayName: 'Dotnet Restore'
+
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'Dotnet Build'
+
+- script: dotnet test --configuration $(buildConfiguration) --collect:"XPlat Code Coverage"
+  displayName: 'Dotnet Test'
+
+- script: dotnet publish --configuration $(buildConfiguration) --output ./publish_output
+  displayName: 'Dotnet Publish'
+
