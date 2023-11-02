@@ -47,7 +47,7 @@
 
     private async void Submit()
     {
-        using var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:5000/") };
+        using var httpClient = new HttpClient { BaseAddress = new Uri("https://gatheramaapi.azurewebsites.net") };
         var response = await httpClient.PostAsJsonAsync("api/Person/login", person);
         if (response.IsSuccessStatusCode)
         {

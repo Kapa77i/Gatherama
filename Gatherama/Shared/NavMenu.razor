@@ -10,8 +10,8 @@
                 aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-       @*  @if (loginstate.hasLoggedin)
-        { *@
+          @if (loginstate.hasLoggedin)
+        { 
             <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
                 <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
           @*       <li class="nav-item">
@@ -42,9 +42,9 @@
                 </EditForm>
             
             </div>
-       @*  }
+        }
         else
-        { *@
+        { 
             <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -61,7 +61,7 @@
                 </li>
             </ul>
             </div>
-      @*  } *@
+        } 
     </div>
 </nav>
 
@@ -99,7 +99,7 @@
             </NavLink>
         </div>
     </nav>
-</div> *@
+</div> *@ 
 
 @code {
     private bool collapseNavMenu = true;
