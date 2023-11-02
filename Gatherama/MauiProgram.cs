@@ -23,6 +23,7 @@ namespace Gatherama
             builder.Services.AddSingleton<HttpClient>();
             builder.Services.AddTransient<ApiService>();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5000") });
+            builder.Services.AddSingleton<LoginState>();
             //builder.Services.AddBlazorBootstrap(); // Add this line EI TOIMI!!!!
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

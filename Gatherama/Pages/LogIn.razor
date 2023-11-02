@@ -1,6 +1,9 @@
 ﻿@page "/login"
 @using Gatherama.ViewModels;
+@using Gatherama.Services;
 @inject NavigationManager NavigationManager
+@inject ApiService apiService
+@inject Gatherama.Shared.LoginState loginState
 @using Gatherama.Shared
 @using System.Net.Http
 @using System.Text.Json
@@ -48,6 +51,11 @@
         var response = await httpClient.PostAsJsonAsync("api/Person/login", person);
         if (response.IsSuccessStatusCode)
         {
+
+            var userinfo = await apiService.GetUserInfoByLogin(person.username, person.password);
+
+            loginState.SetLogin(true, userinfo);
+            Console.WriteLine(loginState.isSingedin.Id);
             Console.WriteLine("Onnistui!");
             NavigationManager.NavigateTo("/ownspots", true);
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Gatherama.Shared;
 using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Gatherama.Services
 {
@@ -38,6 +39,16 @@ namespace Gatherama.Services
             var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PersonDto>();
+        }
+        // GET item by username and password
+        public async Task<PersonDto> GetUserInfoByLogin(string username, string password)
+        {
+            var response = await _httpClient.GetAsync($"api/Person/{username}/{password}");
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the JSON content to a PersonDto object
+            return JsonConvert.DeserializeObject<PersonDto>(content);
         }
         // POST a new item
         public async Task<PersonDto> PostPersonAsync(PersonDto personDto)

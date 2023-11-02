@@ -1,12 +1,19 @@
-﻿<nav class="navbar navbar-expand-md navbar-dark mb-4" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%)">
+﻿@using Gatherama.Shared 
+@inject NavigationManager navigationManager
+@inject LoginState loginstate
+
+
+<nav class="navbar navbar-expand-md navbar-dark mb-4" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%)">
     <div class="container-fluid">
         <a class="navbar-brand" href=""> <img src="@imageSource" width="170px" height="40px" align="center" alt="Logo" /></a>
         <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-            <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
+        @if (loginstate.hasLoggedin)
+        {
+            <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
+                <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
           @*       <li class="nav-item">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -29,6 +36,16 @@
                 </li>
                 
             </ul>
+                @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
+                <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
+                    <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
+                </EditForm>
+            
+            </div>
+        }
+        else
+        {
+            <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <NavLink class="nav-link" href="login">
@@ -43,9 +60,11 @@
                     </NavLink>
                 </li>
             </ul>
-        </div>
+            </div>
+        }
     </div>
 </nav>
+
 
 
 @* <div class="top-row navbar navbar-dark">
@@ -93,5 +112,10 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private async Task LogOut()
+    {
+        loginstate.SetLogin(false, null);
+        navigationManager.NavigateTo("/", true);
     }
 }

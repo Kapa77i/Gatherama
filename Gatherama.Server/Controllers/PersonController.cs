@@ -39,6 +39,18 @@ namespace Gatherama.Server.Controllers
             }
             return Ok(item);
         }
+        // GET: api/items/1
+        [HttpGet("{username}/{password}")]
+        public async Task<ActionResult<PersonDto>> GetUserInfo(string username, string password)
+        {
+            var item = await _context.Persons.Find<Person>(i => i.username == username && i.password == password).FirstOrDefaultAsync();
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return Ok(item);
+        }
+
         // POST: api/items
         [HttpPost("register")]
         public async Task<ActionResult<PersonDto>> PostPerson([FromBody] Person person)
@@ -73,7 +85,7 @@ namespace Gatherama.Server.Controllers
             return NoContent();
         }
         [HttpPost("login")]
-        public async Task<IActionResult> GetPerson([FromBody] PersonDto person)
+        public async Task<IActionResult> login([FromBody] PersonDto person)
         {
             var filter = Builders<Person>.Filter.Eq(u => u.username, person.username) & Builders<Person>.Filter.Eq(u => u.password, person.password);
             var user = await _context.Persons.Find(filter).FirstOrDefaultAsync();
