@@ -52,11 +52,11 @@
         if (response.IsSuccessStatusCode)
         {
 
-            // var userinfo = await apiService.GetUserInfoByLogin(person.username, person.password);
+            var userinfo = await apiService.GetUserInfoByLogin(person.username, person.password);
 
-            // loginState.SetLogin(true, userinfo);
-            // Console.WriteLine(loginState.isSingedin.Id);
-            // Console.WriteLine("Onnistui!");
+            loginState.SetLogin(true, userinfo);
+            Console.WriteLine(loginState.isSingedin.Id);
+            Console.WriteLine("Onnistui!");
             NavigationManager.NavigateTo("/ownspots", true);
         }
         else

@@ -44,7 +44,7 @@ namespace Gatherama.Services
         // GET item by username and password
         public async Task<PersonDto> GetUserInfoByLogin(string username, string password)
         {
-            var response = await _httpClient.GetAsync($"api/Person?{username}&{password}");
+            var response = await _httpClient.GetAsync($"api/Person/{username}/{password}");
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
 
