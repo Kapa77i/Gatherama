@@ -2,7 +2,6 @@
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
 @using Microsoft.Maui.Maps
-@using Map = Microsoft.Maui.Controls.Maps.Map
 @using System.Net.Http
 @using System.Text.Json
 @using System.Net.Http.Json;
@@ -106,6 +105,12 @@
                 streetViewControl: false
             });
 
+            //testi
+            // This event listener calls addMarker() when the map is clicked.
+            map.addListener(map, "click", (event) => {
+                addMarker(event.latlng, map);
+            });
+
             const mush_icon = '../Images_index/mushroom_icon.png'; 
             const berry_icon = '../Images_index/berry_icon.png';
 
@@ -147,6 +152,18 @@
 
         }
 
+        function addMarker(location, map) {
+            new google.maps.Marker({
+                position: event.latlng,
+                map,
+                icon: {
+                    url: mush_icon,
+                    scaledSize: new google.maps.Size(36, 36)
+                }
+            })
+        }
+
+        window.initMap = initMap;
     </script>
 </head>
 <body>
@@ -245,6 +262,7 @@
                 Console.WriteLine("ERROR: For unknown reason cannot fetch location");
             }
         }
+        
     }
     //test
     public async Task<string> GetCachedLocation()
@@ -259,7 +277,7 @@
                 myLat = cachedlocation.Latitude;
                 myLng = cachedlocation.Longitude;
             }
-            
+
         }
         catch (FeatureNotSupportedException fnsEx)
         {
@@ -285,7 +303,7 @@
         return "None";
     }
 
-    
+
 
     public async Task GetCurrentLocation()
     {
@@ -303,6 +321,7 @@
                 Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
                 myLat = currentlocation.Latitude;
                 myLng = currentlocation.Longitude;
+
             }
 
         }
