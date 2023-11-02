@@ -34,9 +34,9 @@ namespace Gatherama.Services
             // Use _httpClient to fetch data
         }
         // GET item by ID
-        public async Task<PersonDto> GetPersonByIdAsync(string id)
+        public async Task<PersonDto> GetPersonByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync("api/Person/" + id);
+            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PersonDto>();
         }

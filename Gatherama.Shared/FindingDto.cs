@@ -9,7 +9,7 @@ namespace Gatherama.Shared
     public class FindingDto
     {
         public string Id { get; set; }
-        public int? _private { get; set; }
+        public int? Private { get; set; }
         public DateTime? datetime { get; set; } = null!;
         public string? amount { get; set; } = null!;
         public string? memo { get; set; } = null!;
