@@ -1,0 +1,353 @@
+﻿@page "/maptesting"
+
+@using Gatherama.Shared
+@using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using System.Net.Http
+@using System.Text.Json
+@using System.Net.Http.Json;
+@using System
+@using System.Threading.Tasks
+@using Microsoft.Maui.Controls
+@using Gatherama.Services
+
+@inject IJSRuntime JS
+
+@inject ApiService apiService
+
+
+
+
+<h1>Add Gathering Spot</h1>
+
+<p>Here you can add your new gathering spot!</p>
+
+<!--MAPS SEKOILUJA:
+    Tehdään tänne kartta, joka näyttää vain nykyisen sijainnin ja jossa pystyy syöttämään tiedot löydökselle.
+    OwnSpots sivulle tulee kartta, joka näyttää kaikki löydökset mitä on henkilöllä. Sinne myös suodattimet esim lajin perusteella, tai
+    että näyttää myös kaverien jakamat paikat.
+-->
+
+<head>
+    <title>Simple Marker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js"></script>
+
+    <script>
+
+        function initMap() {
+            var myLatLng = {
+
+                lat: 62.8893928527832,
+                lng: 27.6920166015625
+            };
+
+
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 14,
+                center: myLatLng,
+                IsShowingUser: true, //turha
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false
+            });
+
+            //testi
+            // This event listener calls addMarker() when the map is clicked.
+            // map.addListener("click", (event) => {
+            //      window.alert("Map was clicked! latln: " + JSON.stringify(event.latLng.toJSON(), null, 2));
+            //     var newMarker = JSON.stringify(event.latLng.toJSON(), null, 2);
+            //  });
+
+         
+
+            const mush_icon = '../Images_index/mushroom_icon.png';
+            const berry_icon = '../Images_index/berry_icon.png';
+
+            //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
+
+            //testimarker
+            var mush_marker = new google.maps.Marker({
+                position: myLatLng,
+                map,
+                icon: {
+                    url: mush_icon,
+                    scaledSize: new google.maps.Size(36, 36)
+                },
+                title: "Finding",
+                pickable: true
+
+                //testiä
+                /* onClick: (args) => {
+                     console.info('onClick', { args });
+                 },
+                 onHover: (args) => {
+                     console.info('onHover', { args });
+                 }*/
+            });
+
+            //toinen testimarker
+
+            const berry_marker = new google.maps.Marker({
+                position: { lat: 62.908551, lng: 27.659310 },
+                map,
+                icon: {
+                    url: berry_icon,
+                    scaledSize: new google.maps.Size(46, 46)
+                },
+                title: "BERRIES!"
+            });
+
+
+            //
+            map.addListener("click", (e) => {
+                placeMarkerAndPanTo(e.latLng, map);
+            });
+
+        }
+
+         function placeMarkerAndPanTo(latLng, map) {
+            newMarker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+            });
+            map.panTo(latLng);
+
+            return newMarker();
+
+        }
+
+      
+        // function addMarker(newMarker) {
+        //     new google.maps.Marker({
+        //         position: newMarker,
+        //         map,
+        //         icon: {
+        //             url: mush_icon,
+        //             scaledSize: new google.maps.Size(36, 36)
+        //         }
+        //     })
+        //     window.alert("addMarker: " + ));
+        // }
+
+        window.initMap = initMap;
+    </script>
+</head>
+<body>
+    <div>
+
+        <div>
+            <input type="text" id="lat" placeholder="Lat" value="@myLat" /> <!-- Vain double arvot sopivia -->
+            <input type="text" id="lng" placeholder="Long" value="@myLng" />
+        </div>
+
+        <div id="googleMap" style="width:100%;height:400px;"></div>
+
+    </div>
+
+
+    Pin pin = new Pin{
+    Location = new Location(@myLat, @myLng)
+    };
+    map.Pins.Add(pin);
+
+</body>
+
+
+
+
+
+@* <EditForm >
+     <div class="col-lg-4 col-md-12">
+        <label for="Place">
+            Add Place
+        </label>
+        <Input id="Place" class="form-control" placeholder="Enter Place co-ordinates"/>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="Date">
+            Add Date to the Finding
+        </label>
+        <DateInput id="Date" TValue="DateOnly" class="form-control" placeholder="Enter Date"/>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="amount">
+            Add the Amount of Species found
+        </label>
+        <Input id="Amount" class="form-control" placeholder="Enter Amount"/>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="Memo">
+            Add some Notes (if wanted)
+        </label>
+        <Input id="Notes" class="form-control" placeholder="Enter the Note"/>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="Picture">
+            Add Picture
+        </label>
+        <Input id="Picture" class="form-control" placeholder="Enter the Note"/>
+    </div>
+</EditForm> *@
+
+
+@code {
+    //GOOGLE MAPS API KEY (KATA): AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg
+
+    /*NOTES:
+    *
+    * Pyydä lupa gps:ään? - android ok!
+    *
+    * Etsi ensin käyttäjän lokaatio ja näytä se kartassa sekä koordinaattikentissä (kenttiä pitää pystyä muokkaamaan). - koordinaattikentät ok, KARTTA EI
+    *
+    * Karttaa pitää pystyä liikuttamaan ja zoomaamaan - OK!
+    *
+    * Anna hakea paikan nimellä (ja koordinaateilla?)
+    *
+    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok!
+    *
+    * Opastus pinnipaikalle/osoitteeseen.
+    */
+    private CancellationTokenSource _cancelTokenSource;
+    private bool _isCheckingLocation;
+    Location currentlocation;
+    Location cachedlocation;
+    double myLat;
+    double myLng;
+
+    string latlng;
+
+    private Lazy<IJSObjectReference> IsolatedModule = new();
+
+
+    //Add pin information from JS
+    public async Task CallFromGlobalAsync()
+    {
+        await JS.InvokeVoidAsync("placeMarkerAndPanTo");
+
+        await IsolatedModule.Value.InvokeVoidAsync("placeMarkerAndPanTo");
+
+        latlng = IsolatedModule.Value.ToString();
+
+    }
+
+    //testi
+    Map map = new Map();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCurrentLocation();
+        if (currentlocation == null)
+        {
+            await GetCachedLocation();
+            if (cachedlocation == null)
+            {
+                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
+            }
+        }
+
+    }
+    //test
+    public async Task<string> GetCachedLocation()
+    {
+        try
+        {
+            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
+
+            if (cachedlocation != null)
+            {
+                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
+                myLat = cachedlocation.Latitude;
+                myLng = cachedlocation.Longitude;
+            }
+
+        }
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            // Handle not supported on device exception
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch (FeatureNotEnabledException fneEx)
+        {
+            // Handle not enabled on device exception
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch (PermissionException pEx)
+        {
+            // Handle permission exception
+            Console.WriteLine("ERROR: " + pEx);
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
+        }
+
+        return "None";
+    }
+
+
+
+    public async Task GetCurrentLocation()
+    {
+        try
+        {
+            _isCheckingLocation = true;
+
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+            _cancelTokenSource = new CancellationTokenSource();
+
+            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+
+            if (currentlocation != null)
+            {
+                Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
+                myLat = currentlocation.Latitude;
+                myLng = currentlocation.Longitude;
+
+            }
+
+        }
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch (FeatureNotEnabledException fneEx)
+        {
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch (PermissionException pEx)
+        {
+            Console.WriteLine("ERROR: " + pEx);
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
+        }
+        finally
+        {
+            _isCheckingLocation = false;
+        }
+    }
+
+    public void CancelRequest()
+    {
+        if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
+            _cancelTokenSource.Cancel();
+    }
+
+    void OnMapClicked(object sender, MapClickedEventArgs e)
+    {
+        System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
+        //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
+        Pin pin = new Pin
+            {
+                Location = new Location(@myLat, @myLng)
+            };
+        map.Pins.Add(pin);
+    }
+}
