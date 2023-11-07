@@ -31,44 +31,10 @@
     <script src="./app.js"></script>
 
     <script>
-        /*
-            async function initMap() {
-                const mush_icon = '../Images_index/mushroom_icon.png'; //NOTE! Kuvat ihan liian isot :,D
-                const berry_icon = '../Images_index/berry_icon.png';
-                // Request needed libraries.
-               // const { Map } = await google.maps.importLibrary("maps");
-                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-                const map = new google.maps.Map(document.getElementById("googleMap"), {
-                    center: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                    zoom: 14,
-                    fullscreenControl: false,
-                    zoomControl: true,
-                    streetViewControl: false,
-                    mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
-                });
-
-                const infoWindow = new google.maps.InfoWindow();
-
-                const marker = new AdvancedMarkerElement({
-                    position: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                    map,
-                    gmpDraggable: true,
-                   // icon: mush_icon,
-                   // title: "Finding"
-                });
-
-                marker.addListener("dragend", (event) => {
-                    const position = marker.position;
-
-                    infoWindow.close();
-                    infoWindow.setContent(
-                        `Pin dropped at: ${position.lat()}, ${position.lng()}`,
-                    );
-                    infoWindow.open(marker.map, marker);
-                });
-            }
-
-            initMap();  */
+        
+            
+                   // mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
+               
 
         function initMap() {
             var myLatLng = {
@@ -76,30 +42,11 @@
                 lat: 62.8893928527832,
                 lng: 27.6920166015625
             };
-            // var myLat = document.getElementById("lat");
-            // var myLong = document.getElementById("lng");
-
-            /* EI TOIMI
-
-            if (Double.Parse(myLat.value) === null || Double.Parse(myLong).value === null) {
-                 myLatLng = {
-
-                     lat: 62.8893928527832,
-                     lng: 27.6920166015625
-                 };
-             }
-             else {
-
-                 myLatLng = {
-                     lat: Double.Parse(myLat.value), //tryparse
-                     lng: Double.Parse(myLong.value)
-                 };
-             };*/
-
+          
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 14,
                 center: myLatLng,
-                IsShowingUser: true, //turha
+                //IsShowingUser: true, //turha
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -125,7 +72,9 @@
                     scaledSize: new google.maps.Size(36, 36)
                 },
                 title: "Finding",
-                pickable: true
+                draggable: true,
+                // pickable: true
+
 
                 //testiä
                /* onClick: (args) => {
@@ -179,10 +128,10 @@
     </div>
 
 
-    Pin pin = new Pin{
+   @*  Pin pin = new Pin{
     Location = new Location(@myLat, @myLng)
     };
-    map.Pins.Add(pin);
+    map.Pins.Add(pin); *@
 
 </body>
 
@@ -249,7 +198,7 @@
     double myLng;
 
     //testi
-    Map map = new Map();
+   // Map map = new Map();
 
     protected override async Task OnInitializedAsync()
     {
@@ -354,14 +303,14 @@
             _cancelTokenSource.Cancel();
     }
 
-    void OnMapClicked(object sender, MapClickedEventArgs e)
-    {
-        System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
-        //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
-        Pin pin = new Pin
-            {
-                Location = new Location(@myLat, @myLng)
-            };
-        map.Pins.Add(pin);
-    }
+    // void OnMapClicked(object sender, MapClickedEventArgs e)
+    // {
+    //     System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
+    //     //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
+    //     Pin pin = new Pin
+    //         {
+    //             Location = new Location(@myLat, @myLng)
+    //         };
+    //     map.Pins.Add(pin);
+    // }
 }
