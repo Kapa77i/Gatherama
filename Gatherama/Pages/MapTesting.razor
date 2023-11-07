@@ -184,10 +184,10 @@
             }
         }
 
-        await JS.InvokeVoidAsync("placeMarkerAndPanTo");
-        var locationData = await JS.InvokeAsync<LocationData>("JSON.parse", await JS.InvokeAsync<string>("document.getElementById", "locationData.value"));
-        myLatJS = locationData.lat;
-        myLngJS = locationData.lng;
+        // await JS.InvokeVoidAsync("placeMarkerAndPanTo");
+        // var locationData = await JS.InvokeAsync<LocationData>("JSON.parse", await JS.InvokeAsync<string>("document.getElementById", "locationData.value"));
+        // myLatJS = locationData.lat;
+        // myLngJS = locationData.lng;
 
     }
     //test
