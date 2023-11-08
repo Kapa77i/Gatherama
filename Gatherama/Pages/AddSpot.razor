@@ -102,6 +102,7 @@
 
             //Add markers for each place
             places.forEach(function (place) {
+
                 var marker = new google.maps.Marker({
                     position: {lat: place.lat, lng: place.lng},
                     map: map,
@@ -225,6 +226,17 @@
         }
 
         findings = await apiService.GetFindingsAsync();
+        /*ota kaikki löydökset ja vertaa niitä kirjautuneeseen henkilöön
+            - jos henkilön oma löydös, näytä
+            - jos toisen henkilön julkinen löydös, näytä
+            --> nämä kaikki samaan listaan, joka viedään parametrina initMap() :lle
+
+                --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
+                    - marja: julkinen, sieni: yksityinen
+                --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
+                --> markerit ei draggable
+        */ 
+
         places = await apiService.GetPlacesAsync();
        
 
