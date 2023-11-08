@@ -9,6 +9,8 @@
 @using System.Threading.Tasks
 @using Microsoft.Maui.Controls
 @using Gatherama.Services
+@using Newtonsoft.Json
+
 @inject IJSRuntime JS
 @inject ApiService apiService
 
@@ -36,7 +38,7 @@
                    // mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
                
 
-        function initMap() {
+        function initMap(places) {
             var myLatLng = {
 
                 lat: 62.8893928527832,
@@ -53,10 +55,9 @@
             });
 
             //testi
-            // This event listener calls addMarker() when the map is clicked.
-            map.addListener(map, "click", (event) => {
-                addMarker(event.latlng, map);
-            });
+  
+            // addMarker();
+            
 
             const mush_icon = '../Images_index/mushroom_icon.png'; 
             const berry_icon = '../Images_index/berry_icon.png';
@@ -87,6 +88,8 @@
 
             //toinen testimarker
 
+            
+
             const berry_marker = new google.maps.Marker({
                 position: { lat: 62.908551, lng: 27.659310 },
                 map,
@@ -97,37 +100,127 @@
                 title: "BERRIES!"
             });
 
+            places.forEach(function (place) {
+                var marker = new google.maps.Marker({
+                    position: {lat: place.lat, lng: place.lng},
+                    map: map,
+                    title: place.city
+                })
+            });
 
-
+         
         }
 
-        function addMarker(location, map) {
-            new google.maps.Marker({
-                position: event.latlng,
-                map,
-                icon: {
-                    url: mush_icon,
-                    scaledSize: new google.maps.Size(36, 36)
-                }
-            })
-        }
+        // function createMarkers(places) {
+        //     if (places != null) {
+        //         for (var i = 0; i < places.length; i++) {
 
-        window.initMap = initMap;
+        //             var latlng = new google.maps.LatLng(places[i].lat, places[i].lng);
+
+        //             var mark = new google.maps.Marker({
+        //                 position: latlng,
+        //                 map,
+        //                 // icon: {
+        //                 //     url: mush_icon,
+        //                 //     scaledSize: new google.maps.Size(36, 36)
+        //                 // },
+        //                 // title: "Finding",
+        //             });
+        //         }
+        //     }
+
+        //     Document.getElementById("lat").Value(latlng.lat);
+        //     Document.getElementById("lng").Value(latlng.lng);
+
+        //    // google.maps.event.trigger(map, 'resize');
+        // }
+        
+
+        // window.createMarkers = (places) => {
+
+        //     for (var i = 0; i < places.length; i++) {
+
+        //         var latlng = { lat: places[i].lat, lng: places[i].lng };
+
+        //         var mark = new google.maps.Marker({
+        //             position: latlng,
+        //             map,
+        //         });
+        //     }
+        // };
+        
+
+        // function createMarkers(jsonLocations) {
+        //     jsonLocations.forEach(function (location) {
+        //         var marker = new google.maps.Marker({
+        //             map: map,
+        //             position: new google.maps.LatLng(location.lat, location.lng),
+        //             title: location.title
+        //         }):
+        //     });
+
+        // }
+
+       
+
+        // function createMarkers(jsonLocations) {
+        //     var locations = JSON.parse(jsonLocations);
+
+        //     for (let i = 0; i < locations.length; i++)
+        //     {
+        //         const berry_marker = new google.maps.Marker({
+        //             position: { lat: locations[i].lat, lng: locations[i].lng },
+        //             map,
+        //             icon: {
+        //                 url: berry_icon,
+        //                 scaledSize: new google.maps.Size(46, 46)
+        //             },
+        //             title: "TEST"
+        //         });
+        //     }
+        // }
+
+
+
+        // function addMarker() {
+            
+        //     foreach(FindingDto fi in findings)
+        //     {
+        //         var location = {
+        //             lat: fi._idPlace.lat,
+        //             lng: fi._idPlace.lng
+        //         }
+
+        //         new google.maps.Marker({
+        //             position: location,
+        //             map,
+        //             icon: {
+        //                 url: mush_icon,
+        //                 scaledSize: new google.maps.Size(36, 36)
+        //             },
+        //             title: "Test",
+        //             draggable: true
+        //         });
+        //     }
+        // }
+
+         window.initMap = initMap;
     </script>
 </head>
 <body>
     <div>
 
         <div>
-            <input type="text" id="lat" placeholder="Lat" value="@myLat" /> <!-- Vain double arvot sopivia -->
-            <input type="text" id="lng" placeholder="Long" value="@myLng" />
+            <input type="text" id="lat" placeholder="Lat" /> <!-- Vain double arvot sopivia -->
+            <input type="text" id="lng" placeholder="Long" />
         </div>
 
         <div id="googleMap" style="width:100%;height:400px;"></div>
 
     </div>
+    
 
-
+    
    @*  Pin pin = new Pin{
     Location = new Location(@myLat, @myLng)
     };
@@ -197,8 +290,10 @@
     double myLat;
     double myLng;
 
-    //testi
-   // Map map = new Map();
+    public List<FindingDto> findings { get; private set; }
+    public List<PlaceDto> places { get; private set; }
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -211,8 +306,27 @@
                 Console.WriteLine("ERROR: For unknown reason cannot fetch location");
             }
         }
+
+        findings = await apiService.GetFindingsAsync();
+        places = await apiService.GetPlacesAsync();
+        // foreach(FindingDto fi in findings){
+        //     places.Add(fi._idPlace);   
+        // }
+
+        //string jsonLocations = JsonConvert.SerializeObject(places);
+        //test
+        //await JS.InvokeVoidAsync("createMarkers", places); //jsonLocations
+
+        await JS.InvokeVoidAsync("initMap", places);
+
+        // WebView webview = new WebView();
+        // await webview.EvaluateJavaScriptAsync($"createMarkers({jsonLocations});");
+        Console.WriteLine("Tullaanko tänne?");
         
     }
+
+   
+
     //test
     public async Task<string> GetCachedLocation()
     {
@@ -303,14 +417,4 @@
             _cancelTokenSource.Cancel();
     }
 
-    // void OnMapClicked(object sender, MapClickedEventArgs e)
-    // {
-    //     System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
-    //     //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
-    //     Pin pin = new Pin
-    //         {
-    //             Location = new Location(@myLat, @myLng)
-    //         };
-    //     map.Pins.Add(pin);
-    // }
 }
