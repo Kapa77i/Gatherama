@@ -100,109 +100,26 @@
                 title: "BERRIES!"
             });
 
+            //Add markers for each place
             places.forEach(function (place) {
                 var marker = new google.maps.Marker({
                     position: {lat: place.lat, lng: place.lng},
                     map: map,
-                    title: place.city
+                    title: place.city, 
+                    icon: {
+                        url: mush_icon,
+                        scaledSize: new google.maps.Size(36, 36)
+                    },
+                    
+
                 })
             });
 
+            
          
         }
 
-        // function createMarkers(places) {
-        //     if (places != null) {
-        //         for (var i = 0; i < places.length; i++) {
-
-        //             var latlng = new google.maps.LatLng(places[i].lat, places[i].lng);
-
-        //             var mark = new google.maps.Marker({
-        //                 position: latlng,
-        //                 map,
-        //                 // icon: {
-        //                 //     url: mush_icon,
-        //                 //     scaledSize: new google.maps.Size(36, 36)
-        //                 // },
-        //                 // title: "Finding",
-        //             });
-        //         }
-        //     }
-
-        //     Document.getElementById("lat").Value(latlng.lat);
-        //     Document.getElementById("lng").Value(latlng.lng);
-
-        //    // google.maps.event.trigger(map, 'resize');
-        // }
-        
-
-        // window.createMarkers = (places) => {
-
-        //     for (var i = 0; i < places.length; i++) {
-
-        //         var latlng = { lat: places[i].lat, lng: places[i].lng };
-
-        //         var mark = new google.maps.Marker({
-        //             position: latlng,
-        //             map,
-        //         });
-        //     }
-        // };
-        
-
-        // function createMarkers(jsonLocations) {
-        //     jsonLocations.forEach(function (location) {
-        //         var marker = new google.maps.Marker({
-        //             map: map,
-        //             position: new google.maps.LatLng(location.lat, location.lng),
-        //             title: location.title
-        //         }):
-        //     });
-
-        // }
-
-       
-
-        // function createMarkers(jsonLocations) {
-        //     var locations = JSON.parse(jsonLocations);
-
-        //     for (let i = 0; i < locations.length; i++)
-        //     {
-        //         const berry_marker = new google.maps.Marker({
-        //             position: { lat: locations[i].lat, lng: locations[i].lng },
-        //             map,
-        //             icon: {
-        //                 url: berry_icon,
-        //                 scaledSize: new google.maps.Size(46, 46)
-        //             },
-        //             title: "TEST"
-        //         });
-        //     }
-        // }
-
-
-
-        // function addMarker() {
-            
-        //     foreach(FindingDto fi in findings)
-        //     {
-        //         var location = {
-        //             lat: fi._idPlace.lat,
-        //             lng: fi._idPlace.lng
-        //         }
-
-        //         new google.maps.Marker({
-        //             position: location,
-        //             map,
-        //             icon: {
-        //                 url: mush_icon,
-        //                 scaledSize: new google.maps.Size(36, 36)
-        //             },
-        //             title: "Test",
-        //             draggable: true
-        //         });
-        //     }
-        // }
+     
 
          window.initMap = initMap;
     </script>
@@ -309,18 +226,10 @@
 
         findings = await apiService.GetFindingsAsync();
         places = await apiService.GetPlacesAsync();
-        // foreach(FindingDto fi in findings){
-        //     places.Add(fi._idPlace);   
-        // }
-
-        //string jsonLocations = JsonConvert.SerializeObject(places);
-        //test
-        //await JS.InvokeVoidAsync("createMarkers", places); //jsonLocations
+       
 
         await JS.InvokeVoidAsync("initMap", places);
 
-        // WebView webview = new WebView();
-        // await webview.EvaluateJavaScriptAsync($"createMarkers({jsonLocations});");
         Console.WriteLine("Tullaanko tänne?");
         
     }
