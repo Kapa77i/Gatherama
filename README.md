@@ -10,9 +10,13 @@
 
 * .NET 7.0 Runtime from individual components
  
-* .NET Multi-platform App UI development ![.NET Multi-platform App UI development](https://user-images.githubusercontent.com/939291/189329197-0fe2678c-eb57-4177-a3a1-0dbbcada946c.png
+* .NET Multi-platform App UI development ![.NET Multi-platform App UI development]https://user-images.githubusercontent.com/939291/189329197-0fe2678c-eb57-4177-a3a1-0dbbcada946c.png
 
 
 ## Navigation and project usage
 
 Debugg with android emulator (https://imgur.com/5ZbF4zE)
+
+## Testing
+
+* We are using playwright for end-to-end testing. ![Playwright for .NET]https://playwright.dev/dotnet/docs/intro
