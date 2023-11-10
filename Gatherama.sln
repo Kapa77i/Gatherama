@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Server", "Gathera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Shared", "Gatherama.Shared\Gatherama.Shared.csproj", "{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatherama.Test", "Test\Gatherama.Test.csproj", "{ADCE945D-A04B-4107-B4DD-71B85B556B77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADCE945D-A04B-4107-B4DD-71B85B556B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCE945D-A04B-4107-B4DD-71B85B556B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCE945D-A04B-4107-B4DD-71B85B556B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCE945D-A04B-4107-B4DD-71B85B556B77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
