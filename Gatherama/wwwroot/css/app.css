@@ -14,7 +14,7 @@ footer {
     background-image: linear-gradient(180deg, #043610 0%, #173043 50%);
     background-color: #043610;
     color: #fde69c !important;
-    border-bottom: 1px solid #d6d5d5
+    border-bottom: 1px solid #d6d5d5;
 }
 
 h1:focus {
@@ -208,7 +208,7 @@ border-color: #1861ac;
     display: none;
 }
 
-@supports (-webkit-touch-callout: none) {
+/*@supports (-webkit-touch-callout: none) {
     .status-bar-safe-area {
         display: flex;
         position: sticky;
@@ -221,5 +221,5 @@ border-color: #1861ac;
 
     .flex-column, .navbar-brand {
         padding-left: env(safe-area-inset-left);
-    }
+    }*/
 }

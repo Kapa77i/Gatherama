@@ -20,8 +20,7 @@
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}" />
                 <Setter Property="FontFamily" Value="OpenSansRegular" />
-                <Setter Property="BackgroundColor" Value="#2b0b98" />
-                <Setter Property="Padding" Value="14,10" />
+                <Setter Property="BackgroundColor" Value="#173043" />
             </Style>-->
 
         </ResourceDictionary>

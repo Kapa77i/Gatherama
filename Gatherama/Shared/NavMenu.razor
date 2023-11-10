@@ -1,4 +1,4 @@
-﻿@using Gatherama.Shared 
+﻿@* @using Gatherama.Shared 
 @inject NavigationManager navigationManager
 @inject LoginState loginstate
 
@@ -37,7 +37,7 @@
                 
             </ul>
                 @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
-                <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
+               @*  <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
                     <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
                 </EditForm>
             
@@ -63,7 +63,7 @@
             </div>
         } 
     </div>
-</nav>
+</nav> *@
 
 
 
@@ -99,23 +99,23 @@
             </NavLink>
         </div>
     </nav>
-</div> *@ 
+</div> *@  
 
 @code {
-    private bool collapseNavMenu = true;
+    // private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
+    // private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    // private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
 
-    private string imageSource = $"Gatherama_text_rb.png";
+    // private string imageSource = $"Gatherama_text_rb.png";
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-    private async Task LogOut()
-    {
-        loginstate.SetLogin(false, null);
-        navigationManager.NavigateTo("/", true);
-    }
+    // private void ToggleNavMenu()
+    // {
+    //     collapseNavMenu = !collapseNavMenu;
+    // }
+    // private async Task LogOut()
+    // {
+    //     loginstate.SetLogin(false, null);
+    //     navigationManager.NavigateTo("/", true);
+    // }
 }
