@@ -118,54 +118,24 @@
             map.panTo(latLng);
             setLocationData(latLng.lat(), latLng.lng()); // Set location data in the hidden input
             window.alert("Tultiin geocodeen: " + latLng)
-            // const latlng = {
-            //     lat: parseFloat(latLng.lat()),
-            //     lng: parseFloat(latLng.lng()),
-            // };
+            const latilng = {
+                lat: parseFloat(latLng.lat()),
+                lng: parseFloat(latLng.lng()),
+            };
 
-            geocoder.geocode({ location: latLng }).then((response) => {
-                window.alert("Tultiin responseen: " + response.result[0].ToString())
-                    if (response.results[0]) {
-                        window.alert(response.result[0].ToString());
-                        document.getElementById("city").value = latlng;
-
-
-                    } else {
-                        window.alert("No results found");
-                    }
-                })
-                .catch((e) => window.alert("Geocoder failed due to: " + e));
+            geocoder.geocode({ location: latilng }).then((response) => {
+                window.alert("Tultiin responseen: " + JSON.stringify(response));
+                if (response.results && response.results[0]) {
+                    window.alert(response.results[0].formatted_address);
+                    document.getElementById("city").value = response.results[9].formatted_address;
+                } else {
+                    window.alert("No results found");
+                }
+            }).catch((e) => window.alert("Geocoder failed due to: " + e));
          
-            return newMarker();
+            return newMarker;
 
         }
-
-        // function geocodeLatLng(latLng, geocoder, map) {
-        //     window.alert("Tultiin geocodeen: " + latLng + geocoder + map)
-        //     const input = JSON.stringify(latLng);
-        //     const latlng = {
-        //         lat: parseFloat(latlngStr[0]),
-        //         lng: parseFloat(latlngStr[1]),
-        //     };
-
-        //         window.alert("Tultiin responseen: " + response.result[0].ToString())
-
-        //     geocoder
-        //         .geocode({ location: latlng })
-        //         .then((response) => {
-                
-        //             if (response.results[0]) {
-        //                 window.alert(response.result[0].ToString());
-        //                 document.getElementById("city").value = latlng;
-
-
-        //             } else {
-        //                 window.alert("No results found");
-        //             }
-        //         })
-        //         .catch((e) => window.alert("Geocoder failed due to: " + e));
-        // }
-
 
         function setLocationData(lat, lng) {
             const locationData = {
