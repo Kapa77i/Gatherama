@@ -123,7 +123,7 @@
 
                     });
                 }
-                else {//toisen julkinen löydös, merkitään marjalla
+                else if(find._idPerson.Id != person.Id){//toisen julkinen löydös, merkitään marjalla
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
