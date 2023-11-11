@@ -3,9 +3,9 @@
 @inject NavigationManager navigationManager
 @inject LoginState loginstate
 
-<div class="top-row" style="margin:0px; padding:0px;">
-    <nav class="navbar navbar-expand-md navbar-dark mb-4" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%)">
-        <div class="container-fluid">
+
+    <nav class="navbar navbar-expand navbar-dark mb-2" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%) !important">
+       
             <a class="navbar-brand" href=""> <img src="@imageSource" width="170px" height="40px" align="center" alt="Logo" /></a>
             <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
@@ -37,7 +37,7 @@
                         </li>
 
                     </ul>
-                    @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
+                    <a style="color:white">Hello @loginstate.isSingedin?.username</a> 
                     <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
                         <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
                     </EditForm>
@@ -62,11 +62,11 @@
                     </ul>
                 </div>
             }
-        </div>
+    
     </nav>
-</div>
-<div class="page">
-    <main>
+
+<div class="page" >
+    <main >
         <article class="content px-3">
             @Body
         </article>
