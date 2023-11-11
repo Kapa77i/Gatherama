@@ -103,7 +103,7 @@
                             };
 
                             window.alert("Position is: " + pos);
-                            window.alert("Location found.");
+                           // window.alert("Location found.");
                             //infoWindow.open(map);
                             map.setCenter(pos);
                         },
@@ -127,31 +127,34 @@
 
             map.panTo(latLng);
             setLocationData(latLng.lat(), latLng.lng()); // Set location data in the hidden input
-            window.alert("Tultiin geocodeen: " + latLng)
+           // window.alert("Tultiin geocodeen: " + latLng)
             const latilng = {
                 lat: parseFloat(latLng.lat()),
                 lng: parseFloat(latLng.lng()),
             };
 
-            geocoder.geocode({ location: latilng }).then((response) => {
-                //window.alert("Tultiin responseen: " + JSON.stringify(response));
-                if (response.results && response.results[0]) {
-                    window.alert(response.results[9].formatted_address);
-                    const input = response.results[9].formatted_address;
-                    const latlngStr = input.split(",", 2);
-                    const cityCountry = {
-                        city: latlngStr[0],
-                        country: latlngStr[1]
-                    };
-                    document.getElementById("city").value = cityCountry.city;
-                    document.getElementById("country").value = cityCountry.country;
 
-                    //document.getElementById("city").value = response.results[9].formatted_address;
-                } else {
-                    window.alert("No results found");
-                }
-            }).catch((e) => window.alert("Geocoder failed due to: " + e));
-         
+            geocoder
+                .geocode({ location: latilng })
+                .then((response) => {
+                    if (response && response.results && response.results.length > 0) {
+                        const formattedAddress =
+                            response.results[3].formatted_address;
+                        const latlngStr = formattedAddress.split(",", 2);
+                        const cityCountry = {
+                            city: latlngStr[0],
+                            country: latlngStr[1],
+                        };
+                        document.getElementById("city").value = cityCountry.city;
+                        document.getElementById("country").value = cityCountry.country;
+                    } else {
+                        window.alert("No results found");
+                    }
+                })
+                .catch((e) =>
+                    window.alert("Geocoder failed due to: " + e.message || "Unknown error")
+                );
+
             return newMarker;
 
         }
@@ -203,144 +206,4 @@
     //GOOGLE MAPS API KEY (KATA): AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg
 
    
-    private CancellationTokenSource _cancelTokenSource;
-    private bool _isCheckingLocation;
-    Location currentlocation;
-    Location cachedlocation;
-    double myLat;
-    double myLng;
-
-    private double myLatJS;
-    private double myLngJS;
-
-    private class LocationData
-    {
-        public double lat { get; set; }
-        public double lng { get; set; }
-    }
-
-    //Add pin information from JS
-  
-    //testi
-    Map map = new Map();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await GetCurrentLocation();
-        if (currentlocation == null)
-        {
-            await GetCachedLocation();
-            if (cachedlocation == null)
-            {
-                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
-            }
-        }
-
-        // await JS.InvokeVoidAsync("placeMarkerAndPanTo");
-        // var locationData = await JS.InvokeAsync<LocationData>("JSON.parse", await JS.InvokeAsync<string>("document.getElementById", "locationData.value"));
-        // myLatJS = locationData.lat;
-        // myLngJS = locationData.lng;
-
-    }
-    //test
-    public async Task<string> GetCachedLocation()
-    {
-        try
-        {
-            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
-
-            if (cachedlocation != null)
-            {
-                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
-                myLat = cachedlocation.Latitude;
-                myLng = cachedlocation.Longitude;
-            }
-
-        }
-        catch (FeatureNotSupportedException fnsEx)
-        {
-            // Handle not supported on device exception
-            Console.WriteLine("ERROR: " + fnsEx);
-        }
-        catch (FeatureNotEnabledException fneEx)
-        {
-            // Handle not enabled on device exception
-            Console.WriteLine("ERROR: " + fneEx);
-        }
-        catch (PermissionException pEx)
-        {
-            // Handle permission exception
-            Console.WriteLine("ERROR: " + pEx);
-        }
-        catch (Exception ex)
-        {
-            // Unable to get location
-            Console.WriteLine("ERROR: " + ex);
-        }
-
-        return "None";
-    }
-
-
-
-    public async Task GetCurrentLocation()
-    {
-        try
-        {
-            _isCheckingLocation = true;
-
-            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-            _cancelTokenSource = new CancellationTokenSource();
-
-            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-
-            if (currentlocation != null)
-            {
-                Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
-                myLat = currentlocation.Latitude;
-                myLng = currentlocation.Longitude;
-
-            }
-
-        }
-        catch (FeatureNotSupportedException fnsEx)
-        {
-            Console.WriteLine("ERROR: " + fnsEx);
-        }
-        catch (FeatureNotEnabledException fneEx)
-        {
-            Console.WriteLine("ERROR: " + fneEx);
-        }
-        catch (PermissionException pEx)
-        {
-            Console.WriteLine("ERROR: " + pEx);
-        }
-        catch (Exception ex)
-        {
-            // Unable to get location
-            Console.WriteLine("ERROR: " + ex);
-        }
-        finally
-        {
-            _isCheckingLocation = false;
-        }
-    }
-
-    public void CancelRequest()
-    {
-        if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-            _cancelTokenSource.Cancel();
-    }
-
-    void OnMapClicked(object sender, MapClickedEventArgs e)
-    {
-        System.Diagnostics.Debug.WriteLine($"MapClick: {e.Location.Latitude}, {e.Location.Longitude}");
-        //tämä olisi periaatteessa mitä haluttaisiin, mutta ei toimi vielä
-        Pin pin = new Pin
-            {
-                Location = new Location(@myLat, @myLng)
-            };
-        map.Pins.Add(pin);
-    }
 }
