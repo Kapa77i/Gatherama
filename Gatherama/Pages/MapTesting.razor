@@ -217,46 +217,46 @@
 
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
-            <InputText id="city" class="form-control" @bind-Value="@newFinding._idPlace.city"></InputText>
+            <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
             <ValidationMessage For="@(() => newFinding._idPlace.city)" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="country"> country </label>
-            <InputText id="country" @bind-Value="@newFinding._idPlace.country" class="form-control"></InputText>
+            <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control"></InputText>
             <ValidationMessage For="@(() => newFinding._idPlace.country)" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lat"> Latitude </label>
-            <InputNumber id="lat" @bind-Value="@newFinding._idPlace.lat" class="form-control"></InputNumber>
+            <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control"></InputNumber>
             <ValidationMessage For="@(() => newFinding._idPlace.lat)" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lng"> Longitude </label>
-            <InputNumber id="lng" @bind-Value="@newFinding._idPlace.lng" class="form-control"></InputNumber>
+            <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control"></InputNumber>
             <ValidationMessage For="@(() => newFinding._idPlace.lng)" />
         </div>
 
 
         <div class="col-lg-4 col-md-12">
             <label for="findingDate">Add a Date </label>
-            <InputDate id="findingDate" @bind-Value="@newFinding.datetime" class="form-control"></InputDate>
+            <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control"></InputDate>
             <ValidationMessage For="@(() => newFinding.datetime)" />
         </div>
 
         <div class="col-lg-4 col-md-12">
             <label for="findindAmount"> Amount </label>
-            <InputText id="findindAmount" @bind-Value="@newFinding.amount" class="form-control"></InputText>
+            <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control"></InputText>
             <ValidationMessage For="@(() => newFinding.amount)" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="findingMemo"> Memo </label>
-            <InputText id="findingMemo" @bind-Value="@newFinding.memo" class="form-control">Enter memolog here</InputText>
+            <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control">Enter memolog here</InputText>
             <ValidationMessage For="@(() => newFinding.memo)" />
         </div>
 
         <div class="col-lg-4 col-md-12">
             <label for="findindPrivate"> Private or not? </label>
-            <InputSelect id="findindPrivate" @bind-Value="@newFinding._private" class="form-control">
+            <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
                 <option value="0">Private</option>
                 <option value="1">Public</option>
             </InputSelect>

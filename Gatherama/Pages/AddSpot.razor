@@ -261,7 +261,7 @@
                 --> markerit ei draggable
         */ foreach(FindingDto find in allfindings)
         {
-            if(find._idPerson.Id == loginstate.isSingedin.Id || find.Private == 1)
+            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 1)
             {
                 visiblefindings.Add(find);
 
