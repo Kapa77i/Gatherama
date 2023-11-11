@@ -13,6 +13,7 @@
 
 @inject IJSRuntime JS
 @inject ApiService apiService
+@inject LoginState loginstate
 
 
 <h1>Add Gathering Spot</h1>
@@ -38,7 +39,7 @@
                    // mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
                
 
-        function initMap(places) {
+        function initMap(visiblefindings, person) {
             var myLatLng = {
 
                 lat: 62.8893928527832,
@@ -101,19 +102,39 @@
             });
 
             //Add markers for each place
-            places.forEach(function (place) {
+            /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
+                    - marja: julkinen, sieni: yksityinen
+                --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
+                --> markerit ei draggable 
+            */
 
-                var marker = new google.maps.Marker({
-                    position: {lat: place.lat, lng: place.lng},
-                    map: map,
-                    title: place.city, 
-                    icon: {
-                        url: mush_icon,
-                        scaledSize: new google.maps.Size(36, 36)
-                    },
-                    
+            visiblefindings.forEach(function (find) {
+                if (find._idPerson.Id == person.Id) {//jos oma löydös, merkitään sienellä
 
-                })
+                    var marker = new google.maps.Marker({
+                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                        map: map,
+                        title: "Oma löydös!",
+                        icon: {
+                            url: mush_icon,
+                            scaledSize: new google.maps.Size(36, 36)
+                        },
+
+
+                    });
+                }
+                else {//toisen julkinen löydös, merkitään marjalla
+                    var marker = new google.maps.Marker({
+                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                        map: map,
+                        icon: {
+                            url: berry_icon,
+                            scaledSize: new google.maps.Size(46, 46)
+                        },
+                        title: "Julkinen"//"City: " + find._idPlace.city + ", " + find._idSpecies.s_name
+                    });
+                }
+                
             });
 
             
@@ -208,8 +229,10 @@
     double myLat;
     double myLng;
 
-    public List<FindingDto> findings { get; private set; }
+    public List<FindingDto> allfindings { get; private set; }
+    public List<FindingDto> visiblefindings = new List<FindingDto>();
     public List<PlaceDto> places { get; private set; }
+    public PersonDto person { get; private set; }
 
 
 
@@ -225,7 +248,8 @@
             }
         }
 
-        findings = await apiService.GetFindingsAsync();
+        //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
+        allfindings = await apiService.GetFindingsAsync();
         /*ota kaikki löydökset ja vertaa niitä kirjautuneeseen henkilöön
             - jos henkilön oma löydös, näytä
             - jos toisen henkilön julkinen löydös, näytä
@@ -235,14 +259,19 @@
                     - marja: julkinen, sieni: yksityinen
                 --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                 --> markerit ei draggable
-        */ 
+        */ foreach(FindingDto find in allfindings)
+        {
+            if(find._idPerson.Id == loginstate.isSingedin.Id || find.Private == 1)
+            {
+                visiblefindings.Add(find);
 
-        places = await apiService.GetPlacesAsync();
-       
+            }
+        }
+        //Alkup. testaus placella
+        //places = await apiService.GetPlacesAsync();
+        person = loginstate.isSingedin;
 
-        await JS.InvokeVoidAsync("initMap", places);
-
-        Console.WriteLine("Tullaanko tänne?");
+        await JS.InvokeVoidAsync("initMap", visiblefindings, person);
         
     }
 
