@@ -78,14 +78,14 @@
                         <strong>Memo log:</strong>
                         @item.memo<br />
 
-                        <strong>Pictures?</strong>
-                        @* @media.photo<br /> 
+                        @* <strong>Pictures?</strong>
+                         @media.photo<br /> 
                             Tarvii GET koodit vielä tämä
-                        *@
+                        
 
                         <strong>Map?</strong>
-                        @* @place.lng + @place.lat<br />
-                        *@
+                        @place.lng + @place.lat<br /> *@
+                        
                        
                     </div>
                 </div>
@@ -197,8 +197,6 @@ else
     };
 
     private FindingDto postFinding = new FindingDto();
-
-    string personPosting = "6515332fc07d1bda1e96c476";
 
     public List<FindingDto> findings { get; private set; }
     public List<PersonDto> persons { get; private set; }

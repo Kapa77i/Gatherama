@@ -106,7 +106,7 @@
                                 lng: position.coords.longitude,
                             };
 
-                            window.alert("Position is: " + pos);
+                            //window.alert("Position is: " + pos);
                            // window.alert("Location found.");
                             //infoWindow.open(map);
                             map.setCenter(pos);
@@ -369,7 +369,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        newFinding.datetime = DateTime.Now;
+        var dateAndTime = DateTime.Now;
+        var date = dateAndTime.Date.ToString().Replace("00.00.00", ""); ;
+        newFinding.datetime = DateTime.Parse(date);
         findings = await apiService.GetFindingsAsync();
 
         // It is not pretty but this is how I got it working the ID thingy
