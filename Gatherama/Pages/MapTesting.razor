@@ -128,7 +128,7 @@
             });
 
             map.panTo(latLng);
-            setLocationData(latLng.lat(), latLng.lng()); // Set location data in the hidden input
+           
            // window.alert("Tultiin geocodeen: " + latLng)
             const latilng = {
                 lat: parseFloat(latLng.lat()),
@@ -142,16 +142,14 @@
                     if (response && response.results && response.results.length > 0) {
                         const formattedAddress =
                             response.results[3].formatted_address;
+                       // window.alert("Formatted address: " + JSON.stringify(response.results[3].formatted_address))
                         const latlngStr = formattedAddress.split(",", 2);
                         const cityCountry = {
                             city: latlngStr[0],
                             country: latlngStr[1],
                         };
-                        document.getElementById("city").value = cityCountry.city;
-                        document.getElementById("country").value = cityCountry.country;
-
-                        // newFinding._idPlace.city = cityCountry.city;
-                        // newFinding._idPlace.city = cityCountry.country;
+                     
+                        setLocationData(latilng, cityCountry); // Set location data 
 
                     } else {
                         window.alert("No results found");
@@ -161,19 +159,40 @@
                     window.alert("Geocoder failed due to: " + e.message || "Unknown error")
                 );
 
+           
+
             return newMarker;
 
         }
 
-        function setLocationData(lat, lng) {
-            const locationData = {
-                lat: lat,
-                lng: lng
-            };
-            document.getElementById("lat").value = JSON.stringify(locationData.lat);
-            //newFinding._idPlace.lat = locationData.lat;
-            document.getElementById("lng").value = JSON.stringify(locationData.lng);
-            //newFinding._idPlace.lng = locationData.lng;
+        function setLocationData(latilng, cityCountry) {
+            //window.alert("Tultiin setLoocationiin")
+
+            const placeInfo = {
+                city: cityCountry.city,
+                county: cityCountry.country,
+                lat: latilng.lat,
+                lng: latilng.lng
+            }
+
+            document.getElementById("city").value = cityCountry.city;
+            document.getElementById("country").value = cityCountry.country;
+            document.getElementById("lat").value = JSON.stringify(latilng.lat);
+            document.getElementById("lng").value = JSON.stringify(latilng.lng);
+
+            return placeInfo;
+        }
+
+        function fetchData(){
+           //window.alert("Tultiin fetchDataJS");
+            var fetchPlaceInfo = document.getElementById("city").value + ",";
+            fetchPlaceInfo += document.getElementById("country").value + ",";
+            fetchPlaceInfo += document.getElementById("lat").value + ",";
+            fetchPlaceInfo += document.getElementById("lng").value + ",";
+           
+                
+
+            return fetchPlaceInfo;
         }
 
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -194,12 +213,12 @@
 </head>
 <body>
     <div>
-        @* <div>
+       @*  <div>
             <input type="text" id="lat" placeholder="Lat" /> <!-- Vain double arvot sopivia -->
             <input type="text" id="lng" placeholder="Long"  />
             <input type="text" id="city" placeholder="City" />
             <input type="text" id="country" placeholder="Country" />
-        </div> *@
+        </div>  *@
 
         <div id="googleMap" style="width:100%;height:400px;"></div>
 
@@ -257,6 +276,7 @@
         <div class="col-lg-4 col-md-12">
             <label for="findindPrivate"> Private or not? </label>
             <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
+                <option value="">Select...</option>
                 <option value="0">Private</option>
                 <option value="1">Public</option>
             </InputSelect>
@@ -267,7 +287,8 @@
 
         <div class="col-lg-4 col-md-12">
             <label for="speciesCategory"> Berries or Mushrooms? </label>
-            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control">
+            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control" >
+                <option value="">Select...</option>
                 <option>Berries</option>
                 <option>Mushrooms</option>
             </InputSelect>
@@ -277,7 +298,7 @@
             <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="s_name"> S_name </label>
+            <label for="s_name"> Species Name </label>
             <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
         </div>
         <div class="col-lg-4 col-md-12">
@@ -316,36 +337,43 @@
     int collapsingNbr = 0;
     int headingNbr = 0;
 
+    string placeInfoJS;
+
     string collabId = "test";
     string headingId = "test";
     string itemId = "testi";
 
     protected override async Task OnInitializedAsync()
     {
+        newFinding.datetime = DateTime.Now;
         findings = await apiService.GetFindingsAsync();
 
         // It is not pretty but this is how I got it working the ID thingy
         newFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
         newFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
-      
-       
 
         persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
         places = await apiService.GetPlacesAsync();
-        
+
         newFinding._idPerson = await apiService.GetPersonByIdAsync(loginstate.isSingedin?.Id);
 
-    }
-     private string scriptResult;
 
-    private void HandleJavaScriptResult(string result)
-    {
-        scriptResult = result;
+
     }
+    private string scriptResult;
 
     protected async void SubmitFinding()
     {
+        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+        //string serializedObject = JsonSerializer.Serialize(placeInfoJS);
+        string[] splitFetch = placeInfoJS.Split(',');
+        newFinding._idPlace.city = splitFetch[0];
+        newFinding._idPlace.country = splitFetch[1];
+        newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+        newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+
+
         Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
         await apiService.PostPlaceAsync(newFinding._idPlace);
         await apiService.PostSpeciesAsync(newFinding._idSpecies);

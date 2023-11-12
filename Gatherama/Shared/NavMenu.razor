@@ -1,4 +1,4 @@
-﻿@* @using Gatherama.Shared 
+﻿ @using Gatherama.Shared 
 @inject NavigationManager navigationManager
 @inject LoginState loginstate
 
@@ -37,7 +37,7 @@
                 
             </ul>
                 @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
-               @*  <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
+               <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
                     <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
                 </EditForm>
             
@@ -46,37 +46,35 @@
         else
         { 
             <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="navbar-nav ms-auto">
                 <li>
                     <NavLink class="nav-link" href="login">
                         <a href="LogIn"><span class="bi bi-box-arrow-in-right"></span> Log In</a>
                     </NavLink>
                 </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <NavLink class="nav-link" href="register">
-                        <a href="Register"><span class="bi bi-box-arrow-in-right"></span> Register</a>
-                    </NavLink>
-                </li>
-            </ul>
+                    <li>
+                        <NavLink class="nav-link" href="register">
+                            <a href="Register"><span class="bi bi-box-arrow-in-right"></span> Register</a>
+                        </NavLink>
+                    </li>
+                    </ul>
             </div>
         } 
     </div>
-</nav> *@
+</nav> 
 
 
-
-@* <div class="top-row navbar navbar-dark">
+@* 
+ <div class="top-row navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Gatherama</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-</div>
+</div> *@
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+@* <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -99,23 +97,23 @@
             </NavLink>
         </div>
     </nav>
-</div> *@  
+</div>  *@
 
 @code {
-    // private bool collapseNavMenu = true;
+    private bool collapseNavMenu = true;
 
-    // private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    // private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
 
-    // private string imageSource = $"Gatherama_text_rb.png";
+    private string imageSource = $"Gatherama_text_rb.png";
 
-    // private void ToggleNavMenu()
-    // {
-    //     collapseNavMenu = !collapseNavMenu;
-    // }
-    // private async Task LogOut()
-    // {
-    //     loginstate.SetLogin(false, null);
-    //     navigationManager.NavigateTo("/", true);
-    // }
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    private async Task LogOut()
+    {
+        loginstate.SetLogin(false, null);
+        navigationManager.NavigateTo("/", true);
+    }
 }

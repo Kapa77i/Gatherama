@@ -1,93 +1,17 @@
 ﻿@inherits LayoutComponentBase
-@using Gatherama.Shared
-@inject NavigationManager navigationManager
-@inject LoginState loginstate
 
+<div class="page">
+    <div class="top-row">
+        <NavMenu />
+    </div>
 
-    <nav class="navbar navbar-expand navbar-dark mb-2" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%) !important">
-       
-            <a class="navbar-brand" href=""> <img src="@imageSource" width="170px" height="40px" align="center" alt="Logo" /></a>
-            <button class="navbar-toggler @NavButtonCssClass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            @if (loginstate.hasLoggedin)
-            {
-                <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-                    <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="maptesting" Match="NavLinkMatch.All">
-                                <span class="oi oi-home" aria-hidden="true"></span> Kapatti testing site
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="ownspots">
-                                <span class="oi oi-list-rich" aria-hidden="true"></span> My Spots
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="personlist">
-                                <span class="bi bi-person-lines-fill" aria-hidden="true"></span> See persons
-                            </NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="addspots">
-                                <span class="oi oi-plus" aria-hidden="true"></span> Add a Spot
-                            </NavLink>
-                        </li>
+    <main>
+        @*         <div class="top-row px-4">
+        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div> *@
 
-                    </ul>
-                    <a style="color:white">Hello @loginstate.isSingedin?.username</a> 
-                    <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
-                        <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
-                    </EditForm>
-
-                </div>
-            }
-            else
-            {
-                <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-                      
-                    <ul class="navbar-nav ms-auto">
-                        <li>
-                            <NavLink class="nav-link" href="login">
-                                <a href="LogIn"><span class="bi bi-box-arrow-in-right"></span> Log In</a>
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink class="nav-link" href="register">
-                                <a href="Register"><span class="bi bi-box-arrow-in-right"></span> Register</a>
-                            </NavLink>
-                        </li>
-                    </ul>
-                </div>
-            }
-    
-    </nav>
-
-<div class="page" >
-    <main >
-        <article class="content px-3">
+        <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
-
-    private string imageSource = $"Gatherama_text_rb.png";
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-    private async Task LogOut()
-    {
-        loginstate.SetLogin(false, null);
-        navigationManager.NavigateTo("/", true);
-    }
-}
