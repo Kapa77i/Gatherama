@@ -33,6 +33,7 @@
     <script src="./app.js"></script>
 
     <script>
+        let markers = [];
 
         function initMap() {
             var myLatLng = {
@@ -84,6 +85,7 @@
 
             //
             map.addListener("click", (e) => {
+
                 placeMarkerAndPanTo(e.latLng, map, geocoder);
                 //geocodeLatLng(e.latLng, geocoder, map);
             });
@@ -122,13 +124,15 @@
         }
 
          function placeMarkerAndPanTo(latLng, map, geocoder) {
+
             newMarker = new google.maps.Marker({
                 position: latLng,
                 map: map,
             });
+           
 
             map.panTo(latLng);
-           
+      
            // window.alert("Tultiin geocodeen: " + latLng)
             const latilng = {
                 lat: parseFloat(latLng.lat()),
@@ -158,12 +162,32 @@
                 .catch((e) =>
                     window.alert("Geocoder failed due to: " + e.message || "Unknown error")
                 );
-
-           
+            deleteMarkers();
+            markers.push(newMarker);
 
             return newMarker;
 
         }
+
+
+        // Sets the map on all markers in the array.
+        function setMapOnAll(map) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        // Removes the markers from the map, but keeps them in the array.
+        function hideMarkers() {
+            setMapOnAll(null);
+        }
+
+        //Remove the markers on the map
+        function deleteMarkers() {
+            hideMarkers();
+            markers = [];
+        }
+
 
         function setLocationData(latilng, cityCountry) {
             //window.alert("Tultiin setLoocationiin")
