@@ -8,7 +8,7 @@ namespace Gatherama.Server.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = null!;
+        public string? Id { get; set; }
         [BsonElement("friend_request")]
         [JsonPropertyName("friend_request")]
         public int friend_request { get; set; }

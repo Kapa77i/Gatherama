@@ -88,9 +88,9 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         {
             if (loginstate.isSingedin.Id == item._idPerson.Id || loginstate.isSingedin.Id == item._idFriend.Id)
             {
-                if (item.friend_accept == 1 && item.friend_request == 1)
+                if (item.friend_accept == 1 && item.friend_request == 1) //erottele myös ne ystävyydet, jotka on "pending" ??
                 {
-                    if (loginstate.isSingedin.Id == item._idPerson.Id)
+                    if (loginstate.isSingedin.username == item._idPerson.username)
                     {
                         friends.Add(item._idFriend);
                     }
@@ -107,10 +107,10 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         {
             foreach (var item2 in friends)
             {
-                //
+                
                 if(item.username != item2.username)
                 {
-                    if (item.username != loginstate.isSingedin.username)
+                    if (item.username != loginstate.isSingedin.username && !other.Contains(item))
                     {
                         other.Add(item);
                     }
@@ -130,12 +130,13 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         //Friendrequest pitää muuttaa 1
         //Friendaccept edelleen 0
         // All this to DB
-
+        //newFriend = new FriendshipDto { Id = ObjectId.GenerateNewId().ToString() };
         newFriend._idFriend = friend;
         newFriend._idPerson = loginstate.isSingedin;
         newFriend.friend_request = 1;
         newFriend.friend_accept = 0;
 
+        //tarkista ettei ystävyyttä ole jo olemassa?
         await apiService.PostFriendshipAsync(newFriend);
     }
 
