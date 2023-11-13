@@ -39,16 +39,38 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
                 </tr>
             </thead>
         <tbody>
-            @foreach (var item in friends)
+            @if(friends is not null)
             {
-               
-                <tr>
-                    <td>@item.username</td>
-                    <td>Delete a Friend</td>
-                </tr>
-            }
-        </tbody>
+                @foreach (var item in friends)
+                {
 
+                    <tr>
+                        <td>@item.username</td>
+                        <td><button id="@item.Id" class="btn btn-danger" type="submit" >Delete a Friend</button></td>
+                    </tr>
+                }
+            }
+            
+        </tbody>
+        <thead>
+            <tr>
+                <th>Pending</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(pending is not null)
+            {
+               @foreach(var item in pending)
+               {
+                
+                  <tr>
+                      <td>@item.username</td>
+                      <td>Pending...</td>
+                  </tr>
+               }  
+            }
+           
+        </tbody>
 
         <thead>
             <tr>
@@ -75,6 +97,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
     public List<FriendshipDto> friendships { get; private set; }
     public List<PersonDto> friends = new List<PersonDto>();
     public List<PersonDto> other = new List<PersonDto>();
+    public List<PersonDto> pending = new List<PersonDto>();
     public FriendshipDto newFriend = new FriendshipDto();
 
     public PersonDto newFriendship = new PersonDto(); 
@@ -88,7 +111,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         {
             if (loginstate.isSingedin.Id == item._idPerson.Id || loginstate.isSingedin.Id == item._idFriend.Id)
             {
-                if (item.friend_accept == 1 && item.friend_request == 1) //erottele myös ne ystävyydet, jotka on "pending" ??
+                if (item.friend_accept == 1 && item.friend_request == 1) 
                 {
                     if (loginstate.isSingedin.username == item._idPerson.username)
                     {
@@ -99,20 +122,15 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
                         friends.Add(item._idPerson);
                     }
                 }
-
-            }
-        }
-
-        foreach (var item in persons)
-        {
-            foreach (var item2 in friends)
-            {
-                
-                if(item.username != item2.username)
+                else if (item.friend_accept == 0 && item.friend_request == 1)//erottele myös ne ystävyydet, jotka on "pending" 
                 {
-                    if (item.username != loginstate.isSingedin.username && !other.Contains(item))
+                    if (loginstate.isSingedin.username == item._idPerson.username)
                     {
-                        other.Add(item);
+                        pending.Add(item._idFriend);
+                    }
+                    else
+                    {
+                        pending.Add(item._idPerson);
                     }
 
                 }
@@ -121,6 +139,32 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 
         }
 
+        foreach (var item in persons)
+        {
+            if(friends.Count != 0)
+            {
+                foreach (var item2 in friends)
+                {
+
+                    if (item.username != item2.username)
+                    {
+                        if (item.username != loginstate.isSingedin.username && !other.Contains(item) && !pending.Contains(item))
+                        {
+                            other.Add(item);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(item.username != loginstate.isSingedin.username)
+                {
+                    other.Add(item);
+                }  
+            }
+        }
+
+        Console.WriteLine("debug mark");
     }
 
     protected async void SubmitFriendRequest(PersonDto friend)
@@ -130,14 +174,25 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         //Friendrequest pitää muuttaa 1
         //Friendaccept edelleen 0
         // All this to DB
-        //newFriend = new FriendshipDto { Id = ObjectId.GenerateNewId().ToString() };
+
+        //Huom! Jostain syystä pitää generoida Id jotta menee läpi MongoDB:hen
+        newFriend = new FriendshipDto { Id = ObjectId.GenerateNewId().ToString() };
+
         newFriend._idFriend = friend;
         newFriend._idPerson = loginstate.isSingedin;
         newFriend.friend_request = 1;
         newFriend.friend_accept = 0;
 
-        //tarkista ettei ystävyyttä ole jo olemassa?
-        await apiService.PostFriendshipAsync(newFriend);
+        //tarkista ettei ystävyyttä ole jo olemassa, ennen kuin lähetät ystäväkutsun
+        if(!friends.Contains(friend) && !pending.Contains(friend))
+        {
+            await apiService.PostFriendshipAsync(newFriend);
+        }
+        else
+        {
+            //prompt: Kutsu on jo lähetetty 
+        }
+
     }
 
 }
