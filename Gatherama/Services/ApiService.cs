@@ -167,7 +167,7 @@ namespace Gatherama.Services
         // POST a new item
         public async Task<FriendshipDto> PostFriendshipAsync(FriendshipDto friendshipDto)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseEndpoint, friendshipDto);
+            var response = await _httpClient.PostAsJsonAsync("api/Friendship", friendshipDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FriendshipDto>();
         }

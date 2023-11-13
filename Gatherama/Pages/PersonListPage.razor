@@ -7,67 +7,131 @@
 @using System.Threading.Tasks
 @using Microsoft.Maui.Controls
 @using Gatherama.Services
+@using MongoDB.Bson;
 @inject ApiService apiService
+@inject LoginState loginstate
 
 <!--TÄMÄ ON TESTAUKSEEN-->
 <h2>App Users</h2>
 
+
+@* Friend Request box tarvitaan, eli tässä pitäisi tarkistaa kaikki henkilön omat kaverit:
+- friendrequest = 1 && friendaccept = 0
+Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko hyväksyä tai hylätä
+- hyväksyntä: friendaccept = 1
+- hylkäys: koko entiteetin poisto
+*@
+
+
+@* All users *@
 <table class="table">
     <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Username</th>
         </tr>
     </thead>
+    
     @if (persons is not null)
     {
+        <thead>
+            <tr>
+                <th>Friends</th>
+                </tr>
+            </thead>
         <tbody>
-
-
-
-            @foreach (var item in persons)
+            @foreach (var item in friends)
             {
+               
                 <tr>
-                    <td>@item.firstName</td>
-                    <td>@item.lastName</td>
+                    <td>@item.username</td>
+                    <td>Delete a Friend</td>
                 </tr>
             }
         </tbody>
+
+
+        <thead>
+            <tr>
+                <th>Others</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in other)
+            {
+                <tr>
+                    <td>@item.username</td>
+                    <td><button class="btn btn-primary" type="submit" @bind="item.Id" onclick="SubmitFriendRequest(item)">Add a Friend</button></td>
+                </tr>
+            }
+        </tbody>
+
     }
 </table>
-@* <CollectionView ItemsSource="{Binding persons}">
-    <CollectionView.ItemTemplate>
-        <DataTemplate>
-            <Grid Padding="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Add more rows if you have more fields to display -->
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Label Text="First name:" Grid.Row="0" Grid.Column="0"/>
-                <Label Text="{Binding firstname}" Grid.Row="0" Grid.Column="1"/>
-
-                <Label Text="Last name:" Grid.Row="1" Grid.Column="0"/>
-                <Label Text="{Binding lastname}" Grid.Row="1" Grid.Column="1"/>
-
-                <!-- Repeat for other fields of PersonDto -->
-            </Grid>
-        </DataTemplate>
-    </CollectionView.ItemTemplate>
-</CollectionView> *@
 
 
 @code {
     public List<PersonDto> persons { get; private set; }
     public List<PlaceDto> places { get; private set; }
+    public List<FriendshipDto> friendships { get; private set; }
+    public List<PersonDto> friends = new List<PersonDto>();
+    public List<PersonDto> other = new List<PersonDto>();
+    public FriendshipDto newFriends = new FriendshipDto();
+
+    public PersonDto newFriendship = new PersonDto(); 
 
     protected override async Task OnInitializedAsync()
     {
         persons = await apiService.GetPersonsAsync();
+        friendships = await apiService.GetFriendshipsAsync();
+
+        foreach (var item in friendships)
+        {
+            if (loginstate.isSingedin.Id == item._idPerson.Id || loginstate.isSingedin.Id == item._idFriend.Id)
+            {
+                if (item.friend_accept == 1 && item.friend_request == 1)
+                {
+                    if (loginstate.isSingedin.Id == item._idPerson.Id)
+                    {
+                        friends.Add(item._idFriend);
+                    }
+                    else
+                    {
+                        friends.Add(item._idPerson);
+                    }
+                }
+
+            }
+        }
+
+        foreach (var item in persons)
+        {
+            foreach (var item2 in friends)
+            {
+                //
+                if(item.username != item2.username)
+                {
+                    if (item != loginstate.isSingedin)
+                    {
+                        other.Add(item);
+                    }
+                    
+                }
+
+            }
+
+        }
+
     }
+
+    protected async void SubmitFriendRequest()
+    {
+        //Tarvitaan buttonista kaverin tiedot, jolle lähetetään kaveripyyntö
+        //loginstatesta kirjautuneen käyttäjän tiedot
+        //Friendrequest pitää muuttaa 1
+        //Friendaccept edelleen 0
+        // All this to DB
+
+        //newFriends._idFriend = item.
+    }
+
 }

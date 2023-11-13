@@ -12,7 +12,7 @@ namespace Gatherama.Shared
         public int friend_request { get; set; }
         public int friend_accept { get; set; }
 
-        public PersonDto Person { get; set; } = null!;
-        public PersonDto Friend { get; set; } = null!;
+        public virtual PersonDto _idPerson { get; set; } = null!;
+        public virtual PersonDto _idFriend { get; set; } = null!;
     }
 }
