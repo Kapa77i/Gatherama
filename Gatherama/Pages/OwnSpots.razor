@@ -11,6 +11,7 @@
 @using MongoDB.Bson;
 @inject ApiService apiService
 @inject NavigationManager NavigationManager
+@inject LoginState loginstate
 
 @* Collaps Button*@
 @* <p>
@@ -198,7 +199,8 @@ else
 
     private FindingDto postFinding = new FindingDto();
 
-    public List<FindingDto> findings { get; private set; }
+    public List<FindingDto> allfindings { get; private set; }
+    public List<FindingDto> findings = new List<FindingDto>();
     public List<PersonDto> persons { get; private set; }
     public List<SpeciesDto> species { get; private set; }
     public List<PlaceDto> places { get; private set; }
@@ -214,7 +216,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        findings = await apiService.GetFindingsAsync();
+        allfindings = await apiService.GetFindingsAsync();
+        foreach(FindingDto find in allfindings)
+        {
+            if(find._idPerson.Id == loginstate.isSingedin.Id)
+            {
+                findings.Add(find);
+            }
+        }
 
         // It is not pretty but this is how I got it working the ID thingy
         newFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
