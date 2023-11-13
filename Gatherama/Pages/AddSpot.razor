@@ -109,7 +109,7 @@
             */
 
             visiblefindings.forEach(function (find) {
-                if (find._idPerson.Id == person.Id) {//jos oma löydös, merkitään sienellä
+                if (find._idPerson.username === person.username ) {//jos oma löydös, merkitään sienellä
 
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
@@ -123,7 +123,7 @@
 
                     });
                 }
-                else if(find._idPerson.Id != person.Id){//toisen julkinen löydös, merkitään marjalla
+                else {//toisen julkinen löydös, merkitään marjalla
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
