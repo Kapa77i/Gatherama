@@ -56,32 +56,6 @@
             const mush_icon = '../Images_index/mushroom_icon.png';
             const berry_icon = '../Images_index/berry_icon.png';
 
-            //tarvitaan for each looppi jokaiselle tietokannan markkerille/lokaatiolla, jossa on haluttu käyttäjä ja kavereiden jakamat
-
-            //testimarker
-            var mush_marker = new google.maps.Marker({
-                position: myLatLng,
-                map,
-                icon: {
-                    url: mush_icon,
-                    scaledSize: new google.maps.Size(36, 36)
-                },
-                title: "Finding",
-                pickable: true
-
-            });
-
-            //toinen testimarker
-
-            const berry_marker = new google.maps.Marker({
-                position: { lat: 62.908551, lng: 27.659310 },
-                map,
-                icon: {
-                    url: berry_icon,
-                    scaledSize: new google.maps.Size(46, 46)
-                },
-                title: "BERRIES!"
-            });
 
             //
             map.addListener("click", (e) => {
@@ -237,27 +211,13 @@
 </head>
 <body>
     <div>
-       @*  <div>
-            <input type="text" id="lat" placeholder="Lat" /> <!-- Vain double arvot sopivia -->
-            <input type="text" id="lng" placeholder="Long"  />
-            <input type="text" id="city" placeholder="City" />
-            <input type="text" id="country" placeholder="Country" />
-        </div>  *@
 
         <div id="googleMap" style="width:100%;height:400px;"></div>
 
     </div>
 
-    <EditForm Model="newFinding" OnSubmit="@SubmitFinding">
+    <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
-        <ValidationSummary />
-    @*     <div class="col-lg-4 col-md-12">
-            <strong>Username:</strong>
-            <InputText id="personPosting" @bind-Value="@loginstate.isSingedin?.Id" class="form-control">"6515332fc07d1bda1e96c476"</InputText>
-            <ValidationMessage For="@(() => newFinding._idPerson.Id)" />
-        </div>
- *@
-
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
             <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
@@ -387,12 +347,11 @@
 
 
     }
-    private string scriptResult;
 
     protected async void SubmitFinding()
     {
+        //Fetching the information from JS
         placeInfoJS = await JS.InvokeAsync<string>("fetchData");
-        //string serializedObject = JsonSerializer.Serialize(placeInfoJS);
         string[] splitFetch = placeInfoJS.Split(',');
         newFinding._idPlace.city = splitFetch[0];
         newFinding._idPlace.country = splitFetch[1];
