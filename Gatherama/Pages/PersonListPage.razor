@@ -60,7 +60,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
             {
                 <tr>
                     <td>@item.username</td>
-                    <td><button class="btn btn-primary" type="submit" @bind="item.Id" onclick="SubmitFriendRequest(item)">Add a Friend</button></td>
+                    <td><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => SubmitFriendRequest(item)">Add a Friend</button></td>
                 </tr>
             }
         </tbody>
@@ -75,7 +75,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
     public List<FriendshipDto> friendships { get; private set; }
     public List<PersonDto> friends = new List<PersonDto>();
     public List<PersonDto> other = new List<PersonDto>();
-    public FriendshipDto newFriends = new FriendshipDto();
+    public FriendshipDto newFriend = new FriendshipDto();
 
     public PersonDto newFriendship = new PersonDto(); 
 
@@ -110,11 +110,11 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
                 //
                 if(item.username != item2.username)
                 {
-                    if (item != loginstate.isSingedin)
+                    if (item.username != loginstate.isSingedin.username)
                     {
                         other.Add(item);
                     }
-                    
+
                 }
 
             }
@@ -123,7 +123,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 
     }
 
-    protected async void SubmitFriendRequest()
+    protected async void SubmitFriendRequest(PersonDto friend)
     {
         //Tarvitaan buttonista kaverin tiedot, jolle lähetetään kaveripyyntö
         //loginstatesta kirjautuneen käyttäjän tiedot
@@ -131,7 +131,12 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
         //Friendaccept edelleen 0
         // All this to DB
 
-        //newFriends._idFriend = item.
+        newFriend._idFriend = friend;
+        newFriend._idPerson = loginstate.isSingedin;
+        newFriend.friend_request = 1;
+        newFriend.friend_accept = 0;
+
+        await apiService.PostFriendshipAsync(newFriend);
     }
 
 }
