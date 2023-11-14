@@ -8,9 +8,12 @@ namespace Gatherama.Test;
 [TestFixture]
 public class Tests : PageTest
 {
+
     [Test]
     public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
     {
+        await Page.PauseAsync();
+
         await Page.GotoAsync("https://playwright.dev");
 
         // Expect a title "to contain" a substring.
@@ -28,4 +31,5 @@ public class Tests : PageTest
         // Expects the URL to contain intro.
         await Expect(Page).ToHaveURLAsync(new Regex(".*intro"));
     }
+
 }
