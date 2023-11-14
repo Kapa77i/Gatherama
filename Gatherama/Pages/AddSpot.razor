@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
 
-    <style>
+   @*  <style>
         /* The Modal (background) */
         .modal {
             display: none; /* Hidden by default */
@@ -75,13 +75,12 @@
                 text-decoration: none;
                 cursor: pointer;
             }
-    </style>
+    </style> *@
     <script>
 
-                   // mapID: '2d582126daca5ce5' //Kata's MAP ID (Vector)
         let markers = [];
-
-        function initMap(visiblefindings, person) {
+    
+        function initMap(visiblefindings, person, currentlocation) {
             var myLatLng = {
 
                 lat: 62.8893928527832,
@@ -110,70 +109,70 @@
             });
 
             //To pan to current location
-            const locationButton = document.createElement("button");
+            // const locationButton = document.createElement("button");
 
-            locationButton.textContent = "Pan to Current Location";
-            locationButton.classList.add("custom-map-control-button");
-            map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-            locationButton.addEventListener("click", () => {
-                // Try HTML5 geolocation.
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
+            // locationButton.textContent = "Pan to Current Location";
+            // locationButton.classList.add("custom-map-control-button");
+            // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+            // locationButton.addEventListener("click", () => {
+            //     // Try HTML5 geolocation.
+            //     if (navigator.geolocation) {
+            //         navigator.geolocation.getCurrentPosition(
+            //             (position) => {
+            //                 const pos = {
+            //                     lat: position.coords.latitude,
+            //                     lng: position.coords.longitude,
+            //                 };
 
-                            //window.alert("Position is: " + pos);
-                            // window.alert("Location found.");
-                            //infoWindow.open(map);
-                            map.setCenter(pos);
-                        },
-                        () => {
-                            handleLocationError(true, infoWindow, map.getCenter());
-                        },
-                    );
-                } else {
-                    // Browser doesn't support Geolocation
-                    handleLocationError(false, infoWindow, map.getCenter());
-                }
-            });
+            //                 //window.alert("Position is: " + pos);
+            //                 // window.alert("Location found.");
+            //                 //infoWindow.open(map);
+            //                 map.setCenter(pos);
+            //             },
+            //             () => {
+            //                 handleLocationError(true, infoWindow, map.getCenter());
+            //             },
+            //         );
+            //     } else {
+            //         // Browser doesn't support Geolocation
+            //         handleLocationError(false, infoWindow, map.getCenter());
+            //     }
+            // });
 
             //testimarker
-            var mush_marker = new google.maps.Marker({
-                position: myLatLng,
-                map,
-                icon: {
-                    url: mush_icon,
-                    scaledSize: new google.maps.Size(36, 36)
-                },
-                title: "Finding",
-                //draggable: true,
+            // var mush_marker = new google.maps.Marker({
+            //     position: myLatLng,
+            //     map,
+            //     icon: {
+            //         url: mush_icon,
+            //         scaledSize: new google.maps.Size(36, 36)
+            //     },
+            //     title: "Finding",
+            //     //draggable: true,
 
 
-                //testiä
-               /* onClick: (args) => {
-                    console.info('onClick', { args }); 
-                },
-                onHover: (args) => {
-                    console.info('onHover', { args }); 
-                }*/
-            });
+            //     //testiä
+            //    /* onClick: (args) => {
+            //         console.info('onClick', { args }); 
+            //     },
+            //     onHover: (args) => {
+            //         console.info('onHover', { args }); 
+            //     }*/
+            // });
 
-            mush_marker.addListener('click', function() {
-                let prompt = window.prompt("Test");
-            })
+            // mush_marker.addListener('click', function() {
+            //     let prompt = window.prompt("Test");
+            // })
 
-            const berry_marker = new google.maps.Marker({
-                position: { lat: 62.908551, lng: 27.659310 },
-                map,
-                icon: {
-                    url: berry_icon,
-                    scaledSize: new google.maps.Size(46, 46)
-                },
-                title: "BERRIES!"
-            });
+            // const berry_marker = new google.maps.Marker({
+            //     position: { lat: 62.908551, lng: 27.659310 },
+            //     map,
+            //     icon: {
+            //         url: berry_icon,
+            //         scaledSize: new google.maps.Size(46, 46)
+            //     },
+            //     title: "BERRIES!"
+            // });
 
             //Add markers for each place
             /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
@@ -211,8 +210,8 @@
                 }
 
                 marker.addListener('click', function () {
-                   let prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n Modal is opening");
-
+                    var prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n  Current location: lat: " + currentlocation.Latitude + ", lng: " + currentlocation.Longitude + ", ");
+                   
                    
 
                     //modal.style.display = "block";
@@ -318,42 +317,42 @@
             return fetchPlaceInfo;
         }
 
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(
-                browserHasGeolocation
-                    ? "Error: The Geolocation service failed."
-                    : "Error: Your browser doesn't support geolocation.",
-            );
-            infoWindow.open(map);
-        }
+        // function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        //     infoWindow.setPosition(pos);
+        //     infoWindow.setContent(
+        //         browserHasGeolocation
+        //             ? "Error: The Geolocation service failed."
+        //             : "Error: Your browser doesn't support geolocation.",
+        //     );
+        //     infoWindow.open(map);
+        // }
        
         // function openmodal() {
         //     modal.style.display = "block";
         // }
 
-        // Get the modal
-        var modal = document.getElementById("modal");
-        //Get the button that opens the modal
-        var btn = document.getElementById("openmodal");
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+        // // Get the modal
+        // var modal = document.getElementById("modal");
+        // //Get the button that opens the modal
+        // var btn = document.getElementById("openmodal");
+        // // Get the <span> element that closes the modal
+        // var span = document.getElementsByClassName("close")[0];
 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
+        // btn.onclick = function() {
+        //     modal.style.display = "block";
+        // }
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
+        // // When the user clicks on <span> (x), close the modal
+        // span.onclick = function () {
+        //     modal.style.display = "none";
+        // }
 
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        // // When the user clicks anywhere outside of the modal, close it
+        // window.onclick = function (event) {
+        //     if (event.target == modal) {
+        //         modal.style.display = "none";
+        //     }
+        // }
 
          window.initMap = initMap;
     </script>
@@ -370,14 +369,14 @@
         <div id="googleMap" style="width:100%;height:400px;"></div>
 
     </div>
-    
+    @*
     <div id="modal" class="modal">
         <!-- The Modal -->
         <div class="modal-content">
             <span class="close">&times;</span>
             <p>Text...</p>
         </div>
-    </div>
+    </div>*@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
@@ -458,44 +457,7 @@
 
 
 
-
-
-@* <EditForm >
-     <div class="col-lg-4 col-md-12">
-        <label for="Place">
-            Add Place
-        </label>
-        <Input id="Place" class="form-control" placeholder="Enter Place co-ordinates"/>
-    </div>
-    <div class="col-lg-4 col-md-12">
-        <label for="Date">
-            Add Date to the Finding
-        </label>
-        <DateInput id="Date" TValue="DateOnly" class="form-control" placeholder="Enter Date"/>
-    </div>
-    <div class="col-lg-4 col-md-12">
-        <label for="amount">
-            Add the Amount of Species found
-        </label>
-        <Input id="Amount" class="form-control" placeholder="Enter Amount"/>
-    </div>
-    <div class="col-lg-4 col-md-12">
-        <label for="Memo">
-            Add some Notes (if wanted)
-        </label>
-        <Input id="Notes" class="form-control" placeholder="Enter the Note"/>
-    </div>
-    <div class="col-lg-4 col-md-12">
-        <label for="Picture">
-            Add Picture
-        </label>
-        <Input id="Picture" class="form-control" placeholder="Enter the Note"/>
-    </div>  
-</EditForm> *@
-
-
 @code {
-    //GOOGLE MAPS API KEY (KATA): AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg
 
     /*NOTES:
     * 
@@ -513,10 +475,10 @@
     */
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
-    Location currentlocation;
+    Location currentlocation = new Location();
     Location cachedlocation;
-    double myLat;
-    double myLng;
+    // double myLat;
+    // double myLng;
 
     public List<FindingDto> allfindings { get; private set; }
     public List<FindingDto> visiblefindings = new List<FindingDto>();
@@ -560,6 +522,7 @@
             {
                 Console.WriteLine("ERROR: For unknown reason cannot fetch location");
             }
+            currentlocation = cachedlocation;
         }
 
         //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
@@ -595,8 +558,8 @@
 
         person = loginstate.isSingedin;
 
-        await JS.InvokeVoidAsync("initMap", visiblefindings, person);
-        
+        await JS.InvokeVoidAsync("initMap", visiblefindings, person, currentlocation);
+
     }
 
     protected async void SubmitFinding()
@@ -609,6 +572,9 @@
         newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
+        //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+
+
 
         Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
         await apiService.PostPlaceAsync(newFinding._idPlace);
@@ -618,7 +584,7 @@
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
-    public async Task<string> GetCachedLocation()
+    public async Task<Location> GetCachedLocation()
     {
         try
         {
@@ -627,8 +593,8 @@
             if (cachedlocation != null)
             {
                 Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
-                myLat = cachedlocation.Latitude;
-                myLng = cachedlocation.Longitude;
+                // myLat = cachedlocation.Latitude;
+                // myLng = cachedlocation.Longitude;
             }
 
         }
@@ -653,12 +619,12 @@
             Console.WriteLine("ERROR: " + ex);
         }
 
-        return "None";
+        return cachedlocation;
     }
 
 
 
-    public async Task GetCurrentLocation()
+    public async Task<Location> GetCurrentLocation()
     {
         try
         {
@@ -672,10 +638,11 @@
 
             if (currentlocation != null){
                 Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
-                myLat = currentlocation.Latitude;
-                myLng = currentlocation.Longitude;
+                // myLat = currentlocation.Latitude;
+                // myLng = currentlocation.Longitude;
 
             }
+
 
         }
         catch (FeatureNotSupportedException fnsEx)
@@ -699,6 +666,7 @@
         {
             _isCheckingLocation = false;
         }
+        return currentlocation;
     }
 
     public void CancelRequest()

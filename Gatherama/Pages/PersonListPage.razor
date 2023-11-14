@@ -149,7 +149,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 
                     if (item.username != item2.username)
                     {
-                        if (item.username != loginstate.isSingedin.username && !other.Contains(item) && !pending.Contains(item))
+                        if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
                         {
                             other.Add(item);
                         }
@@ -158,7 +158,7 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
             }
             else
             {
-                if(item.username != loginstate.isSingedin.username)
+                if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
                 {
                     other.Add(item);
                 }  
