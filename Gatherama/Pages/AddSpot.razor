@@ -80,19 +80,19 @@
 
         let markers = [];
     
-        function initMap(visiblefindings, person, currentlocation) {
-            var myLatLng = {
+        function initMap(visiblefindings, person) {
+            // var myLatLng = {
 
-                lat: 62.8893928527832,
-                lng: 27.6920166015625
-            };
+            //     lat: 62.8893928527832,
+            //     lng: 27.6920166015625
+            // };
 
             const geocoder = new google.maps.Geocoder();
           
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 14,
-                center: myLatLng,
-                //IsShowingUser: true, //turha
+                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
+                isShowingUser: true, //turha vai Androidille?
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -109,35 +109,36 @@
             });
 
             //To pan to current location
-            // const locationButton = document.createElement("button");
+            const locationButton = document.createElement("button");
 
-            // locationButton.textContent = "Pan to Current Location";
-            // locationButton.classList.add("custom-map-control-button");
-            // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-            // locationButton.addEventListener("click", () => {
-            //     // Try HTML5 geolocation.
-            //     if (navigator.geolocation) {
-            //         navigator.geolocation.getCurrentPosition(
-            //             (position) => {
-            //                 const pos = {
-            //                     lat: position.coords.latitude,
-            //                     lng: position.coords.longitude,
-            //                 };
+            locationButton.textContent = "Pan to Current Location";
+            locationButton.classList.add("custom-map-control-button");
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+            locationButton.addEventListener("click", () => {
+                // Try HTML5 geolocation.
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const pos = {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude,
+                            };
 
-            //                 //window.alert("Position is: " + pos);
-            //                 // window.alert("Location found.");
-            //                 //infoWindow.open(map);
-            //                 map.setCenter(pos);
-            //             },
-            //             () => {
-            //                 handleLocationError(true, infoWindow, map.getCenter());
-            //             },
-            //         );
-            //     } else {
-            //         // Browser doesn't support Geolocation
-            //         handleLocationError(false, infoWindow, map.getCenter());
-            //     }
-            // });
+                            //window.alert("Position is: " + pos);
+                            // window.alert("Location found.");
+                            //infoWindow.open(map);
+                            map.setCenter(pos);
+
+                        },
+                        () => {
+                            handleLocationError(true, infoWindow, map.getCenter());
+                        },
+                    );
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            });
 
             //testimarker
             // var mush_marker = new google.maps.Marker({
@@ -196,6 +197,7 @@
                         title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                     });
+                   
                 }
                 else {//toisen julkinen löydös, merkitään marjalla
                     var marker = new google.maps.Marker({
@@ -207,10 +209,12 @@
                         },
                         title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     });
+                    
                 }
 
+
                 marker.addListener('click', function () {
-                    var prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n  Current location: lat: " + currentlocation.Latitude + ", lng: " + currentlocation.Longitude + ", ");
+                    var prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n");
                    
                    
 
@@ -317,15 +321,15 @@
             return fetchPlaceInfo;
         }
 
-        // function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        //     infoWindow.setPosition(pos);
-        //     infoWindow.setContent(
-        //         browserHasGeolocation
-        //             ? "Error: The Geolocation service failed."
-        //             : "Error: Your browser doesn't support geolocation.",
-        //     );
-        //     infoWindow.open(map);
-        // }
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(
+                browserHasGeolocation
+                    ? "Error: The Geolocation service failed."
+                    : "Error: Your browser doesn't support geolocation.",
+            );
+            infoWindow.open(map);
+        }
        
         // function openmodal() {
         //     modal.style.display = "block";
@@ -360,8 +364,8 @@
 <body>
 
     <div>
-        <button id="openmodal">Open modal</button>
-    @*     <div>
+        @*  <button id="openmodal">Open modal</button>
+        <div>
             <input type="text" id="lat" placeholder="Lat" /> <!-- Vain double arvot sopivia -->
             <input type="text" id="lng" placeholder="Long" />
         </div> *@
@@ -514,16 +518,16 @@
         newFinding.datetime = DateTime.Parse(date);
 
 
-        await GetCurrentLocation();
-        if(currentlocation == null)
-        {
-            await GetCachedLocation();
-            if(cachedlocation == null)
-            {
-                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
-            }
-            currentlocation = cachedlocation;
-        }
+        // await GetCurrentLocation();
+        // if(currentlocation == null)
+        // {
+        //     await GetCachedLocation();
+        //     if(cachedlocation == null)
+        //     {
+        //         Console.WriteLine("ERROR: For unknown reason cannot fetch location");
+        //     }
+        //     currentlocation = cachedlocation;
+        // }
 
         //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
         allfindings = await apiService.GetFindingsAsync();
@@ -558,7 +562,7 @@
 
         person = loginstate.isSingedin;
 
-        await JS.InvokeVoidAsync("initMap", visiblefindings, person, currentlocation);
+        await JS.InvokeVoidAsync("initMap", visiblefindings, person);
 
     }
 
@@ -573,7 +577,7 @@
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
         //Tarkista että kaikissa muuttujissa on arvot!! muuten error
-
+       
 
 
         Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
@@ -584,90 +588,90 @@
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
-    public async Task<Location> GetCachedLocation()
-    {
-        try
-        {
-            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
+    // public async Task<Location> GetCachedLocation()
+    // {
+    //     try
+    //     {
+    //         cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
 
-            if (cachedlocation != null)
-            {
-                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
-                // myLat = cachedlocation.Latitude;
-                // myLng = cachedlocation.Longitude;
-            }
+    //         if (cachedlocation != null)
+    //         {
+    //             Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
+    //             // myLat = cachedlocation.Latitude;
+    //             // myLng = cachedlocation.Longitude;
+    //         }
 
-        }
-        catch (FeatureNotSupportedException fnsEx)
-        {
-            // Handle not supported on device exception
-            Console.WriteLine("ERROR: " + fnsEx);
-        }
-        catch (FeatureNotEnabledException fneEx)
-        {
-            // Handle not enabled on device exception
-            Console.WriteLine("ERROR: " + fneEx);
-        }
-        catch (PermissionException pEx)
-        {
-            // Handle permission exception
-            Console.WriteLine("ERROR: " + pEx);
-        }
-        catch (Exception ex)
-        {
-            // Unable to get location
-            Console.WriteLine("ERROR: " + ex);
-        }
+    //     }
+    //     catch (FeatureNotSupportedException fnsEx)
+    //     {
+    //         // Handle not supported on device exception
+    //         Console.WriteLine("ERROR: " + fnsEx);
+    //     }
+    //     catch (FeatureNotEnabledException fneEx)
+    //     {
+    //         // Handle not enabled on device exception
+    //         Console.WriteLine("ERROR: " + fneEx);
+    //     }
+    //     catch (PermissionException pEx)
+    //     {
+    //         // Handle permission exception
+    //         Console.WriteLine("ERROR: " + pEx);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // Unable to get location
+    //         Console.WriteLine("ERROR: " + ex);
+    //     }
 
-        return cachedlocation;
-    }
-
-
-
-    public async Task<Location> GetCurrentLocation()
-    {
-        try
-        {
-            _isCheckingLocation = true;
-
-            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-            _cancelTokenSource = new CancellationTokenSource();
-
-            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-
-            if (currentlocation != null){
-                Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
-                // myLat = currentlocation.Latitude;
-                // myLng = currentlocation.Longitude;
-
-            }
+    //     return cachedlocation;
+    // }
 
 
-        }
-        catch (FeatureNotSupportedException fnsEx)
-        {
-            Console.WriteLine("ERROR: " + fnsEx);
-        }
-        catch(FeatureNotEnabledException fneEx)
-        {
-            Console.WriteLine("ERROR: " + fneEx);
-        }
-        catch(PermissionException pEx)
-        {
-            Console.WriteLine("ERROR: " + pEx);
-        }
-        catch (Exception ex)
-        {
-            // Unable to get location
-            Console.WriteLine("ERROR: " + ex);
-        }
-        finally
-        {
-            _isCheckingLocation = false;
-        }
-        return currentlocation;
-    }
+
+    // public async Task<Location> GetCurrentLocation()
+    // {
+    //     try
+    //     {
+    //         _isCheckingLocation = true;
+
+    //         GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+    //         _cancelTokenSource = new CancellationTokenSource();
+
+    //         currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+
+    //         if (currentlocation != null){
+    //             Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
+    //             // myLat = currentlocation.Latitude;
+    //             // myLng = currentlocation.Longitude;
+
+    //         }
+
+
+    //     }
+    //     catch (FeatureNotSupportedException fnsEx)
+    //     {
+    //         Console.WriteLine("ERROR: " + fnsEx);
+    //     }
+    //     catch(FeatureNotEnabledException fneEx)
+    //     {
+    //         Console.WriteLine("ERROR: " + fneEx);
+    //     }
+    //     catch(PermissionException pEx)
+    //     {
+    //         Console.WriteLine("ERROR: " + pEx);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         // Unable to get location
+    //         Console.WriteLine("ERROR: " + ex);
+    //     }
+    //     finally
+    //     {
+    //         _isCheckingLocation = false;
+    //     }
+    //     return currentlocation;
+    // }
 
     public void CancelRequest()
     {
