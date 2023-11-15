@@ -18,6 +18,8 @@ namespace Gatherama.Services
         public ApiService(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            // Set the BaseAddress
+            _httpClient.BaseAddress = new Uri(_baseEndpoint);
         }
         public List<PersonDto> persons { get; private set; }
         public List<PlaceDto> places { get; private set; }
@@ -67,9 +69,9 @@ namespace Gatherama.Services
         }
 
         // DELETE an item
-        public async Task DeletePersonAsync(int id)
+        public async Task DeletePersonAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Person/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion

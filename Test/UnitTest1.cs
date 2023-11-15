@@ -1,35 +1,47 @@
 using Microsoft.Playwright.NUnit;
 using Microsoft.Playwright;
 using System.Text.RegularExpressions;
+using Gatherama.Shared;
+using Gatherama.Services;
 
 namespace Gatherama.Test;
 
 [Parallelizable(ParallelScope.Self)]
 [TestFixture]
-public class Tests : PageTest
+public class Tests
 {
+    private ApiService apiService;
+    private PersonDto person;
 
-    [Test]
-    public async Task HomepageHasPlaywrightInTitleAndGetStartedLinkLinkingtoTheIntroPage()
+
+    [SetUp]
+
+    public void Setup()
     {
-        await Page.PauseAsync();
+        // Create an instance of HttpClient
+        var httpClient = new HttpClient();
 
-        await Page.GotoAsync("https://playwright.dev");
+        // Initialize ApiService with the HttpClient instance
+        apiService = new ApiService(httpClient);
+        person = new PersonDto();
 
-        // Expect a title "to contain" a substring.
-        await Expect(Page).ToHaveTitleAsync(new Regex("Playwright"));
-
-        // create a locator
-        var getStarted = Page.GetByRole(AriaRole.Link, new() { Name = "Get started" });
-
-        // Expect an attribute "to be strictly equal" to the value.
-        await Expect(getStarted).ToHaveAttributeAsync("href", "/docs/intro");
-
-        // Click the get started link.
-        await getStarted.ClickAsync();
-
-        // Expects the URL to contain intro.
-        await Expect(Page).ToHaveURLAsync(new Regex(".*intro"));
+        person.firstName = "Erkki";
+        person.lastName = "Esimerkki";
+        person.username = "Eke";
+        person.email = "EkeOnEsimerkki@gmail.com";
+        person.password = "Erkki";
     }
+    [Test]
+    public async Task Person_Register_Should_Return_PersonInfoAsync()
+    {
+        Assert.NotNull(apiService); 
+        var response = await apiService.PostPersonAsync(person);
+        Console.WriteLine(response);
+        
+        Assert.That(person.firstName, Is.EqualTo(response.firstName));
+
+        await apiService.DeletePersonAsync((response.Id));
+    }
+    
 
 }

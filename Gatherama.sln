@@ -12,7 +12,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Server", "Gathera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Shared", "Gatherama.Shared\Gatherama.Shared.csproj", "{34D4C11D-EBC6-47D3-ACDC-D9C968324C69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gatherama.Test", "Test\Gatherama.Test.csproj", "{ADCE945D-A04B-4107-B4DD-71B85B556B77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gatherama.Test", "Test\Gatherama.Test.csproj", "{ADCE945D-A04B-4107-B4DD-71B85B556B77}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{596364A5-25DB-48AD-B4FD-C09BD77C2E70}"
+	ProjectSection(SolutionItems) = preProject
+		.runsettings = .runsettings
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
