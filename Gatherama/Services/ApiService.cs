@@ -173,17 +173,17 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<FriendshipDto>();
         }
         // PUT (update) an item
-        public async Task<FriendshipDto> PutFriendshipAsync(int id, FriendshipDto friendshipDto)
+        public async Task<FriendshipDto> PutFriendshipAsync(string id, FriendshipDto friendshipDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", friendshipDto);
+            var response = await _httpClient.PutAsJsonAsync($"api/Friendship/{id}", friendshipDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FriendshipDto>();
         }
 
         // DELETE an item
-        public async Task DeleteFriendshipAsync(int id)
+        public async Task DeleteFriendshipAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Friendship/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion

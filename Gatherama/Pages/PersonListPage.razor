@@ -9,10 +9,10 @@
 @using Gatherama.Services
 @using MongoDB.Bson;
 @inject ApiService apiService
+@inject NavigationManager NavigationManager
 @inject LoginState loginstate
 
 <!--TÄMÄ ON TESTAUKSEEN-->
-<h2>App Users</h2>
 
 
 @* Friend Request box tarvitaan, eli tässä pitäisi tarkistaa kaikki henkilön omat kaverit:
@@ -25,14 +25,33 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 *@
 
-
+<h1>Username Status</h1>
 @* All users *@
 <table class="table">
-    <thead>
-        <tr>
-            <th>Username</th>
-        </tr>
-    </thead>
+
+    @if (pendingFriends is not null)
+    {
+        <thead>
+            <tr>
+                <th>Received Friend Requests</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in pendingFriends)
+            {
+
+                <tr>
+                    <td>@item.username</td>
+                    <td><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button></td>
+                    <td><button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></td>
+                </tr>
+            }
+
+
+        </tbody>
+    }
+
     
     @if (persons is not null)
     {
@@ -49,35 +68,39 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 
                     <tr>
                         <td>@item.username</td>
-                        <td><button id="@item.Id" class="btn btn-danger" type="submit" >Delete a Friend</button></td>
+                        <td><button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)" >Delete a Friend</button></td>
                     </tr>
                 }
             }
             
         </tbody>
-        <thead>
-            <tr>
-                <th>Pending</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(pending is not null)
-            {
-               @foreach(var item in pending)
-               {
-                
-                  <tr>
-                      <td>@item.username</td>
-                      <td>Pending...</td>
-                  </tr>
-               }  
-            }
-           
-        </tbody>
+
 
         <thead>
             <tr>
-                <th>Others</th>
+                <th>Pending Friend Request</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (pending is not null)
+            {
+                @foreach (var item in pending)
+                {
+
+                    <tr>
+                        <td>@item.username</td>
+                        <td>Pending...</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+
+   
+
+        <thead>
+            <tr>
+                <th>Others Users</th>
             </tr>
         </thead>
         <tbody>
@@ -98,9 +121,11 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
     public List<PersonDto> persons { get; private set; }
     public List<PlaceDto> places { get; private set; }
     public List<FriendshipDto> friendships { get; private set; }
+    public List<FriendshipDto> friendshipsTobe { get; private set; }
     public List<PersonDto> friends = new List<PersonDto>();
     public List<PersonDto> other = new List<PersonDto>();
     public List<PersonDto> pending = new List<PersonDto>();
+    public List<PersonDto> pendingFriends = new List<PersonDto>();
     public FriendshipDto newFriend = new FriendshipDto();
 
     public PersonDto newFriendship = new PersonDto(); 
@@ -133,7 +158,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     }
                     else
                     {
-                        pending.Add(item._idPerson);
+                        //pending.Add(item._idPerson);
                     }
 
                 }
@@ -142,30 +167,28 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 
         }
 
+        //Show received friendship requested
+        foreach (var item in friendships)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username && item.friend_accept == 0 && item.friend_request == 1)
+            {
+                pendingFriends.Add(item._idPerson);
+            }
+        }
+
+        //Remove the friends and sent requests and pending requests from other list
         foreach (var item in persons)
         {
-            if(friends.Count != 0)//tämä rikki
+            if (friends.All(friend => friend.username != item.username) &&
+                pending.All(pend => pend.username != item.username) &&
+                item.username != loginstate.isSingedin.username &&
+                pendingFriends.All(p => p.username != item.username))
             {
-                foreach (var item2 in friends)
-                {
-
-                    if (item.username != item2.username)
-                    {
-                        if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
-                        {
-                            other.Add(item);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
-                {
-                    other.Add(item);
-                }  
+                other.Add(item);
             }
         }
+
+
 
         Console.WriteLine("debug mark");
     }
@@ -190,12 +213,62 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
         if(!friends.Contains(friend) && !pending.Contains(friend))
         {
             await apiService.PostFriendshipAsync(newFriend);
+            NavigationManager.NavigateTo("/personlist", true);
         }
         else
         {
             //prompt: Kutsu on jo lähetetty 
         }
 
+    }
+
+    protected async void AcceptFriendRequest(PersonDto friend)
+    {
+
+        //Where do we get the Friendship Id?
+        //newFriend.Id = friend.Id;
+
+        newFriend._idFriend = friend;
+        newFriend._idPerson = loginstate.isSingedin;
+        newFriend.friend_request = 1;
+        newFriend.friend_accept = 1;
+
+        friendshipsTobe = await apiService.GetFriendshipsAsync();
+        foreach (var item in friendshipsTobe)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username )
+            {
+                if (friend.username == item._idPerson.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    newFriend.Id = item.Id;
+                }
+            }
+           
+        }
+
+        await apiService.PutFriendshipAsync(newFriend.Id, newFriend);
+        NavigationManager.NavigateTo("/personlist", true);
+    }
+
+
+    protected async void DeclineFriendRequest(PersonDto friend)
+    {
+
+        friendshipsTobe = await apiService.GetFriendshipsAsync();
+        foreach (var item in friendshipsTobe)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username)
+            {
+                if (friend.username == item._idPerson.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    newFriend.Id = item.Id;
+                }
+            }
+
+        }
+
+        await apiService.DeleteFriendshipAsync(newFriend.Id);
+        NavigationManager.NavigateTo("/personlist", true);
     }
 
 }
