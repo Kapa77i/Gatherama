@@ -68,7 +68,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 
                     <tr>
                         <td>@item.username</td>
-                        <td><button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)" >Delete a Friend</button></td>
+                        <td><button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeleteFriendship(item)">Delete a Friend</button></td>
                     </tr>
                 }
             }
@@ -260,6 +260,26 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
             if (loginstate.isSingedin.username == item._idFriend.username)
             {
                 if (friend.username == item._idPerson.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    newFriend.Id = item.Id;
+                }
+            }
+
+        }
+
+        await apiService.DeleteFriendshipAsync(newFriend.Id);
+        NavigationManager.NavigateTo("/personlist", true);
+    }
+
+    protected async void DeleteFriendship(PersonDto friend)
+    {
+
+        friendshipsTobe = await apiService.GetFriendshipsAsync();
+        foreach (var item in friendshipsTobe)
+        {
+            if (loginstate.isSingedin.username == item._idPerson.username)
+            {
+                if (friend.username == item._idFriend.username && item.friend_accept == 1 && item.friend_request == 1)
                 {
                     newFriend.Id = item.Id;
                 }
