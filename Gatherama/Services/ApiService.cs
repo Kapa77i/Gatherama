@@ -19,7 +19,6 @@ namespace Gatherama.Services
         {
             _httpClient = httpClient;
             // Set the BaseAddress
-            _httpClient.BaseAddress = new Uri(_baseEndpoint);
         }
         public List<PersonDto> persons { get; private set; }
         public List<PlaceDto> places { get; private set; }
