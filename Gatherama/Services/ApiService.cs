@@ -175,9 +175,18 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<FriendshipDto> PutFriendshipAsync(string id, FriendshipDto friendshipDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Friendship/{id}", friendshipDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FriendshipDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync("api/Friendship/" + id, friendshipDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<FriendshipDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
 
         // DELETE an item
