@@ -1,10 +1,5 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
 
 html, body {
@@ -42,6 +37,67 @@ a, .btn-link {
   
 }
 
+.row1 {
+    display: grid;
+    align-items: safe center;
+    grid-template-columns: 100px auto;
+    background-color: #829b88 !important;
+    color: #332100 !important;
+    box-shadow: 10px 5px 5px #043313;
+    margin: 7px;
+    padding: 7px;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.row2 {
+    display: grid;
+    align-items: safe center;
+    grid-template-columns: 100px auto;
+    background-color: #829b88 !important;
+    color: #332100 !important;
+    box-shadow: 10px 5px 5px #fde69c;
+    margin: 12px;
+    padding: 12px;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.row3 {
+    display: grid;
+    align-items: safe center;
+    grid-template-columns: 100px auto;
+    background-color: #829b88 !important;
+    color: #332100 !important;
+    box-shadow: 10px 5px 5px #173043;
+    margin: 7px;
+    padding: 7px;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.row4 {
+    display: grid;
+    align-items: safe center;
+    grid-template-columns: 100px auto;
+    background-color: #829b88 !important;
+    color: #332100 !important;
+    box-shadow: 10px 5px 5px #173043;
+    margin: 7px;
+    padding: 7px;
+    justify-content: space-around;
+    border-radius: 10px;
+}
+
+.container1 {
+    display: flex;
+    justify-content: end !important;
+    align-content: end;
+    flex-wrap:wrap;
+}
+
+
+
   /*  .btn-link:hover  {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #043313 !important;
@@ -61,7 +117,9 @@ a, .btn-link {
 .btn-primary {
     color: #fde69c !important;
     background-color: #043313 !important;
-    border-color: #1861ac !important;
+    border-color: #332100 !important;
+    align-content: safe center;
+    align-items: center;
 }
 
     .btn-primary:hover, .btn-primary:focus, .open > .dropdown-toggle.btn-primary {
@@ -76,6 +134,11 @@ a, .btn-link {
     background-color: #043313 !important;
 }
 
+.table-dark {
+    color: #fde69c !important;
+    background-color: #043313 !important;
+}
+
 
 
 /*    Card juttuja*/
@@ -83,8 +146,15 @@ a, .btn-link {
     color: #fde69c !important;
     background-color: #043313 !important;
     border-color: #1861ac !important;
+    border: none;
 }
 
+.card-body1 {
+    color: #fde69c !important;
+    background-color: #829b88 !important;
+    /*border-color: #043313 !important;*/
+    border: none;
+}
 
 /*OwnSpots Collaps divien CSS*/
 .accordion-button collapsed:active {

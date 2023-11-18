@@ -1,6 +1,8 @@
-﻿ @using Gatherama.Shared 
+﻿@using Gatherama.Services;
+@using Gatherama.Shared
 @inject NavigationManager navigationManager
 @inject LoginState loginstate
+@inject ApiService apiService
 
 
 <nav class="navbar navbar-expand-md navbar-dark mb-4" style="background-image: linear-gradient(180deg, #173043 0%, #043610 90%)">
@@ -10,97 +12,81 @@
                 aria-controls="navbarCollapse" aria-label="Toggle navigation" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-          @if (loginstate.hasLoggedin)
-        { 
+        @if (loginstate.hasLoggedin)
+        {
             <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
                 <ul class="navbar-nav navbar-right me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="ownspots">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> My Spots
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="personlist">
-                        <span class="bi bi-person-lines-fill" aria-hidden="true"></span> See persons
-                    </NavLink>
-                </li> 
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="addspots">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Add a Spot
-                    </NavLink>
-                </li>
-                
-            </ul>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="ownspots">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> My Spots
+                        </NavLink>
+                    </li>
+                    @if (!pendingFriends.All(p => p.Equals(0)))
+                    {
+                        <li class="nav-item" >
+                            <NavLink class="nav-link" href="personlist">
+                                <span class="bi bi-person-exclamation" aria-hidden="true" style="color:hotpink"></span> Friends & Users
+                            </NavLink>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="personlist">
+                                <span class="bi bi-person-fill" aria-hidden="true"></span> Friends & Users
+                            </NavLink>
+                        </li>
+                    }
+
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="addspots">
+                            <span class="oi oi-plus" aria-hidden="true"></span> Add a Spot
+                        </NavLink>
+                    </li>
+
+
+
+                </ul>
                 @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
-               <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
+                <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
                     <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
                 </EditForm>
-            
+
             </div>
         }
         else
-        { 
+        {
             <div class="collapse navbar-collapse @NavMenuCssClass" id="navbarCollapse" @onclick="ToggleNavMenu">
-            <ul class="navbar-nav ms-auto">
-                <li>
-                    <NavLink class="nav-link" href="login">
-                        <a href="LogIn"><span class="bi bi-box-arrow-in-right"></span> Log In</a>
-                    </NavLink>
-                </li>
+                <ul class="navbar-nav ms-auto">
+                    <li>
+                        <NavLink class="nav-link" href="login">
+                            <a href="LogIn"><span class="bi bi-box-arrow-in-right"></span> Log In</a>
+                        </NavLink>
+                    </li>
                     <li>
                         <NavLink class="nav-link" href="register">
                             <a href="Register"><span class="bi bi-box-arrow-in-right"></span> Register</a>
                         </NavLink>
                     </li>
-                    </ul>
+                </ul>
             </div>
-        } 
+        }
     </div>
-</nav> 
+</nav>
 
-
-@* 
- <div class="top-row navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Gatherama</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div> *@
-
-@* <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ownspots">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Own Gathering Spots
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="addspots">
-                <span class="oi oi-plus" aria-hidden="true"></span> Add a Spot
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="personlist">
-                <span class="oi oi-plus" aria-hidden="true"></span> See persons
-            </NavLink>
-        </div>
-    </nav>
-</div>  *@
 
 @code {
     private bool collapseNavMenu = true;
+    public List<PersonDto> pendingFriends = new List<PersonDto>();
+    public List<PersonDto> persons { get; private set; }
+    public List<FriendshipDto> friendships { get; private set; }
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     private string NavButtonCssClass => collapseNavMenu ? "collapsed" : null;
 
     private string imageSource = $"Gatherama_text_rb.png";
+
+
 
     private void ToggleNavMenu()
     {
@@ -110,5 +96,24 @@
     {
         loginstate.SetLogin(false, null);
         navigationManager.NavigateTo("/", true);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await apiService.GetPersonsAsync();
+        friendships = await apiService.GetFriendshipsAsync();
+
+
+        if (loginstate.isSingedin is not null)
+        {
+            //Show received friendship requested
+            foreach (var item in friendships)
+            {
+                if (loginstate.isSingedin.username == item._idFriend.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    pendingFriends.Add(item._idPerson);
+                }
+            }
+        }
     }
 }
