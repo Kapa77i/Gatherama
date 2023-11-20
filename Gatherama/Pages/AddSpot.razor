@@ -36,63 +36,19 @@
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
 
-   @*  <style>
-        /* The Modal (background) */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
 
-        /* Modal Content */
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        /* The Close Button */
-        .close {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: #000;
-                text-decoration: none;
-                cursor: pointer;
-            }
-    </style> *@
     <script>
 
         let markers = [];
     
         function initMap(visiblefindings, person) {
-            // var myLatLng = {
-
-            //     lat: 62.8893928527832,
-            //     lng: 27.6920166015625
-            // };
 
             const geocoder = new google.maps.Geocoder();
           
             const map = new google.maps.Map(document.getElementById("googleMap"), {
-                zoom: 14,
-                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                isShowingUser: true, //turha vai Androidille?
+                zoom: 12,
+                center: { lat: 62.8893928527832, lng: 27.6920166015625 }, //alkukeskitys Kuopioon
+                //isShowingUser: true, //turha vai Androidille?
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -102,7 +58,6 @@
             const berry_icon = '../Images_index/berry_icon.png';
             const blueberry_icon = '../Images_index/blueberry_icon.png'
 
-            //
             map.addListener("click", (e) => {
 
                 placeMarkerAndPanTo(e.latLng, map, geocoder);
@@ -141,49 +96,12 @@
                 }
             });
 
-            //testimarker
-            // var mush_marker = new google.maps.Marker({
-            //     position: myLatLng,
-            //     map,
-            //     icon: {
-            //         url: mush_icon,
-            //         scaledSize: new google.maps.Size(36, 36)
-            //     },
-            //     title: "Finding",
-            //     //draggable: true,
-
-
-            //     //testiä
-            //    /* onClick: (args) => {
-            //         console.info('onClick', { args }); 
-            //     },
-            //     onHover: (args) => {
-            //         console.info('onHover', { args }); 
-            //     }*/
-            // });
-
-            // mush_marker.addListener('click', function() {
-            //     let prompt = window.prompt("Test");
-            // })
-
-            // const berry_marker = new google.maps.Marker({
-            //     position: { lat: 62.908551, lng: 27.659310 },
-            //     map,
-            //     icon: {
-            //         url: berry_icon,
-            //         scaledSize: new google.maps.Size(46, 46)
-            //     },
-            //     title: "BERRIES!"
-            // });
-
             //Add markers for each place
             /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit:
                     - marja: julkinen, sieni: yksityinen
                 --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                 --> markerit ei draggable 
             */
-
-
 
             visiblefindings.forEach(function (find) {
                 if (find._idPerson.username === person.username) {//jos oma löydös, merkitään sienellä
@@ -224,13 +142,16 @@
                     });
                 }
 
-
+                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + find.datetime + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
+                if (find._idPerson.username === person.username) {//jos oma löydös, annetaan mahdollisuus muokata / poistaa
+                    info = info + "\n\nWould you like to edit this information?"
+                }
+                
                 marker.addListener('click', function () {
-                    var prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n");
-                   
-                   
-
-                    //modal.style.display = "block";
+                    var confirmation = window.confirm(info);
+                    if (find._idPerson.username === person.username && confirmation == true) {//jos oma löydös ja käyttäjä painoi "OK"
+                        //avaa edit sivu
+                    }
                 })
                 
             });    
