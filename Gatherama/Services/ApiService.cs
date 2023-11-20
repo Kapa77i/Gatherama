@@ -124,7 +124,7 @@ namespace Gatherama.Services
         // GET item by ID
         public async Task<FindingDto> GetFindingByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Finding/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FindingDto>();
         }
@@ -138,7 +138,7 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<FindingDto> PutFindingAsync(string id, FindingDto findingDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", findingDto);
+            var response = await _httpClient.PutAsJsonAsync($"api/Finding/{id}", findingDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FindingDto>();
         }
@@ -146,7 +146,7 @@ namespace Gatherama.Services
         // DELETE an item
         public async Task DeleteFindingAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Finding/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion
