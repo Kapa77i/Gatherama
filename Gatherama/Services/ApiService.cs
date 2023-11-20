@@ -62,9 +62,17 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<PersonDto> PutPersonAsync(string id, PersonDto personDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Person/{id}", personDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PersonDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Person/{id}", personDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<PersonDto>();
+            }
+            catch (Exception) 
+            { 
+                return null; 
+            }
+      
         }
 
         // DELETE an item
@@ -99,9 +107,18 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<PlaceDto> PutPlaceAsync(string id, PlaceDto placeDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Place/{id}", placeDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PlaceDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Place/{id}", placeDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<PlaceDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
 
         // DELETE an item
@@ -138,9 +155,17 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<FindingDto> PutFindingAsync(string id, FindingDto findingDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Finding/{id}", findingDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FindingDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Finding/{id}", findingDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<FindingDto>();
+            }
+            catch(Exception)
+            { 
+                return null; 
+            }
+           
         }
 
         // DELETE an item
@@ -258,9 +283,17 @@ namespace Gatherama.Services
         // PUT (update) an item
         public async Task<SpeciesDto> PutSpeciesAsync(string id, SpeciesDto speciesDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"api/Species/{id}", speciesDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<SpeciesDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Species/{id}", speciesDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<SpeciesDto>();
+            }catch(Exception)
+            {
+                return null;
+            }
+            
+         
         }
 
         // DELETE an item
