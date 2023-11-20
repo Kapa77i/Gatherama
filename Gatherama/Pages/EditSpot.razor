@@ -176,7 +176,7 @@
 
     @if(editFinding != null)
     {
-        <EditForm Model="@editFinding" OnValidSubmit="@SubmitFinding">
+        <EditForm Model="@editFinding" OnValidSubmit="@SubmitFinding" OnInvalidSubmit="@DeleteFinding">
             <DataAnnotationsValidator />
             <div class="col-lg-4 col-md-12">
                 <label for="city"> City </label>
@@ -246,8 +246,9 @@
                 <label for="latin_name"> Latin name </label>
                 <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
             </div>
-
-            <button class="btn btn-primary" type="submit">Change data!</button>
+            <br />
+            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;">Change data!</button><button class ="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;">Delete</button>
+            
         </EditForm>
     }
     
@@ -301,5 +302,10 @@
 
         await apiService.PutFindingAsync(editFinding.Id, editFinding);
         NavigationManager.NavigateTo("/ownspots", true);
+    }
+
+    protected async void DeleteFinding()
+    {
+        
     }
 }

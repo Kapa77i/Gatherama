@@ -82,7 +82,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
             {
                 <div class="row1">
                     <div class="col-sm">@item.username</div>
-                    <div class="col-sm justify-content-md-end"><button class="btn btn-danger ms-auto" type="button" @onclick="() => OpenDeleteModal(item)">Delete</button></div>
+                    <div class="col-sm justify-content-md-end"><button class="btn btn-warning ms-auto" type="button" @onclick="() => OpenDeleteModal(item)">Delete</button></div>
             </div>
             <div class="row"/>
             }
@@ -142,7 +142,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
-                    <button type="button" class="btn btn-danger" @onclick="DeleteFriendship">Delete</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteFriendship">Delete</button>
                 </div>
             </div>
         </div>
