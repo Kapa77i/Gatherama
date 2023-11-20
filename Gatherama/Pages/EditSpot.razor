@@ -176,7 +176,7 @@
 
     @if(editFinding != null)
     {
-        <EditForm Model="@editFinding" OnValidSubmit="@SubmitFinding" OnInvalidSubmit="@DeleteFinding">
+        <EditForm Model="@editFinding" Context="formContext">
             <DataAnnotationsValidator />
             <div class="col-lg-4 col-md-12">
                 <label for="city"> City </label>
@@ -247,13 +247,33 @@
                 <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
             </div>
             <br />
-            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;">Change data!</button><button class ="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;">Delete</button>
+            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => EditFinding(formContext))">Change data!</button><button class ="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;" @onclick="@(() => OpenDeleteModal(formContext))">Delete</button>
             
         </EditForm>
     }
     
 </body>
 
+@* Delete Modal *@
+@if (deleteModalShown)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this finding?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteFinding">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     [Parameter]
@@ -266,6 +286,7 @@
             _idPerson = new PersonDto { }
         };
     string placeInfoJS;
+    private bool deleteModalShown = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -282,7 +303,7 @@
         await base.OnInitializedAsync();
     }
 
-    protected async void SubmitFinding()
+    protected async void EditFinding(EditContext formContext)
     {
         //Fetching the information from JS
         placeInfoJS = await JS.InvokeAsync<string>("fetchData");
@@ -301,11 +322,24 @@
         await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
 
         await apiService.PutFindingAsync(editFinding.Id, editFinding);
-        NavigationManager.NavigateTo("/ownspots", true);
+        NavigationManager.NavigateTo("/addspots", true);
+    }
+
+    private void OpenDeleteModal(EditContext formContext)
+    {
+        deleteModalShown = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalShown = false;
+
     }
 
     protected async void DeleteFinding()
     {
-        
+        //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji? pitäisi riittää?
+        await apiService.DeleteFindingAsync(Id);
+        NavigationManager.NavigateTo("/ownspots", true);
     }
 }
