@@ -1,4 +1,5 @@
-﻿@page "/editspot"
+﻿@page "/editspot/{Id}"
+
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
 @using Microsoft.Maui.Maps
@@ -92,28 +93,32 @@
         <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
     </div>
 
-    <button class="btn btn-primary" type="submit">Add a Finding!</button>
+    <button class="btn btn-primary" type="submit">Change data!</button>
 </EditForm>
 
 @code {
-    private FindingDto editFinding = new FindingDto()
-        {
-            _idPlace = new PlaceDto { },
-            _idSpecies = new SpeciesDto { },
-            _idPerson = new PersonDto { }
-        };
+    [Parameter]
+    public string Id { get; set; }
+
+    // private FindingDto editFinding = new FindingDto()
+    //     {
+    //         _idPlace = new PlaceDto { },
+    //         _idSpecies = new SpeciesDto { },
+    //         _idPerson = new PersonDto { }
+    //     };
+    private FindingDto editFinding { get; set; }
     string placeInfoJS;
 
 
     protected override async Task OnInitializedAsync()
     {
-        var dateAndTime = DateTime.Now;
-        var date = dateAndTime.Date.ToString().Replace("00.00.00", "");
-        editFinding.datetime = DateTime.Parse(date);
+        editFinding = await apiService.GetFindingByIdAsync(Id);
 
-        // It is not pretty but this is how I got it working the ID thingy
-        editFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
-        editFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
+        Console.WriteLine("Tullaanko tänne?");
+
+        // // It is not pretty but this is how I got it working the ID thingy
+        // editFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
+        // editFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
     }
 
     protected async void SubmitFinding()

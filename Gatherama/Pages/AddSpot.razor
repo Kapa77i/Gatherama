@@ -151,6 +151,8 @@
                     var confirmation = window.confirm(info);
                     if (find._idPerson.username === person.username && confirmation == true) {//jos oma löydös ja käyttäjä painoi "OK"
                         //avaa edit sivu
+                        var test = window.confirm("Avataan sivu editspot/" + find.id); //find.Id -> UNDEFINED jos Id, tunnistetaan jos id
+                        window.location.href = "/editspot/" + find.id; 
                     }
                 })
                 
