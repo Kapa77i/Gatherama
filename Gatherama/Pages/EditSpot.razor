@@ -1,0 +1,140 @@
+﻿@page "/editspot"
+@using Gatherama.Shared
+@using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using System.Net.Http
+@using System.Text.Json
+@using System.Net.Http.Json;
+@using System
+@using System.Threading.Tasks
+@using Microsoft.Maui.Controls
+@using Gatherama.Services
+@using MongoDB.Bson;
+@using Newtonsoft.Json
+
+
+@inject IJSRuntime JS
+@inject ApiService apiService
+@inject NavigationManager NavigationManager
+@inject LoginState loginstate
+
+<h3>Edit your spot </h3>
+
+
+<EditForm Model="editFinding" OnValidSubmit="@SubmitFinding">
+    <DataAnnotationsValidator />
+    <div class="col-lg-4 col-md-12">
+        <label for="city"> City </label>
+        <InputText id="city" class="form-control" @bind-Value=editFinding._idPlace.city></InputText>
+        <ValidationMessage For="@(() => editFinding._idPlace.city)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="country"> Country </label>
+        <InputText id="country" @bind-Value=editFinding._idPlace.country class="form-control"></InputText>
+        <ValidationMessage For="@(() => editFinding._idPlace.country)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="lat"> Latitude </label>
+        <InputNumber id="lat" @bind-Value=editFinding._idPlace.lat class="form-control"></InputNumber>
+        <ValidationMessage For="@(() => editFinding._idPlace.lat)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="lng"> Longitude </label>
+        <InputNumber id="lng" @bind-Value=editFinding._idPlace.lng class="form-control"></InputNumber>
+        <ValidationMessage For="@(() => editFinding._idPlace.lng)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="findingDate">Add a Date </label>
+        <InputDate id="findingDate" @bind-Value=editFinding.datetime class="form-control"></InputDate>
+        <ValidationMessage For="@(() => editFinding.datetime)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="findindAmount"> Amount </label>
+        <InputText id="findindAmount" @bind-Value=editFinding.amount class="form-control"></InputText>
+        <ValidationMessage For="@(() => editFinding.amount)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="findingMemo"> Memo </label>
+        <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control">Enter memolog here</InputText>
+        <ValidationMessage For="@(() => editFinding.memo)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="findindPrivate"> Private or not? </label>
+        <InputSelect id="findindPrivate" @bind-Value=editFinding._private class="form-control">
+            <option value="">Select...</option>
+            <option value="0">Private</option>
+            <option value="1">Friends</option>
+            <option value="2">Public</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => editFinding._private)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="speciesCategory"> Berries or Mushrooms? </label>
+        <InputSelect id="speciesCategory" @bind-Value="editFinding._idSpecies.category" class="form-control">
+            <option value="">Select...</option>
+            <option>Berries</option>
+            <option>Mushrooms</option>
+        </InputSelect>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="speciesSubCategory"> Species Sub Category </label>
+        <InputText id="speciesSubCategory" @bind-Value="editFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="s_name"> Species Name </label>
+        <InputText id="s_name" @bind-Value="editFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="latin_name"> Latin name </label>
+        <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add a Finding!</button>
+</EditForm>
+
+@code {
+    private FindingDto editFinding = new FindingDto()
+        {
+            _idPlace = new PlaceDto { },
+            _idSpecies = new SpeciesDto { },
+            _idPerson = new PersonDto { }
+        };
+    string placeInfoJS;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dateAndTime = DateTime.Now;
+        var date = dateAndTime.Date.ToString().Replace("00.00.00", "");
+        editFinding.datetime = DateTime.Parse(date);
+
+        // It is not pretty but this is how I got it working the ID thingy
+        editFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
+        editFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
+    }
+
+    protected async void SubmitFinding()
+    {
+        //Fetching the information from JS
+        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+        string[] splitFetch = placeInfoJS.Split(',');
+        editFinding._idPlace.city = splitFetch[0];
+        editFinding._idPlace.country = splitFetch[1];
+        editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+        editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+
+        //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+
+
+
+        Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
+        await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
+        await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+
+        await apiService.PutFindingAsync(editFinding.Id, editFinding);
+        NavigationManager.NavigateTo("/ownspots", true);
+    }
+}
