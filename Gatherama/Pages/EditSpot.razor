@@ -37,9 +37,8 @@
             const geocoder = new google.maps.Geocoder();
 
             const map = new google.maps.Map(document.getElementById("googleMap"), {
-                zoom: 15,
-                center: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng }, //alkukeskitys omaan paikkaan?
-                //isShowingUser: true, //turha vai Androidille?
+                zoom: 14,
+                center: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng }, //alkukeskitys omaan paikkaan
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -54,7 +53,6 @@
             map.addListener("click", (e) => {
 
                 placeMarkerAndPanTo(e.latLng, map, geocoder);
-                //geocodeLatLng(e.latLng, geocoder, map);
             });
 
 
@@ -293,12 +291,6 @@
     {
         editFinding = await apiService.GetFindingByIdAsync(Id);
 
-        Console.WriteLine("Tullaanko tänne?");
-
-        // // It is not pretty but this is how I got it working the ID thingy
-        // editFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
-        // editFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
-
         await JS.InvokeVoidAsync("initMap", editFinding);
         await base.OnInitializedAsync();
     }
@@ -338,7 +330,7 @@
 
     protected async void DeleteFinding()
     {
-        //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji? pitäisi riittää?
+        //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji?
         await apiService.DeleteFindingAsync(Id);
         NavigationManager.NavigateTo("/ownspots", true);
     }
