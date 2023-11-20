@@ -23,7 +23,125 @@
 
 
 <head>
+    <title>Simple Marker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js"></script>
     <script>
+
+        let markers = [];
+
+        function initMap(editFinding) {
+
+            const geocoder = new google.maps.Geocoder();
+
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 15,
+                center: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng }, //alkukeskitys omaan paikkaan?
+                //isShowingUser: true, //turha vai Androidille?
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false
+            });
+
+            newMarker = new google.maps.Marker({
+                position: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng },
+                map: map,
+            });
+            markers.push(newMarker)
+
+            map.addListener("click", (e) => {
+
+                placeMarkerAndPanTo(e.latLng, map, geocoder);
+                //geocodeLatLng(e.latLng, geocoder, map);
+            });
+
+
+            function placeMarkerAndPanTo(latLng, map, geocoder) {
+
+                newMarker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    draggable: true
+                });
+
+
+                map.panTo(latLng);
+
+                // window.alert("Tultiin geocodeen: " + latLng)
+                const latilng = {
+                    lat: parseFloat(latLng.lat()),
+                    lng: parseFloat(latLng.lng()),
+                };
+
+
+                geocoder
+                    .geocode({ location: latilng })
+                    .then((response) => {
+                        if (response && response.results && response.results.length > 0) {
+                            const formattedAddress =
+                                response.results[3].formatted_address;
+                            // window.alert("Formatted address: " + JSON.stringify(response.results[3].formatted_address))
+                            const latlngStr = formattedAddress.split(",", 2);
+                            const cityCountry = {
+                                city: latlngStr[0],
+                                country: latlngStr[1],
+                            };
+
+                            setLocationData(latilng, cityCountry); // Set location data
+
+                        } else {
+                            window.alert("No results found");
+                        }
+                    })
+                    .catch((e) =>
+                        window.alert("Geocoder failed due to: " + e.message || "Unknown error")
+                    );
+                deleteMarkers();
+                markers.push(newMarker);
+
+                return newMarker;
+
+            }
+
+            // Sets the map on all markers in the array.
+            function setMapOnAll(map) {
+                for (let i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                }
+            }
+
+            // Removes the markers from the map, but keeps them in the array.
+            function hideMarkers() {
+                setMapOnAll(null);
+            }
+
+            //Remove the markers on the map
+            function deleteMarkers() {
+                hideMarkers();
+                markers = [];
+            }
+
+        }
+        function setLocationData(latilng, cityCountry) {
+            //window.alert("Tultiin setLoocationiin")
+
+            const placeInfo = {
+                city: cityCountry.city,
+                county: cityCountry.country,
+                lat: latilng.lat,
+                lng: latilng.lng
+            }
+
+            document.getElementById("city").value = cityCountry.city;
+            document.getElementById("country").value = cityCountry.country;
+            document.getElementById("lat").value = JSON.stringify(latilng.lat);
+            document.getElementById("lng").value = JSON.stringify(latilng.lng);
+
+            return placeInfo;
+        }
+
         function fetchData() {
             //window.alert("Tultiin fetchDataJS");
             var fetchPlaceInfo = document.getElementById("city").value + ",";
@@ -35,10 +153,27 @@
 
             return fetchPlaceInfo;
         }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(
+                browserHasGeolocation
+                    ? "Error: The Geolocation service failed."
+                    : "Error: Your browser doesn't support geolocation.",
+            );
+            infoWindow.open(map);
+        }
+
+        window.initMap = initMap;
     </script>
 </head>
 <body>
-    <div>Kartta</div>
+    <div> 
+        <div id="googleMap" style="width:100%;height:400px;">
+
+        </div>
+    </div>
+
     @if(editFinding != null)
     {
         <EditForm Model="@editFinding" OnValidSubmit="@SubmitFinding">
@@ -142,6 +277,7 @@
         // editFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
         // editFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
 
+        await JS.InvokeVoidAsync("initMap", editFinding);
         await base.OnInitializedAsync();
     }
 
