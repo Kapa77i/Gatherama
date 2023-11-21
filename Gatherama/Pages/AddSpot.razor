@@ -36,63 +36,19 @@
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
 
-   @*  <style>
-        /* The Modal (background) */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
 
-        /* Modal Content */
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        /* The Close Button */
-        .close {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: #000;
-                text-decoration: none;
-                cursor: pointer;
-            }
-    </style> *@
     <script>
 
         let markers = [];
     
         function initMap(visiblefindings, person) {
-            // var myLatLng = {
-
-            //     lat: 62.8893928527832,
-            //     lng: 27.6920166015625
-            // };
 
             const geocoder = new google.maps.Geocoder();
           
             const map = new google.maps.Map(document.getElementById("googleMap"), {
-                zoom: 14,
-                center: { lat: 62.8893928527832, lng: 27.6920166015625 },
-                isShowingUser: true, //turha vai Androidille?
+                zoom: 12,
+                center: { lat: 62.8893928527832, lng: 27.6920166015625 }, //alkukeskitys Kuopioon
+                //isShowingUser: true, //turha vai Androidille?
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -100,8 +56,8 @@
 
             const mush_icon = '../Images_index/mushroom_icon.png'; 
             const berry_icon = '../Images_index/berry_icon.png';
+            const blueberry_icon = '../Images_index/blueberry_icon.png'
 
-            //
             map.addListener("click", (e) => {
 
                 placeMarkerAndPanTo(e.latLng, map, geocoder);
@@ -140,52 +96,15 @@
                 }
             });
 
-            //testimarker
-            // var mush_marker = new google.maps.Marker({
-            //     position: myLatLng,
-            //     map,
-            //     icon: {
-            //         url: mush_icon,
-            //         scaledSize: new google.maps.Size(36, 36)
-            //     },
-            //     title: "Finding",
-            //     //draggable: true,
-
-
-            //     //testi‰
-            //    /* onClick: (args) => {
-            //         console.info('onClick', { args }); 
-            //     },
-            //     onHover: (args) => {
-            //         console.info('onHover', { args }); 
-            //     }*/
-            // });
-
-            // mush_marker.addListener('click', function() {
-            //     let prompt = window.prompt("Test");
-            // })
-
-            // const berry_marker = new google.maps.Marker({
-            //     position: { lat: 62.908551, lng: 27.659310 },
-            //     map,
-            //     icon: {
-            //         url: berry_icon,
-            //         scaledSize: new google.maps.Size(46, 46)
-            //     },
-            //     title: "BERRIES!"
-            // });
-
             //Add markers for each place
-            /* --> funktiossa erottelu mik‰ julkinen ja mik‰ yksityinen paikka - eri ikonit?
+            /* --> funktiossa erottelu mik‰ julkinen ja mik‰ yksityinen paikka - eri ikonit:
                     - marja: julkinen, sieni: yksityinen
                 --> tee tarkastelu/muokkauspromptit kun henkilˆ klikkaa markkeria
                 --> markerit ei draggable 
             */
 
-
-
             visiblefindings.forEach(function (find) {
-                if (find._idPerson.username === person.username ) {//jos oma lˆydˆs, merkit‰‰n sienell‰
+                if (find._idPerson.username === person.username) {//jos oma lˆydˆs, merkit‰‰n sienell‰
 
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
@@ -197,9 +116,9 @@
                         title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                     });
-                   
+
                 }
-                else {//toisen julkinen lˆydˆs, merkit‰‰n marjalla
+                else if (find._private == 2) {//toisen julkinen lˆydˆs, merkit‰‰n marjalla
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
@@ -209,16 +128,32 @@
                         },
                         title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     });
-                    
+
+                }
+                else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
+                    var marker = new google.maps.Marker({
+                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                        map: map,
+                        icon: {
+                            url: blueberry_icon,
+                            scaledSize: new google.maps.Size(36, 36)
+                        },
+                        title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                    });
                 }
 
-
+                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + find.datetime + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
+                if (find._idPerson.username === person.username) {//jos oma lˆydˆs, annetaan mahdollisuus muokata / poistaa
+                    info = info + "\n\nWould you like to edit this information?"
+                }
+                
                 marker.addListener('click', function () {
-                    var prompt = window.prompt("City: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name + "\n");
-                   
-                   
-
-                    //modal.style.display = "block";
+                    var confirmation = window.confirm(info);
+                    if (find._idPerson.username === person.username && confirmation == true) {//jos oma lˆydˆs ja k‰ytt‰j‰ painoi "OK"
+                        //avaa edit sivu
+                        //var test = window.confirm("Avataan sivu editspot/" + find.id); //find.Id -> UNDEFINED jos Id, tunnistetaan jos id
+                        window.location.href = "/editspot/" + find.id; 
+                    }
                 })
                 
             });    
@@ -330,57 +265,17 @@
             );
             infoWindow.open(map);
         }
-       
-        // function openmodal() {
-        //     modal.style.display = "block";
-        // }
-
-        // // Get the modal
-        // var modal = document.getElementById("modal");
-        // //Get the button that opens the modal
-        // var btn = document.getElementById("openmodal");
-        // // Get the <span> element that closes the modal
-        // var span = document.getElementsByClassName("close")[0];
-
-        // btn.onclick = function() {
-        //     modal.style.display = "block";
-        // }
-
-        // // When the user clicks on <span> (x), close the modal
-        // span.onclick = function () {
-        //     modal.style.display = "none";
-        // }
-
-        // // When the user clicks anywhere outside of the modal, close it
-        // window.onclick = function (event) {
-        //     if (event.target == modal) {
-        //         modal.style.display = "none";
-        //     }
-        // }
-
+ 
          window.initMap = initMap;
     </script>
 </head>
 <body>
 
     <div>
-        @*  <button id="openmodal">Open modal</button>
-        <div>
-            <input type="text" id="lat" placeholder="Lat" /> <!-- Vain double arvot sopivia -->
-            <input type="text" id="lng" placeholder="Long" />
-        </div> *@
 
         <div id="googleMap" style="width:100%;height:400px;"></div>
 
     </div>
-    @*
-    <div id="modal" class="modal">
-        <!-- The Modal -->
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Text...</p>
-        </div>
-    </div>*@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
@@ -426,7 +321,8 @@
             <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
                 <option value="">Select...</option>
                 <option value="0">Private</option>
-                <option value="1">Public</option>
+                <option value="1">Friends</option>
+                <option value="2">Public</option>
             </InputSelect>
             <ValidationMessage For="@(() => newFinding._private)" />
         </div>
@@ -452,7 +348,9 @@
             <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
         </div>
 
-        <button class="btn btn-primary" type="submit">Add a Finding!</button>
+        <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;">Add a Finding!</button>
+
+
     </EditForm>
 
  
@@ -467,23 +365,23 @@
     * 
     * Pyyd‰ lupa gps:‰‰n? - android ok!
     * 
-    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - koordinaattikent‰t ok, KARTTA EI
+    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok, android ei ihan
     * 
     * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
     * 
-    * Anna hakea paikan nimell‰ (ja koordinaateilla?)
+    * (Anna hakea paikan nimell‰ (ja koordinaateilla?))
     * 
-    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok!
+    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (paitsi android)
     * 
-    * Opastus pinnipaikalle/osoitteeseen.
+    * (Opastus pinnipaikalle/osoitteeseen?)
     */
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
     Location currentlocation = new Location();
     Location cachedlocation;
-    // double myLat;
-    // double myLng;
 
+    private List<FriendshipDto> friendships { get; set; }
+    private List<PersonDto> friends = new List<PersonDto>();
     public List<FindingDto> allfindings { get; private set; }
     public List<FindingDto> visiblefindings = new List<FindingDto>();
     public List<PlaceDto> places { get; private set; }
@@ -501,15 +399,7 @@
 
     private FindingDto postFinding = new FindingDto();
 
-    int collapsingNbr = 0;
-    int headingNbr = 0;
-
     string placeInfoJS;
-
-    string collabId = "test";
-    string headingId = "test";
-    string itemId = "testi";
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -539,12 +429,32 @@
         persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
         places = await apiService.GetPlacesAsync();
+        friendships = await apiService.GetFriendshipsAsync();
+
+        //etsit‰‰n kaikki kirjautuneen henkilˆn kaverit
+        foreach (FriendshipDto friendship in friendships)
+        {
+            //jos kirjautunut hlˆ on jonkun kaveri (& kaveruus on hyv‰ksytty)
+            if ((loginstate.isSingedin.Id == friendship._idPerson.Id || loginstate.isSingedin.Id == friendship._idFriend.Id) && (friendship.friend_accept == 1 && friendship.friend_request == 1))
+            {
+                if(loginstate.isSingedin.Id == friendship._idPerson.Id)
+                {
+                    friends.Add(friendship._idFriend);
+                }
+                else
+                {
+                    friends.Add(friendship._idPerson);
+                }
+            }
+        }
 
         newFinding._idPerson = await apiService.GetPersonByIdAsync(loginstate.isSingedin?.Id);
 
         /*ota kaikki lˆydˆkset ja vertaa niit‰ kirjautuneeseen henkilˆˆn
             - jos henkilˆn oma lˆydˆs, n‰yt‰
             - jos toisen henkilˆn julkinen lˆydˆs, n‰yt‰
+            - jos kaverin julkaisema (kavereille), n‰yt‰
+
             --> n‰m‰ kaikki samaan listaan, joka vied‰‰n parametrina initMap() :lle
 
                 --> funktiossa erottelu mik‰ julkinen ja mik‰ yksityinen paikka - eri ikonit?
@@ -553,10 +463,20 @@
                 --> markerit ei draggable
         */ foreach(FindingDto find in allfindings)
         {
-            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 1)
+            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)
             {
                 visiblefindings.Add(find);
 
+            }
+            else
+            {
+                foreach(PersonDto friend in friends)
+                {
+                    if (find._idPerson.Id == friend.Id && find._private == 1)
+                    {
+                        visiblefindings.Add(find);
+                    }
+                }
             }
         }
 

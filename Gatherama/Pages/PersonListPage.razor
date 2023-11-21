@@ -9,12 +9,10 @@
 @using Gatherama.Services
 @using MongoDB.Bson;
 @inject ApiService apiService
+@inject NavigationManager NavigationManager
 @inject LoginState loginstate
 
 <!--TÄMÄ ON TESTAUKSEEN-->
-<h2>App Users</h2>
-
-
 @* Friend Request box tarvitaan, eli tässä pitäisi tarkistaa kaikki henkilön omat kaverit:
 - friendrequest = 1 && friendaccept = 0
 -------> väliaikaisratkaisu: talussa oma pending - osio, joka näkyy sekä lähettäjälle että vastaanottajalle
@@ -25,85 +23,165 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 *@
 
-
+<h1>Username Status</h1>
 @* All users *@
-<table class="table">
-    <thead>
-        <tr>
-            <th>Username</th>
-        </tr>
-    </thead>
-    
-    @if (persons is not null)
+
+
+
+
+
+@if (persons is not null)
+{
+    @if (!pendingFriends.All(p => p.Equals(0)))
     {
-        <thead>
-            <tr>
-                <th>Friends</th>
-                </tr>
-            </thead>
-        <tbody>
-            @if(friends is not null)
-            {
-                @foreach (var item in friends)
+        @* <div class="container">
+        <h3>You have received a Friend Request!</h3>
+        @foreach (var item in pendingFriends)
+        {
+            <div class="row4">
+                <div class="col-sm">@item.username</div>
+                <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button>   <button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></div>
+                <div class="col-sm"></div>
+            </div>
+
+        }
+
+    </div> *@
+
+        <div class="container1">
+            <p>
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    <h5>You have received a Friend Request!</h5>
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                @foreach (var item in pendingFriends)
                 {
-
-                    <tr>
-                        <td>@item.username</td>
-                        <td><button id="@item.Id" class="btn btn-danger" type="submit" >Delete a Friend</button></td>
-                    </tr>
+                    <div class="card card-body1">
+                        <div class="row4">
+                            <div class="col-sm">@item.username</div>
+                            <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button>   <button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></div>
+                            <div class="col-sm"></div>
+                        </div>
+                    </div>
+                    <p></p>
                 }
-            }
-            
-        </tbody>
-        <thead>
-            <tr>
-                <th>Pending</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(pending is not null)
-            {
-               @foreach(var item in pending)
-               {
-                
-                  <tr>
-                      <td>@item.username</td>
-                      <td>Pending...</td>
-                  </tr>
-               }  
-            }
-           
-        </tbody>
 
-        <thead>
-            <tr>
-                <th>Others</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in other)
-            {
-                <tr>
-                    <td>@item.username</td>
-                    <td><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => SubmitFriendRequest(item)">Add a Friend</button></td>
-                </tr>
-            }
-        </tbody>
-
+            </div>
+        </div>
     }
-</table>
 
+    <br />
+    <br />
+
+    @if (!friends.All(p => p.Equals(0)))
+    {
+    <div class="container">
+        <h3>Friends</h3>
+            @foreach (var item in friends)
+            {
+                <div class="row1">
+                    <div class="col-sm">@item.username</div>
+                    <div class="col-sm justify-content-md-end"><button class="btn btn-warning ms-auto" type="button" @onclick="() => OpenDeleteModal(item)">Delete</button></div>
+            </div>
+            <div class="row"/>
+            }
+    </div>
+    }
+
+    <br />
+    <br />
+    <br />
+    
+    @if (!pending.All(p => p.Equals(0)))
+    {
+        <div class="container">
+            <h3>Pending Friend Requests</h3>
+            
+                @foreach (var item in pending)
+                {
+                <div class="row2">
+                    <div class="col-sm">@item.username</div>
+                    <div class="col-sm">Pending....</div>
+                    <div class="row" />
+                </div>
+                }
+        </div>
+    }
+
+    <br />
+    <br />
+    <br />
+    <div />
+
+    <div class="container">
+        <h3>Other Gatherama Users</h3>
+        @foreach (var item in other)
+        {
+            <div class="row3">
+                <div class="col-sm">@item.username</div>
+                <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => SubmitFriendRequest(item)">Add</button></div>
+            </div>
+        }
+    </div>
+}
+
+
+
+@* Delete Modal *@
+@if (deleteModalShown && selectedFriend != null)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete @selectedFriend.username?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteFriendship">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     public List<PersonDto> persons { get; private set; }
     public List<PlaceDto> places { get; private set; }
     public List<FriendshipDto> friendships { get; private set; }
+    public List<FriendshipDto> friendshipsTobe { get; private set; }
     public List<PersonDto> friends = new List<PersonDto>();
     public List<PersonDto> other = new List<PersonDto>();
     public List<PersonDto> pending = new List<PersonDto>();
+    public List<PersonDto> pendingFriends = new List<PersonDto>();
     public FriendshipDto newFriend = new FriendshipDto();
 
-    public PersonDto newFriendship = new PersonDto(); 
+    private bool deleteModalShown = false;
+    private PersonDto selectedFriend;
+
+    // protected async void DeleteFriendship(PersonDto friend)
+    // {
+    //     foreach (var item in friendships)
+    //     {
+    //         if (loginstate.isSingedin.username == item._idPerson.username)
+    //         {
+    //             if (friend.username == item._idFriend.username && item.friend_accept == 1 && item.friend_request == 1)
+    //             {
+    //                 newFriend.Id = item.Id;
+    //             }
+    //         }
+
+    //     }
+
+    //     await apiService.DeleteFriendshipAsync(newFriend.Id);
+    //     NavigationManager.NavigateTo("/personlist", true);
+    // }
+
+    public PersonDto newFriendship = new PersonDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,7 +192,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
         {
             if (loginstate.isSingedin.Id == item._idPerson.Id || loginstate.isSingedin.Id == item._idFriend.Id)
             {
-                if (item.friend_accept == 1 && item.friend_request == 1) 
+                if (item.friend_accept == 1 && item.friend_request == 1)
                 {
                     if (loginstate.isSingedin.username == item._idPerson.username)
                     {
@@ -125,7 +203,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                         friends.Add(item._idPerson);
                     }
                 }
-                else if (item.friend_accept == 0 && item.friend_request == 1)//erottele myös ne ystävyydet, jotka on "pending" 
+                else if (item.friend_accept == 0 && item.friend_request == 1)//erottele myös ne ystävyydet, jotka on "pending"
                 {
                     if (loginstate.isSingedin.username == item._idPerson.username)
                     {
@@ -133,7 +211,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     }
                     else
                     {
-                        pending.Add(item._idPerson);
+                        //pending.Add(item._idPerson);
                     }
 
                 }
@@ -142,34 +220,31 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 
         }
 
+        //Show received friendship requested
+        foreach (var item in friendships)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username && item.friend_accept == 0 && item.friend_request == 1)
+            {
+                pendingFriends.Add(item._idPerson);
+            }
+        }
+
+        //Remove the friends and sent requests and pending requests from other list
         foreach (var item in persons)
         {
-            if(friends.Count != 0)//tämä rikki
+            if (friends.All(friend => friend.username != item.username) &&
+                pending.All(pend => pend.username != item.username) &&
+                item.username != loginstate.isSingedin.username &&
+                pendingFriends.All(p => p.username != item.username))
             {
-                foreach (var item2 in friends)
-                {
-
-                    if (item.username != item2.username)
-                    {
-                        if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
-                        {
-                            other.Add(item);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (item.username != loginstate.isSingedin.username && (!other.Contains(item)) && (!pending.Contains(item)))
-                {
-                    other.Add(item);
-                }  
+                other.Add(item);
             }
         }
-
-        Console.WriteLine("debug mark");
     }
 
+
+
+    //Posting friend request
     protected async void SubmitFriendRequest(PersonDto friend)
     {
         //Tarvitaan buttonista kaverin tiedot, jolle lähetetään kaveripyyntö
@@ -187,15 +262,111 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
         newFriend.friend_accept = 0;
 
         //tarkista ettei ystävyyttä ole jo olemassa, ennen kuin lähetät ystäväkutsun
-        if(!friends.Contains(friend) && !pending.Contains(friend))
+        if (!friends.Contains(friend) && !pending.Contains(friend))
         {
             await apiService.PostFriendshipAsync(newFriend);
+            NavigationManager.NavigateTo("/personlist", true);
         }
         else
         {
-            //prompt: Kutsu on jo lähetetty 
+            //prompt: Kutsu on jo lähetetty
         }
 
     }
+
+
+
+    //Accepting Friend request
+    protected async void AcceptFriendRequest(PersonDto friend)
+    {
+        foreach (var item in friendships)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username)
+            {
+                if (friend.username == item._idPerson.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    newFriend.Id = item.Id;
+                }
+            }
+
+        }
+        newFriend._idFriend = loginstate.isSingedin;
+        newFriend._idPerson = friend;
+        newFriend.friend_request = 1;
+        newFriend.friend_accept = 1;
+
+        await apiService.PutFriendshipAsync(newFriend.Id, newFriend);
+        NavigationManager.NavigateTo("/personlist", true);
+    }
+
+
+
+    //Declining friend request
+    protected async void DeclineFriendRequest(PersonDto friend)
+    {
+        foreach (var item in friendships)
+        {
+            if (loginstate.isSingedin.username == item._idFriend.username)
+            {
+                if (friend.username == item._idPerson.username && item.friend_accept == 0 && item.friend_request == 1)
+                {
+                    newFriend.Id = item.Id;
+                }
+            }
+
+        }
+
+        await apiService.DeleteFriendshipAsync(newFriend.Id);
+        NavigationManager.NavigateTo("/personlist", true);
+    }
+
+
+    //Delete friend and the Delete modal
+    private void OpenDeleteModal(PersonDto friend)
+    {
+        selectedFriend = friend;
+        deleteModalShown = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalShown = false;
+        selectedFriend = null;
+    }
+
+    private async Task DeleteFriendship()
+    {
+        if (selectedFriend != null)
+        {
+            foreach (var item in friendships)
+            {
+                if (loginstate.isSingedin.username == item._idFriend.username || loginstate.isSingedin.username == item._idPerson.username)
+                {
+                    //Get hold of only friends in the list
+                    if (item.friend_accept == 1 && item.friend_request == 1)
+                    {
+                        //check that the person deleting is either _friend or _person with the signed in person
+                        if ((loginstate.isSingedin.username == item._idFriend.username) && (selectedFriend.username == item._idPerson.username))
+                        {
+                            newFriend.Id = item.Id;
+                        }
+                        else if ((loginstate.isSingedin.username == item._idPerson.username) && (selectedFriend.username == item._idFriend.username))
+                        {
+                            newFriend.Id = item.Id;
+                        }
+                        
+                    }
+                }
+
+            }
+
+            await apiService.DeleteFriendshipAsync(newFriend.Id);
+            NavigationManager.NavigateTo("/personlist", true);
+        }
+
+        // Close the modal
+        CloseDeleteModal();
+    }
+
 
 }

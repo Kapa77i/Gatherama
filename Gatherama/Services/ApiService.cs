@@ -26,6 +26,7 @@ namespace Gatherama.Services
         public List<FriendshipDto> friendships { get; private set; }
         public List<MediaDto> media { get; private set; }
         public List<SpeciesDto> species { get; private set; }
+
         //PERSONS
         #region 
         // GET all items
@@ -60,11 +61,19 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<PersonDto>();
         }
         // PUT (update) an item
-        public async Task<PersonDto> PutPersonAsync(int id, PersonDto personDto)
+        public async Task<PersonDto> PutPersonAsync(string id, PersonDto personDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", personDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PersonDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Person/{id}", personDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<PersonDto>();
+            }
+            catch (Exception) 
+            { 
+                return null; 
+            }
+      
         }
 
         // DELETE an item
@@ -83,9 +92,9 @@ namespace Gatherama.Services
             // Use _httpClient to fetch data
         }
         // GET item by ID
-        public async Task<PlaceDto> GetPlaceByIdAsync(int id)
+        public async Task<PlaceDto> GetPlaceByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Place/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<PlaceDto>();
         }
@@ -97,17 +106,26 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<PlaceDto>();
         }
         // PUT (update) an item
-        public async Task<PlaceDto> PutPlaceAsync(int id, PlaceDto placeDto)
+        public async Task<PlaceDto> PutPlaceAsync(string id, PlaceDto placeDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", placeDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<PlaceDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Place/{id}", placeDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<PlaceDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
 
         // DELETE an item
-        public async Task DeletePlaceAsync(int id)
+        public async Task DeletePlaceAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Place/{id}");
             response.EnsureSuccessStatusCode();
         }
 
@@ -122,9 +140,9 @@ namespace Gatherama.Services
             // Use _httpClient to fetch data
         }
         // GET item by ID
-        public async Task<FindingDto> GetFindingByIdAsync(int id)
+        public async Task<FindingDto> GetFindingByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Finding/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FindingDto>();
         }
@@ -136,17 +154,25 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<FindingDto>();
         }
         // PUT (update) an item
-        public async Task<FindingDto> PutFindingAsync(int id, FindingDto findingDto)
+        public async Task<FindingDto> PutFindingAsync(string id, FindingDto findingDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", findingDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FindingDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Finding/{id}", findingDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<FindingDto>();
+            }
+            catch(Exception)
+            { 
+                return null; 
+            }
+           
         }
 
         // DELETE an item
-        public async Task DeleteFindingAsync(int id)
+        public async Task DeleteFindingAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Finding/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion
@@ -159,9 +185,9 @@ namespace Gatherama.Services
             // Use _httpClient to fetch data
         }
         // GET item by ID
-        public async Task<FriendshipDto> GetFriendshipByIdAsync(int id)
+        public async Task<FriendshipDto> GetFriendshipByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Friendship/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<FriendshipDto>();
         }
@@ -173,17 +199,26 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<FriendshipDto>();
         }
         // PUT (update) an item
-        public async Task<FriendshipDto> PutFriendshipAsync(int id, FriendshipDto friendshipDto)
+        public async Task<FriendshipDto> PutFriendshipAsync(string id, FriendshipDto friendshipDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", friendshipDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<FriendshipDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync("api/Friendship/" + id, friendshipDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<FriendshipDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
 
         // DELETE an item
-        public async Task DeleteFriendshipAsync(int id)
+        public async Task DeleteFriendshipAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Friendship/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion
@@ -233,9 +268,9 @@ namespace Gatherama.Services
             // Use _httpClient to fetch data
         }
         // GET item by ID
-        public async Task<SpeciesDto> GetSpeciesByIdAsync(int id)
+        public async Task<SpeciesDto> GetSpeciesByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Species/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<SpeciesDto>();
         }
@@ -247,17 +282,25 @@ namespace Gatherama.Services
             return await response.Content.ReadFromJsonAsync<SpeciesDto>();
         }
         // PUT (update) an item
-        public async Task<SpeciesDto> PutSpeciesAsync(int id, SpeciesDto speciesDto)
+        public async Task<SpeciesDto> PutSpeciesAsync(string id, SpeciesDto speciesDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", speciesDto);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<SpeciesDto>();
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/Species/{id}", speciesDto);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<SpeciesDto>();
+            }catch(Exception)
+            {
+                return null;
+            }
+            
+         
         }
 
         // DELETE an item
-        public async Task DeleteSpeciesAsync(int id)
+        public async Task DeleteSpeciesAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Species/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion

@@ -1,4 +1,6 @@
 @page "/"
+@inject LoginState loginstate
+@inject NavigationManager navigationManager
 
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators" style="margin:15px;">
@@ -28,6 +30,10 @@
 </div>
 <!--Main Navigation-->
 <!--Main layout-->
+
+@if (loginstate.hasLoggedin)
+{
+
 <main class="mt-5">
     <div class="container">
         <!--Section: Content-->
@@ -47,7 +53,7 @@
                     <p>
                         Gatherama is an app designed to help you save the locations of your favorite gathering spots. This app is design
                         with gathereres in forefront and the usability of the app is very important - as are the actual gathering spots!
-                        Track your movement toward your designated gathering spot is one of the many features introduced by this app.
+                            You can find  yours and your friends <a href="/ownspots"> own Gathering Spots here!</a>
                     </p>
                     <p>
                         <strong>
@@ -56,7 +62,7 @@
                     </p>
                     <p>
                         With this app you cannot only keep record of your favoprite gathering spots, but you can also
-                        share them with your friends! 
+                        share them with your friends! Remember to add your friends to your friendlist from <a href="/personlist">Friends & Users page!</a>
                     </p>
                 </div>
             </div>
@@ -82,9 +88,9 @@
                             <h5 class="card-title">Mushrooms and Berries</h5>
                             <p class="card-text">
                                 The stars of this app are your mushrooms and berries. You can add any species in your spots,
-                                keep track of them and see all of them in one place.
+                                keep track of them and see all of them in one place. 
                             </p>
-                            @* <a href="#!" class="btn btn-primary">Button</a> *@
+                                 <a href="/addspot" class="btn btn-primary">Go and add your first finding here!</a> 
                         </div>
                     </div>
                 </div>
@@ -103,7 +109,7 @@
                             <p class="card-text">
                                 With this app you can easily add, update or remove your favorite gathering spots.
                             </p>
-                           @*  <a href="#!" class="btn btn-primary">Button</a> *@
+                                <a href="/ownspots" class="btn btn-primary">Check your Spots!</a>
                         </div>
                     </div>
                 </div>
@@ -123,7 +129,7 @@
                                 With this app you will have a pinpoint location of your gathering spots, so you will
                                 find them easily in furute! You can also update your spot, if it moves, etc.
                             </p>
-                           @*  <a href="#!" class="btn btn-primary">Button</a> *@
+                                <a href="/addspot" class="btn btn-primary">Go and add your first finding here!</a>
                         </div>
                     </div>
                 </div>
@@ -131,86 +137,118 @@
         </section>
         <!--Section: Content-->
 
-        <hr class="my-5" />
-
-        <!--Section: Content-->
-      @*   <section class="mb-5">
-            <h4 class="mb-5 text-center"><strong>Facilis consequatur eligendi</strong></h4>
-
-            <div class="row d-flex justify-content-center">
-                <div class="col-md-6">
-                    <form>
-                        <!-- 2 column grid layout with text inputs for the first and last names -->
-                        <div class="row mb-4">
-                            <div class="col">
-                                <div class="form-outline">
-                                    <input type="text" id="form3Example1" class="form-control" />
-                                    <label class="form-label" for="form3Example1">First name</label>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-outline">
-                                    <input type="text" id="form3Example2" class="form-control" />
-                                    <label class="form-label" for="form3Example2">Last name</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Email input -->
-                        <div class="form-outline mb-4">
-                            <input type="email" id="form3Example3" class="form-control" />
-                            <label class="form-label" for="form3Example3">Email address</label>
-                        </div>
-
-                        <!-- Password input -->
-                        <div class="form-outline mb-4">
-                            <input type="password" id="form3Example4" class="form-control" />
-                            <label class="form-label" for="form3Example4">Password</label>
-                        </div>
-
-                        <!-- Checkbox -->
-                        <div class="form-check d-flex justify-content-center mb-4">
-                            <input class="form-check-input me-2"
-                                   type="checkbox"
-                                   value=""
-                                   id="form2Example3"
-                                   checked />
-                            <label class="form-check-label" for="form2Example3">
-                                Subscribe to our newsletter
-                            </label>
-                        </div>
-
-                        <!-- Submit button -->
-                        <button type="submit" class="btn btn-primary btn-block mb-4">
-                            Sign up
-                        </button>
-
-                        <!-- Register buttons -->
-                        <div class="text-center">
-                            <p>or sign up with:</p>
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-google"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-github"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-        <!--Section: Content--> *@
     </div>
-</main>
+    </main>
+}
+else
+{
+
+    <main class="mt-5">
+        <div class="container">
+            <!--Section: Content-->
+            <section>
+                <div class="row">
+                    <div class="col-md-6 gx-5 mb-4">
+                        <div class="bg-image hover-overlay ripple shadow-2-strong rounded-5" data-mdb-ripple-color="light">
+                            <img src="/Images_Index/shroomsandberries15-2.jpg" class="img-fluid" />
+                            <a href="#!">
+                                <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 gx-5 mb-4">
+                        <h4><strong>Gatherama is your app for Berries and Mushrooms</strong></h4>
+                        <p>
+                            Gatherama is an app designed to help you save the locations of your favorite gathering spots. This app is design
+                            with gathereres in forefront and the usability of the app is very important - as are the actual gathering spots!
+                            You can find your own Gathering Spots via designated page in the app.
+                        </p>
+                        <p>
+                            <strong>
+                                Share your finds with your friends!
+                            </strong>
+                        </p>
+                        <p>
+                            With this app you cannot only keep record of your favoprite gathering spots, but you can also
+                            share them with your friends! Remember to add your friends to your friendlist from Friends & Users page!
+                        </p>
+                    </div>
+                </div>
+            </section>
+            <!--Section: Content-->
+
+            <hr class="my-5" />
+
+            <!--Section: Content-->
+            <section class="text-center">
+                <h4 class="mb-5"><strong>What Can You Do with Gatherama?</strong></h4>
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="/Images_Index/shroomsandberries7.jpg" class="img-fluid" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Mushrooms and Berries</h5>
+                                <p class="card-text">
+                                    The stars of this app are your mushrooms and berries. You can add any species in your spots,
+                                    keep track of them and see all of them in one place.
+                                </p>
+                                @* <a href="#!" class="btn btn-primary">Button</a> *@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="/Images_Index/shroomsandberries16.jpg"
+                                     class="img-fluid" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Add Your Favorite Spots</h5>
+                                <p class="card-text">
+                                    With this app you can easily add, update or remove your favorite gathering spots.
+                                </p>
+                                @*  <a href="#!" class="btn btn-primary">Button</a> *@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="/Images_Index/rasberry_1.jpg"
+                                     class="img-fluid" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Track Your Locations</h5>
+                                <p class="card-text">
+                                    With this app you will have a pinpoint location of your gathering spots, so you will
+                                    find them easily in furute! You can also update your spot, if it moves, etc.
+                                </p>
+                                @*  <a href="#!" class="btn btn-primary">Button</a> *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--Section: Content-->
+
+        </div>
+    </main>
+}
 <!--Main layout-->
 <!--Footer-->
 <footer >
@@ -218,42 +256,10 @@
     <hr class="m-0" />
 
     <div class="text-center py-4 align-items-center">
-        <p>Follow Gatherama on social media</p>
-        <a href="https://www.youtube.com/channel/UC5CF7mLQZhvx8O5GODZAhdA"
-           class="btn btn-primary m-1"
-           role="button"
-           rel="nofollow"
-           target="_blank">
-            <i class="fab fa-youtube"></i>
-        </a>
-        <a href="https://www.facebook.com/mdbootstrap"
-           class="btn btn-primary m-1"
-           role="button"
-           rel="nofollow"
-           target="_blank">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://twitter.com/MDBootstrap"
-           class="btn btn-primary m-1"
-           role="button"
-           rel="nofollow"
-           target="_blank">
-            <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://github.com/mdbootstrap/mdb-ui-kit"
-           class="btn btn-primary m-1"
-           role="button"
-           rel="nofollow"
-           target="_blank">
-            <i class="fab fa-github"></i>
-        </a>
-    </div>
-
-    <!-- Copyright -->
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <p>Come join us on the exciting world of Mushrooms and Berries!</p>
         © 2023 Copyright: Savonia Tite 23 Group 2
     </div>
-    <!-- Copyright -->
+
 </footer>
 <!--Footer-->
 

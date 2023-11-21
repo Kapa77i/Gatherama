@@ -1,0 +1,337 @@
+﻿@page "/editspot/{Id}"
+
+@using Gatherama.Shared
+@using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using System.Net.Http
+@using System.Text.Json
+@using System.Net.Http.Json;
+@using System
+@using System.Threading.Tasks
+@using Microsoft.Maui.Controls
+@using Gatherama.Services
+@using MongoDB.Bson;
+@using Newtonsoft.Json
+
+
+@inject IJSRuntime JS
+@inject ApiService apiService
+@inject NavigationManager NavigationManager
+@inject LoginState loginstate
+
+<h3>Edit your spot </h3>
+
+
+<head>
+    <title>Simple Marker</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./app.js"></script>
+    <script>
+
+        let markers = [];
+
+        function initMap(editFinding) {
+
+            const geocoder = new google.maps.Geocoder();
+
+            const map = new google.maps.Map(document.getElementById("googleMap"), {
+                zoom: 14,
+                center: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng }, //alkukeskitys omaan paikkaan
+                fullscreenControl: false,
+                zoomControl: true,
+                streetViewControl: false
+            });
+
+            newMarker = new google.maps.Marker({
+                position: { lat: editFinding._idPlace.lat, lng: editFinding._idPlace.lng },
+                map: map,
+            });
+            markers.push(newMarker)
+
+            map.addListener("click", (e) => {
+
+                placeMarkerAndPanTo(e.latLng, map, geocoder);
+            });
+
+
+            function placeMarkerAndPanTo(latLng, map, geocoder) {
+
+                newMarker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                    draggable: true
+                });
+
+
+                map.panTo(latLng);
+
+                // window.alert("Tultiin geocodeen: " + latLng)
+                const latilng = {
+                    lat: parseFloat(latLng.lat()),
+                    lng: parseFloat(latLng.lng()),
+                };
+
+
+                geocoder
+                    .geocode({ location: latilng })
+                    .then((response) => {
+                        if (response && response.results && response.results.length > 0) {
+                            const formattedAddress =
+                                response.results[3].formatted_address;
+                            // window.alert("Formatted address: " + JSON.stringify(response.results[3].formatted_address))
+                            const latlngStr = formattedAddress.split(",", 2);
+                            const cityCountry = {
+                                city: latlngStr[0],
+                                country: latlngStr[1],
+                            };
+
+                            setLocationData(latilng, cityCountry); // Set location data
+
+                        } else {
+                            window.alert("No results found");
+                        }
+                    })
+                    .catch((e) =>
+                        window.alert("Geocoder failed due to: " + e.message || "Unknown error")
+                    );
+                deleteMarkers();
+                markers.push(newMarker);
+
+                return newMarker;
+
+            }
+
+            // Sets the map on all markers in the array.
+            function setMapOnAll(map) {
+                for (let i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                }
+            }
+
+            // Removes the markers from the map, but keeps them in the array.
+            function hideMarkers() {
+                setMapOnAll(null);
+            }
+
+            //Remove the markers on the map
+            function deleteMarkers() {
+                hideMarkers();
+                markers = [];
+            }
+
+        }
+        function setLocationData(latilng, cityCountry) {
+            //window.alert("Tultiin setLoocationiin")
+
+            const placeInfo = {
+                city: cityCountry.city,
+                county: cityCountry.country,
+                lat: latilng.lat,
+                lng: latilng.lng
+            }
+
+            document.getElementById("city").value = cityCountry.city;
+            document.getElementById("country").value = cityCountry.country;
+            document.getElementById("lat").value = JSON.stringify(latilng.lat);
+            document.getElementById("lng").value = JSON.stringify(latilng.lng);
+
+            return placeInfo;
+        }
+
+        function fetchData() {
+            //window.alert("Tultiin fetchDataJS");
+            var fetchPlaceInfo = document.getElementById("city").value + ",";
+            fetchPlaceInfo += document.getElementById("country").value + ",";
+            fetchPlaceInfo += document.getElementById("lat").value + ",";
+            fetchPlaceInfo += document.getElementById("lng").value + ",";
+
+
+
+            return fetchPlaceInfo;
+        }
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+            infoWindow.setPosition(pos);
+            infoWindow.setContent(
+                browserHasGeolocation
+                    ? "Error: The Geolocation service failed."
+                    : "Error: Your browser doesn't support geolocation.",
+            );
+            infoWindow.open(map);
+        }
+
+        window.initMap = initMap;
+    </script>
+</head>
+<body>
+    <div> 
+        <div id="googleMap" style="width:100%;height:400px;">
+
+        </div>
+    </div>
+
+    @if(editFinding != null)
+    {
+        <EditForm Model="@editFinding" Context="formContext">
+            <DataAnnotationsValidator />
+            <div class="col-lg-4 col-md-12">
+                <label for="city"> City </label>
+                <InputText id="city" class="form-control" @bind-Value=editFinding._idPlace.city></InputText>
+                <ValidationMessage For="@(() => editFinding._idPlace.city)" />
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="country"> Country </label>
+                <InputText id="country" @bind-Value=editFinding._idPlace.country class="form-control"></InputText>
+                <ValidationMessage For="@(() => editFinding._idPlace.country)" />
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="lat"> Latitude </label>
+                <InputNumber id="lat" @bind-Value=editFinding._idPlace.lat class="form-control"></InputNumber>
+                <ValidationMessage For="@(() => editFinding._idPlace.lat)" />
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="lng"> Longitude </label>
+                <InputNumber id="lng" @bind-Value=editFinding._idPlace.lng class="form-control"></InputNumber>
+                <ValidationMessage For="@(() => editFinding._idPlace.lng)" />
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="findingDate">Add a Date </label>
+                <InputDate id="findingDate" @bind-Value=editFinding.datetime class="form-control"></InputDate>
+                <ValidationMessage For="@(() => editFinding.datetime)" />
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <label for="findindAmount"> Amount </label>
+                <InputText id="findindAmount" @bind-Value=editFinding.amount class="form-control"></InputText>
+                <ValidationMessage For="@(() => editFinding.amount)" />
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="findingMemo"> Memo </label>
+                <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control">Enter memolog here</InputText>
+                <ValidationMessage For="@(() => editFinding.memo)" />
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <label for="findindPrivate"> Private or not? </label>
+                <InputSelect id="findindPrivate" @bind-Value=editFinding._private class="form-control">
+                    <option value="">Select...</option>
+                    <option value="0">Private</option>
+                    <option value="1">Friends</option>
+                    <option value="2">Public</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => editFinding._private)" />
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <label for="speciesCategory"> Berries or Mushrooms? </label>
+                <InputSelect id="speciesCategory" @bind-Value="editFinding._idSpecies.category" class="form-control">
+                    <option value="">Select...</option>
+                    <option>Berries</option>
+                    <option>Mushrooms</option>
+                </InputSelect>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="speciesSubCategory"> Species Sub Category </label>
+                <InputText id="speciesSubCategory" @bind-Value="editFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="s_name"> Species Name </label>
+                <InputText id="s_name" @bind-Value="editFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <label for="latin_name"> Latin name </label>
+                <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+            </div>
+            <br />
+            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => EditFinding(formContext))">Change data!</button><button class ="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;" @onclick="@(() => OpenDeleteModal(formContext))">Delete</button>
+            
+        </EditForm>
+    }
+    
+</body>
+
+@* Delete Modal *@
+@if (deleteModalShown)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this finding?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteFinding">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private FindingDto editFinding = new FindingDto()
+        {
+            _idPlace = new PlaceDto { },
+            _idSpecies = new SpeciesDto { },
+            _idPerson = new PersonDto { }
+        };
+    string placeInfoJS;
+    private bool deleteModalShown = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        editFinding = await apiService.GetFindingByIdAsync(Id);
+
+        await JS.InvokeVoidAsync("initMap", editFinding);
+        await base.OnInitializedAsync();
+    }
+
+    protected async void EditFinding(EditContext formContext)
+    {
+        //Fetching the information from JS
+        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+        string[] splitFetch = placeInfoJS.Split(',');
+        editFinding._idPlace.city = splitFetch[0];
+        editFinding._idPlace.country = splitFetch[1];
+        editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+        editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+
+        //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+
+
+
+        Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
+        await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
+        await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+
+        await apiService.PutFindingAsync(editFinding.Id, editFinding);
+        NavigationManager.NavigateTo("/addspots", true);
+    }
+
+    private void OpenDeleteModal(EditContext formContext)
+    {
+        deleteModalShown = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalShown = false;
+
+    }
+
+    protected async void DeleteFinding()
+    {
+        //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji?
+        await apiService.DeleteFindingAsync(Id);
+        NavigationManager.NavigateTo("/ownspots", true);
+    }
+}
