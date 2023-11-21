@@ -109,9 +109,9 @@
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
-                        icon: {
-                            url: mush_icon,
-                            scaledSize: new google.maps.Size(36, 36)
+                        icon: {//jos custom ikonit poissa, näkyy androidissa
+                            url: mush_icon, //
+                            scaledSize: new google.maps.Size(36, 36)//
                         },
                         title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
@@ -122,9 +122,9 @@
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
-                        icon: {
-                            url: berry_icon,
-                            scaledSize: new google.maps.Size(46, 46)
+                        icon: {//
+                            url: berry_icon,//
+                            scaledSize: new google.maps.Size(46, 46)//
                         },
                         title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     });
@@ -134,15 +134,19 @@
                     var marker = new google.maps.Marker({
                         position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                         map: map,
-                        icon: {
-                            url: blueberry_icon,
-                            scaledSize: new google.maps.Size(36, 36)
+                        icon: {//
+                            url: blueberry_icon,//
+                            scaledSize: new google.maps.Size(36, 36)//
                         },
                         title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     });
                 }
 
-                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + find.datetime + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
+                //format date test
+                const isoDateTime = find.datetime;
+                const formattedDate = formatShortDate(isoDateTime);
+
+                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
                 if (find._idPerson.username === person.username) {//jos oma löydös, annetaan mahdollisuus muokata / poistaa
                     info = info + "\n\nWould you like to edit this information?"
                 }
@@ -159,6 +163,18 @@
             });    
          
         }
+
+        //datetime format
+        function formatShortDate(isoDateTime) {
+          const date = new Date(isoDateTime);
+
+          const options = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'  };
+          const formattedDate = date.toLocaleString('en-US', options);
+
+          return formattedDate;
+        }
+
+
 
         function placeMarkerAndPanTo(latLng, map, geocoder) {
 
