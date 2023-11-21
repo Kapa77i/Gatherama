@@ -98,9 +98,9 @@
 
             //Add markers for each place
             /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit:
-                    - marja: julkinen, sieni: yksityinen
-                --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
-                --> markerit ei draggable 
+                    - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
+                --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
+                --> markerit kiinteitä
             */
 
             visiblefindings.forEach(function (find) {
@@ -142,7 +142,7 @@
                     });
                 }
 
-                //format date test
+                //format date
                 const isoDateTime = find.datetime;
                 const formattedDate = formatShortDate(isoDateTime);
 
@@ -474,10 +474,12 @@
             --> nämä kaikki samaan listaan, joka viedään parametrina initMap() :lle
 
                 --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
-                    - marja: julkinen, sieni: yksityinen
-                --> tee tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
-                --> markerit ei draggable
-        */ foreach(FindingDto find in allfindings)
+                    - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
+                --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
+                --> markerit kiinteät
+        */ 
+
+        foreach(FindingDto find in allfindings)
         {
             if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)
             {
@@ -523,6 +525,9 @@
         await apiService.PostFindingAsync(newFinding);
         NavigationManager.NavigateTo("/ownspots", true);
     }
+
+    //NOTE! TÄMÄ LOGIIKKA TOIMI ANDROIDILLA
+
 
     // public async Task<Location> GetCachedLocation()
     // {
