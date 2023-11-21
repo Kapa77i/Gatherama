@@ -26,6 +26,7 @@ namespace Gatherama.Services
         public List<FriendshipDto> friendships { get; private set; }
         public List<MediaDto> media { get; private set; }
         public List<SpeciesDto> species { get; private set; }
+
         //PERSONS
         #region 
         // GET all items
