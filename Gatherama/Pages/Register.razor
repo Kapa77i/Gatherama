@@ -13,28 +13,28 @@
         <label class="form-label" for="FirstName">
             Firstname:
         </label>
-        <InputText id="FirstName" class="form-control"  @bind-Value="@person.firstName" />
+        <InputText id="FirstName" class="form-control" @bind-Value="@person.firstName" />
         <ValidationMessage For="@(() => person.firstName)" />
     </div>
     <div class="col-lg-4 col-md-12">
         <label class="form-label" for="LastName">
             Lastname:
         </label>
-        <InputText id="LastName" class="form-control"  @bind-Value="@person.lastName" />
+        <InputText id="LastName" class="form-control" @bind-Value="@person.lastName" />
         <ValidationMessage For="@(() => person.lastName)" />
     </div>
     <div class="col-lg-4 col-md-12">
         <label class="form-label" for="UserName">
             Username:
         </label>
-        <InputText id="UserName" class="form-control"  @bind-Value="@person.username" />
-        <ValidationMessage For="@(() => person.username)"/>
+        <InputText id="UserName" class="form-control" @bind-Value="@person.username" />
+        <ValidationMessage For="@(() => person.username)" />
     </div>
     <div class="col-lg-4 col-md-12">
         <label for="Email">
             Email:
         </label>
-        <InputText id="Email" class="form-control" @bind-Value="@person.email"/>
+        <InputText id="Email" class="form-control" @bind-Value="@person.email" />
         <ValidationMessage For="@(() => person.email)" />
     </div>
 
@@ -42,14 +42,14 @@
         <label for="password">
             Password:
         </label>
-        <InputText id="password" type="password" class="form-control" @bind-Value="@person.password"/>
+        <InputText id="password" type="password" class="form-control" @bind-Value="@person.password" />
         <ValidationMessage For="@(() => person.password)" />
     </div>
     <div class="col-lg-4 col-md-12">
         <label for="repeatPassword">
             Repeat password:
         </label>
-        <InputText id="repeatPassword" type="password" class="form-control" @bind-Value="@repeatPassword"/>
+        <InputText id="repeatPassword" type="password" class="form-control" @bind-Value="@repeatPassword" />
         <ValidationMessage For="@(() => repeatPassword)" />
     </div>
     @*Dont know how to present succesfull registeration to user. Pop-up when you click ok it redirects you to index page?*@
@@ -58,18 +58,45 @@
 @code {
     private string repeatPassword;
     private PersonDto person = new PersonDto();
+    private List<PersonDto> persons = new List<PersonDto>();
+    private bool isUserFound = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await apiService.GetPersonsAsync();
+    }
 
     protected async void Submit()
     {
-        if(person.password != repeatPassword)
+        isUserFound = false;
+        if (person.password != repeatPassword)
         {
             await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
         }
         else
         {
-            await apiService.PostPersonAsync(person);
-            NavigationManager.NavigateTo("/login", true); 
+            foreach (var item in persons)
+            {
+                if (item.username == person.username)
+                {
+                    await js.InvokeVoidAsync("alert", "Username is already in use");
+                    isUserFound = true;
+                    break;
+                }
+                if (item.email == person.email)
+                {
+                    await js.InvokeVoidAsync("alert", "Email is already in use");
+                    isUserFound = true;
+                    break;
+                }
+            }
+
+
         }
-        
+        if (!isUserFound)
+        {
+            await apiService.PostPersonAsync(person);
+            NavigationManager.NavigateTo("/login", true);
+        }
     }
 }
