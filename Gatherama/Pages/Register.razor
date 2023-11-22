@@ -72,6 +72,7 @@
         if (person.password != repeatPassword)
         {
             await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
+            
         }
         else
         {
@@ -91,12 +92,12 @@
                 }
             }
 
-
+            if (!isUserFound)
+            {
+                await apiService.PostPersonAsync(person);
+                NavigationManager.NavigateTo("/login", true);
+            }
         }
-        if (!isUserFound)
-        {
-            await apiService.PostPersonAsync(person);
-            NavigationManager.NavigateTo("/login", true);
-        }
+        
     }
 }
