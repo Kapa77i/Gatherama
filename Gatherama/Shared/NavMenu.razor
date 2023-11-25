@@ -43,10 +43,15 @@
                             <span class="oi oi-plus" aria-hidden="true"></span> Add a Spot
                         </NavLink>
                     </li>
-
-
-
                 </ul>
+                 <ul class="navbar-nav ms-auto">
+                    <li>
+                        <NavLink class="nav-link" href="persondetails">
+                            <span class="bi bi-person-fill"></span>User Info
+                        </NavLink>
+                    </li>
+                    </ul>
+
                 @* <a style="color:white">Hello @loginstate.isSingedin?.username</a> *@
                 <EditForm EditContext="new EditContext(new object())" OnSubmit="@LogOut" class="form-inline">
                     <button type="submit" style="color:white" class="nav-link btn btn-link" @onclick="LogOut">Log out</button>
