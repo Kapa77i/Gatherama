@@ -22,7 +22,7 @@
 
 <h3>PersonDetails</h3>
 
-<EditForm OnValidSubmit="@Submit" OnInvalidSubmit="@HandleInvalidSubmit" Model="@person">
+<EditForm Model="@person" Context="formContext">
 
     <DataAnnotationsValidator />
 
@@ -69,8 +69,9 @@
         <InputText id="repeatPassword" type="password" Class="form-control" style="margin-left: 15px; margin-bottom: 50px;" @bind-Value="@repeatPassword" />
         <ValidationMessage For="@(() => repeatPassword)" />
     </div>
-    @*Dont know how to present succesfull registeration to user. Pop-up when you click ok it redirects you to index page?*@
-    <button class="btn btn-info" type="submit">Update</button>
+    <div><button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => Submit(formContext))">Update</button> <button class="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;" @onclick="@(() => OpenDeleteModal(formContext))">Delete</button></div>
+    
+    
 
     @if (displayValidationErrorMessages)
     {
@@ -81,6 +82,28 @@
     }
 </EditForm>
 
+@* Delete Modal *@
+@if (deleteModalShown)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your account? You will be logged out of the system and loose all your findings.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteInfo">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
 
 
 @code {
@@ -89,7 +112,7 @@
     private List<PersonDto> persons = new List<PersonDto>();
     private bool isUserFound = false;
 
-
+    private bool deleteModalShown = false;
  
 
     protected override async Task OnInitializedAsync()
@@ -108,19 +131,9 @@
         displayUserAddedToDB = false;
     }
 
-    private async void Submit(EditContext context)
+    private async void Submit(EditContext formContext)
     {
-        if (context.Validate())
-        {
-            displayValidationErrorMessages = false;
-            displayUserAddedToDB = true;
-        }
-        else
-        {
-            displayValidationErrorMessages = true;
-            displayUserAddedToDB = false;
-        }
-
+       
         isUserFound = false;
         if (person.password != repeatPassword)
         {
@@ -151,5 +164,23 @@
             Console.WriteLine("Something went wrong");
         }
 
+    }
+
+    private void OpenDeleteModal(EditContext formContext)
+    {
+        deleteModalShown = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalShown = false;
+
+    }
+
+    protected async void DeleteInfo()
+    { //Needs a code to delete all the spots for this person. 
+        await apiService.DeleteFindingAsync(loginstate.isSingedin.Id);
+        loginstate.SetLogin(false, null);
+        NavigationManager.NavigateTo("/", true);
     }
 }
