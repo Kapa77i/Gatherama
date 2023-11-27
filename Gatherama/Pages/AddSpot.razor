@@ -399,8 +399,8 @@
 
     //////
     //TESTI
-    private ValidationMessageStore? messagestore;
-    private EditContext? editContext;
+    // private ValidationMessageStore? messagestore;
+    // private EditContext? editContext;
 
     /////
 
@@ -435,17 +435,17 @@
         var date = dateAndTime.Date.ToString().Replace("00.00.00", "");
         newFinding.datetime = DateTime.Parse(date);
 
-
-        // await GetCurrentLocation();
-        // if(currentlocation == null)
-        // {
-        //     await GetCachedLocation();
-        //     if(cachedlocation == null)
-        //     {
-        //         Console.WriteLine("ERROR: For unknown reason cannot fetch location");
-        //     }
-        //     currentlocation = cachedlocation;
-        // }
+        //Androidia ja Data Validaatiota varten
+        await GetCurrentLocation();
+        if(currentlocation == null)
+        {
+            await GetCachedLocation();
+            if(cachedlocation == null)
+            {
+                Console.WriteLine("ERROR: For unknown reason cannot fetch location");
+            }
+            currentlocation = cachedlocation;
+        }
 
         //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
         allfindings = await apiService.GetFindingsAsync();
@@ -484,11 +484,10 @@
             - jos kaverin julkaisema (kavereille), näytä
 
             --> nämä kaikki samaan listaan, joka viedään parametrina initMap() :lle
-
-                --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
-                    - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
-                --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
-                --> markerit kiinteät
+                    --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
+                        - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
+                    --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
+                    --> markerit kiinteät
         */ 
 
         foreach(FindingDto find in allfindings)
@@ -514,8 +513,8 @@
 
 
         //////////TESTIÄ
-        editContext = new EditContext(newFinding);
-        messagestore = new(editContext);
+        // editContext = new EditContext(newFinding);
+        // messagestore = new(editContext);
         ////////////
 
         await JS.InvokeVoidAsync("initMap", visiblefindings, person);
@@ -532,7 +531,18 @@
         newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
+        
+
+
+
+
+
+
+
+
+
         //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+        //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
 
 
 
@@ -544,22 +554,32 @@
             if (newFinding._idPlace.city == null)
             {
                 //ModelState.AddModelError("newFinding._idPlace.city", "City error");
-                messagestore.Add(() => newFinding._idPlace.city, "City error");
+                //messagestore.Add(() => newFinding._idPlace.city, "City error");
+                newFinding._idPlace.city = "Unknown City";
             } 
 
             if (newFinding._idPlace.country == null)
             {
-
+                newFinding._idPlace.country = "New Country";
             }
 
             if (newFinding._idPlace.lat == null)
             {
-                
+                if(currentlocation != null)
+                {
+                    newFinding._idPlace.lat = currentlocation.Latitude;
+                }
+                else{ newFinding._idPlace.lat = 0; }
+
             }
 
             if (newFinding._idPlace.lng == null)
             {
-
+                if(currentlocation != null)
+                {
+                    newFinding._idPlace.lng = currentlocation.Longitude;
+                }
+                else{ newFinding._idPlace.lng = 0; }
             }
 
         }
@@ -567,7 +587,7 @@
 
 
         //latinalainen nimi ja alakatergoria voi puuttua -> merkitään niihin "-", jotta kanta ei kaadu
-        //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
+
         if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null )
         {
             if (newFinding._idSpecies.category == null) //Poista purkka?
@@ -602,93 +622,97 @@
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
+
+
+
+
+
+
+
+
+
+
+
     //NOTE! TÄMÄ LOGIIKKA TOIMI ANDROIDILLA
 
 
-    // public async Task<Location> GetCachedLocation()
-    // {
-    //     try
-    //     {
-    //         cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
+    public async Task<Location> GetCachedLocation()
+    {
+        try
+        {
+            cachedlocation = await Geolocation.Default.GetLastKnownLocationAsync();
 
-    //         if (cachedlocation != null)
-    //         {
-    //             Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
-    //             // myLat = cachedlocation.Latitude;
-    //             // myLng = cachedlocation.Longitude;
-    //         }
+            if (cachedlocation != null)
+            {
+                Console.WriteLine($"Latitude: {cachedlocation.Latitude}, Longitude: {cachedlocation.Longitude}, Altitude: {cachedlocation.Altitude}");
+            }
 
-    //     }
-    //     catch (FeatureNotSupportedException fnsEx)
-    //     {
-    //         // Handle not supported on device exception
-    //         Console.WriteLine("ERROR: " + fnsEx);
-    //     }
-    //     catch (FeatureNotEnabledException fneEx)
-    //     {
-    //         // Handle not enabled on device exception
-    //         Console.WriteLine("ERROR: " + fneEx);
-    //     }
-    //     catch (PermissionException pEx)
-    //     {
-    //         // Handle permission exception
-    //         Console.WriteLine("ERROR: " + pEx);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         // Unable to get location
-    //         Console.WriteLine("ERROR: " + ex);
-    //     }
+        }
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            // Handle not supported on device exception
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch (FeatureNotEnabledException fneEx)
+        {
+            // Handle not enabled on device exception
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch (PermissionException pEx)
+        {
+            // Handle permission exception
+            Console.WriteLine("ERROR: " + pEx);
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
+        }
 
-    //     return cachedlocation;
-    // }
+        return cachedlocation;
+    }
 
 
 
-    // public async Task<Location> GetCurrentLocation()
-    // {
-    //     try
-    //     {
-    //         _isCheckingLocation = true;
+    public async Task<Location> GetCurrentLocation()
+    {
+        try
+        {
+            _isCheckingLocation = true;
 
-    //         GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
 
-    //         _cancelTokenSource = new CancellationTokenSource();
+            _cancelTokenSource = new CancellationTokenSource();
 
-    //         currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+            currentlocation = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
 
-    //         if (currentlocation != null){
-    //             Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
-    //             // myLat = currentlocation.Latitude;
-    //             // myLng = currentlocation.Longitude;
-
-    //         }
-
-
-    //     }
-    //     catch (FeatureNotSupportedException fnsEx)
-    //     {
-    //         Console.WriteLine("ERROR: " + fnsEx);
-    //     }
-    //     catch(FeatureNotEnabledException fneEx)
-    //     {
-    //         Console.WriteLine("ERROR: " + fneEx);
-    //     }
-    //     catch(PermissionException pEx)
-    //     {
-    //         Console.WriteLine("ERROR: " + pEx);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         // Unable to get location
-    //         Console.WriteLine("ERROR: " + ex);
-    //     }
-    //     finally
-    //     {
-    //         _isCheckingLocation = false;
-    //     }
-    //     return currentlocation;
-    // }
+            if (currentlocation != null){
+                Console.WriteLine($"Latitude: {currentlocation.Latitude}, Longitude: {currentlocation.Longitude}, Altitude: {currentlocation.Altitude}");
+            }
+        }
+        catch (FeatureNotSupportedException fnsEx)
+        {
+            Console.WriteLine("ERROR: " + fnsEx);
+        }
+        catch(FeatureNotEnabledException fneEx)
+        {
+            Console.WriteLine("ERROR: " + fneEx);
+        }
+        catch(PermissionException pEx)
+        {
+            Console.WriteLine("ERROR: " + pEx);
+        }
+        catch (Exception ex)
+        {
+            // Unable to get location
+            Console.WriteLine("ERROR: " + ex);
+        }
+        finally
+        {
+            _isCheckingLocation = false;
+        }
+        return currentlocation;
+    }
 
     public void CancelRequest()
     {
