@@ -56,7 +56,7 @@
 
             const mush_icon = '../Images_index/mushroom_icon.png'; 
             const berry_icon = '../Images_index/berry_icon.png';
-            const blueberry_icon = '../Images_index/blueberry_icon.png'
+            const blueberry_icon = '../Images_index/blueberry_icon.png';
 
             map.addListener("click", (e) => {
 
@@ -298,38 +298,37 @@
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
             <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
-            <ValidationMessage For="@(() => newFinding._idPlace.city)" />
+            <ValidationMessage For="@(() => newFinding._idPlace.city)" class="text-warning"/>
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="country"> Country </label>
             <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control"></InputText>
-            <ValidationMessage For="@(() => newFinding._idPlace.country)" />
+            <ValidationMessage For="@(() => newFinding._idPlace.country)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lat"> Latitude </label>
             <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control"></InputNumber>
-            <ValidationMessage For="@(() => newFinding._idPlace.lat)" />
+            <ValidationMessage For="@(() => newFinding._idPlace.lat)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lng"> Longitude </label>
             <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control"></InputNumber>
-            <ValidationMessage For="@(() => newFinding._idPlace.lng)" />
+            <ValidationMessage For="@(() => newFinding._idPlace.lng)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="findingDate">Add a Date </label>
             <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control"></InputDate>
-            <ValidationMessage For="@(() => newFinding.datetime)" />
+            <ValidationMessage For="@(() => newFinding.datetime)" class="text-warning" />
         </div>
 
         <div class="col-lg-4 col-md-12">
             <label for="findindAmount"> Amount </label>
             <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control"></InputText>
-            <ValidationMessage For="@(() => newFinding.amount)" />
+            <ValidationMessage For="@(() => newFinding.amount)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="findingMemo"> Memo </label>
             <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control">Enter memolog here</InputText>
-            <ValidationMessage For="@(() => newFinding.memo)" />
         </div>
 
         <div class="col-lg-4 col-md-12">
@@ -340,7 +339,7 @@
                 <option value="1">Friends</option>
                 <option value="2">Public</option>
             </InputSelect>
-            <ValidationMessage For="@(() => newFinding._private)" />
+            <ValidationMessage For="@(() => newFinding._private)" class="text-warning" />
         </div>
 
         <div class="col-lg-4 col-md-12">
@@ -350,6 +349,7 @@
                 <option>Berries</option>
                 <option>Mushrooms</option>
             </InputSelect>
+            <ValidationMessage For="@(() => newFinding._idSpecies.category)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="speciesSubCategory"> Species Sub Category </label>
@@ -358,6 +358,7 @@
         <div class="col-lg-4 col-md-12">
             <label for="s_name"> Species Name </label>
             <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+            <ValidationMessage For="@(() => newFinding._idSpecies.s_name)" class="text-warning" />
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="latin_name"> Latin name </label>
@@ -376,25 +377,35 @@
 
 
 @code {
-
-    /*NOTES:
-    * 
-    * Pyyd‰ lupa gps:‰‰n? - android ok!
-    * 
-    * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok, android ei ihan
-    * 
-    * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
-    * 
-    * (Anna hakea paikan nimell‰ (ja koordinaateilla?))
-    * 
-    * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (paitsi android)
-    * 
-    * (Opastus pinnipaikalle/osoitteeseen?)
+        /*NOTES:
+        * 
+        * Pyyd‰ lupa gps:‰‰n? - android ok!
+        * 
+        * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok, android ei ihan
+        * 
+        * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
+        * 
+        * (Anna hakea paikan nimell‰ (ja koordinaateilla?))
+        * 
+        * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (paitsi android)
+        * 
+        * (Opastus pinnipaikalle/osoitteeseen?)
     */
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
     Location currentlocation = new Location();
     Location cachedlocation;
+
+
+    //////
+    //TESTI
+    private ValidationMessageStore? messagestore;
+    private EditContext? editContext;
+
+    /////
+
+
+
 
     private List<FriendshipDto> friendships { get; set; }
     private List<PersonDto> friends = new List<PersonDto>();
@@ -407,11 +418,12 @@
     public PersonDto person { get; private set; }
 
     private FindingDto newFinding = new FindingDto()
-        {
-            _idPlace = new PlaceDto { },
-            _idSpecies = new SpeciesDto { },
-            _idPerson = new PersonDto { }
-        };
+    {
+        _idPlace = new PlaceDto { city = "", country = "", lat = 0, lng = 0 },
+        _idSpecies = new SpeciesDto { category = "", subCategory = "", s_name = "", latin_name = "" },
+        _idPerson = new PersonDto { }
+
+    };
 
     private FindingDto postFinding = new FindingDto();
 
@@ -500,6 +512,12 @@
 
         person = loginstate.isSingedin;
 
+
+        //////////TESTIƒ
+        editContext = new EditContext(newFinding);
+        messagestore = new(editContext);
+        ////////////
+
         await JS.InvokeVoidAsync("initMap", visiblefindings, person);
 
     }
@@ -515,13 +533,71 @@
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
         //Tarkista ett‰ kaikissa muuttujissa on arvot!! muuten error
-       
+
 
 
         Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
+
+        if(newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
+        {
+            //jos k‰ytt‰j‰ on poistanut jtn n‰ist‰ generoiduista tiedoista
+            if (newFinding._idPlace.city == null)
+            {
+                //ModelState.AddModelError("newFinding._idPlace.city", "City error");
+                messagestore.Add(() => newFinding._idPlace.city, "City error");
+            } 
+
+            if (newFinding._idPlace.country == null)
+            {
+
+            }
+
+            if (newFinding._idPlace.lat == null)
+            {
+                
+            }
+
+            if (newFinding._idPlace.lng == null)
+            {
+
+            }
+
+        }
         await apiService.PostPlaceAsync(newFinding._idPlace);
+
+
+        //latinalainen nimi ja alakatergoria voi puuttua -> merkit‰‰n niihin "-", jotta kanta ei kaadu
+        //Huom. Form Validation ei tunnista sis‰kk‰isi‰ objekteja, tehd‰‰n t‰m‰ k‰sin
+        if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null )
+        {
+            if (newFinding._idSpecies.category == null) //Poista purkka?
+            {
+                newFinding._idSpecies.category = "Unknown";
+            }
+
+            if (newFinding._idSpecies.subCategory == null)
+            {
+                newFinding._idSpecies.subCategory = "-";
+            }
+
+            if (newFinding._idSpecies.s_name == null) //Poista purkka?
+            {
+                newFinding._idSpecies.s_name = "Unknown";
+            }
+
+            if (newFinding._idSpecies.latin_name == null)
+            {
+                newFinding._idSpecies.latin_name = "-";
+            }
+
+        }
         await apiService.PostSpeciesAsync(newFinding._idSpecies);
 
+        //memo voi puuttua -> jos puuttuu, merkit‰‰n kantaan "-"
+        if (newFinding.memo == null) 
+        {
+            newFinding.memo = "-";
+        }
         await apiService.PostFindingAsync(newFinding);
         NavigationManager.NavigateTo("/ownspots", true);
     }

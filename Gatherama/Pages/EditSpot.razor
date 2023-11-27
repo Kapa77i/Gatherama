@@ -278,11 +278,13 @@
     public string Id { get; set; }
 
     private FindingDto editFinding = new FindingDto()
-        {
-            _idPlace = new PlaceDto { },
-            _idSpecies = new SpeciesDto { },
-            _idPerson = new PersonDto { }
-        };
+    {
+        _idPlace = new PlaceDto { },
+        _idSpecies = new SpeciesDto { },
+        _idPerson = new PersonDto { }
+    };
+    private List<PlaceDto> allplaces = new List<PlaceDto>();
+    private List<SpeciesDto> allspecies = new List<SpeciesDto>();
     string placeInfoJS;
     private bool deleteModalShown = false;
 
