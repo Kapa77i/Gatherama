@@ -412,7 +412,7 @@
     public List<FindingDto> allfindings { get; private set; }
     public List<FindingDto> visiblefindings = new List<FindingDto>();
     public List<PlaceDto> places { get; private set; }
-    public List<FindingDto> findings { get; private set; }
+    /* public List<FindingDto> findings { get; private set; } */ //turha?
     public List<PersonDto> persons { get; private set; }
     public List<SpeciesDto> species { get; private set; }
     public PersonDto person { get; private set; }
@@ -550,7 +550,7 @@
 
         if(newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
         {
-            //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista
+            //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista --> Onko turha????
             if (newFinding._idPlace.city == null)
             {
                 //ModelState.AddModelError("newFinding._idPlace.city", "City error");
