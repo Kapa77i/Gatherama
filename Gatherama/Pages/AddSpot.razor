@@ -32,7 +32,7 @@
 <head>
     <title>Simple Marker</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" async defer></script>
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
 
@@ -41,7 +41,7 @@
 
         let markers = [];
     
-        function initMap(visiblefindings, person) {
+        function initMap(visiblefindings, person, platform) {
 
             const geocoder = new google.maps.Geocoder();
           
@@ -106,40 +106,105 @@
             visiblefindings.forEach(function (find) {
                 if (find._idPerson.username === person.username) {//jos oma löydös, merkitään sienellä
 
-                    var marker = new google.maps.Marker({
-                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                        map: map,
-                        icon: {//jos custom ikonit poissa, näkyy androidissa
-                            url: mush_icon, //
-                            scaledSize: new google.maps.Size(36, 36)//
-                        },
-                        title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                    if(platform == false) {
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            icon: {
+                                url: mush_icon, //
+                                scaledSize: new google.maps.Size(36, 36)//
+                            },
+                            optimized: true,
+                            title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
-                    });
+                        });
+                    } else {//jos custom ikonit poissa, näkyy androidissa
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            content: { background: "#0B5CDE" }, //ei toimi
+                            optimized: true,
+                            title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+
+                        });
+                    }
+                    // var marker = new google.maps.Marker({
+                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                    //     map: map,
+                    //     icon: {//jos custom ikonit poissa, näkyy androidissa
+                    //         url: mush_icon, //
+                    //         scaledSize: new google.maps.Size(36, 36)
+                    //     },
+                    //     optimized: true,
+                    //     title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+
+                    // });
 
                 }
                 else if (find._private == 2) {//toisen julkinen löydös, merkitään marjalla
-                    var marker = new google.maps.Marker({
-                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                        map: map,
-                        icon: {//
-                            url: berry_icon,//
-                            scaledSize: new google.maps.Size(46, 46)//
-                        },
-                        title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    });
+                    if (platform == false) {
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            icon: {//
+                                url: berry_icon,//
+                                scaledSize: new google.maps.Size(46, 46)//
+                            },
+                            optimized: true,
+                            title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                        });
+                    }
+                    else {//jos custom ikonit poissa, näkyy androidissa
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            optimized: true,
+                            title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                        });
+                    }
+                    // var marker = new google.maps.Marker({
+                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                    //     map: map,
+                    //     icon: {//
+                    //         url: berry_icon,//
+                    //         scaledSize: new google.maps.Size(46, 46)//
+                    //     },
+                    //     optimized: true,
+                    //     title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                    // });
 
                 }
                 else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
-                    var marker = new google.maps.Marker({
-                        position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                        map: map,
-                        icon: {//
-                            url: blueberry_icon,//
-                            scaledSize: new google.maps.Size(36, 36)//
-                        },
-                        title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    });
+                    if (platform == false) {
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            icon: {//
+                                url: blueberry_icon,//
+                                scaledSize: new google.maps.Size(36, 36)//
+                            },
+                            optimized: true,
+                            title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                        });
+                    }
+                    else {//jos custom ikonit poissa, näkyy androidissa
+                        var marker = new google.maps.Marker({
+                            position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                            map: map,
+                            optimized: true,
+                            title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                        });
+                    }
+                    // var marker = new google.maps.Marker({
+                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
+                    //     map: map,
+                    //     icon: {//
+                    //         url: blueberry_icon,//
+                    //         scaledSize: new google.maps.Size(36, 36)//
+                    //     },
+                    //     optimized: true,
+                    //     title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
+                    // });
                 }
 
                 //format date
@@ -401,7 +466,7 @@
     //TESTI
     // private ValidationMessageStore? messagestore;
     // private EditContext? editContext;
-
+    private bool platform = false; 
     /////
 
 
@@ -515,9 +580,14 @@
         //////////TESTIÄ
         // editContext = new EditContext(newFinding);
         // messagestore = new(editContext);
+        if(DeviceInfo.Current.Platform == DevicePlatform.Android)
+        {
+            platform = true;
+        }
+        else{ platform = false; }
         ////////////
 
-        await JS.InvokeVoidAsync("initMap", visiblefindings, person);
+        await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform);
 
     }
 
