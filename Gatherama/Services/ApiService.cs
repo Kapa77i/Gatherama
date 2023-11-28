@@ -233,21 +233,21 @@ namespace Gatherama.Services
         // GET item by ID
         public async Task<MediaDto> GetMediaByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.GetAsync($"api/Media/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<MediaDto>();
         }
         // POST a new item
         public async Task<MediaDto> PostMediaAsync(MediaDto mediaDto)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseEndpoint, mediaDto);
+            var response = await _httpClient.PostAsJsonAsync($"api/Media", mediaDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<MediaDto>();
         }
         // PUT (update) an item
         public async Task<MediaDto> PutMediaAsync(int id, MediaDto mediaDto)
         {
-            var response = await _httpClient.PutAsJsonAsync($"{_baseEndpoint}/{id}", mediaDto);
+            var response = await _httpClient.PutAsJsonAsync($"api/Media/{id}", mediaDto);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<MediaDto>();
         }
@@ -255,7 +255,7 @@ namespace Gatherama.Services
         // DELETE an item
         public async Task DeleteMediaAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"{_baseEndpoint}/{id}");
+            var response = await _httpClient.DeleteAsync($"api/Media/{id}");
             response.EnsureSuccessStatusCode();
         }
         #endregion
