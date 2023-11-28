@@ -61,7 +61,7 @@
                 newMarker = new google.maps.Marker({
                     position: latLng,
                     map: map,
-                    draggable: true //--> jos tämä poissa, näkyy androidissa
+                    draggable: true
                 });
 
 
@@ -171,7 +171,7 @@
 
         </div>
     </div>
-
+    <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => LeavePage())">Back to previous page</button>
     @if(editFinding != null)
     {
         <EditForm Model="@editFinding" Context="formContext">
@@ -335,5 +335,10 @@
         //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji?
         await apiService.DeleteFindingAsync(Id);
         NavigationManager.NavigateTo("/ownspots", true);
+    }
+
+    protected void LeavePage()
+    {
+        NavigationManager.NavigateTo("/addspots", true);
     }
 }
