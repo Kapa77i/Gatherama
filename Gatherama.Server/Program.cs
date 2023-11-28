@@ -1,5 +1,5 @@
 using Gatherama.Server.Models;
-using Gatherama.Server.Services;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,9 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<GatheramaDatabaseSettings>(
     builder.Configuration.GetSection("Gatherama"));
-builder.Services.AddSingleton<PersonService>();
-builder.Services.AddSingleton<MediaService>();
-builder.Services.AddSingleton<FriendshipService>();
+
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddScoped(sp => new GatheramaDbContext("mongodb+srv://Kata:Group2OnParas@cluster0.ivs7i1k.mongodb.net/?retryWrites=true&w=majority", "Gatherama"));
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5000") }); // Tämä url testaukseen???

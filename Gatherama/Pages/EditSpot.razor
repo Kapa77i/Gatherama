@@ -25,7 +25,7 @@
 <head>
     <title>Simple Marker</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" async defer></script>
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
     <script>
@@ -171,7 +171,7 @@
 
         </div>
     </div>
-
+    <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => LeavePage())">Back to previous page</button>
     @if(editFinding != null)
     {
         <EditForm Model="@editFinding" Context="formContext">
@@ -278,11 +278,13 @@
     public string Id { get; set; }
 
     private FindingDto editFinding = new FindingDto()
-        {
-            _idPlace = new PlaceDto { },
-            _idSpecies = new SpeciesDto { },
-            _idPerson = new PersonDto { }
-        };
+    {
+        _idPlace = new PlaceDto { },
+        _idSpecies = new SpeciesDto { },
+        _idPerson = new PersonDto { }
+    };
+    private List<PlaceDto> allplaces = new List<PlaceDto>();
+    private List<SpeciesDto> allspecies = new List<SpeciesDto>();
     string placeInfoJS;
     private bool deleteModalShown = false;
 
@@ -333,5 +335,10 @@
         //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji?
         await apiService.DeleteFindingAsync(Id);
         NavigationManager.NavigateTo("/ownspots", true);
+    }
+
+    protected void LeavePage()
+    {
+        NavigationManager.NavigateTo("/addspots", true);
     }
 }

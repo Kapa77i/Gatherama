@@ -1,5 +1,4 @@
 ﻿@page "/register"
-@using Gatherama.ViewModels;
 @using Gatherama.Services;
 @inject ApiService apiService
 @inject IJSRuntime js
@@ -72,6 +71,7 @@
         if (person.password != repeatPassword)
         {
             await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
+            
         }
         else
         {
@@ -90,11 +90,13 @@
                     break;
                 }
             }
+
+            if (!isUserFound)
+            {
+                await apiService.PostPersonAsync(person);
+                NavigationManager.NavigateTo("/login", true);
+            }
         }
-        if (!isUserFound)
-        {
-            await apiService.PostPersonAsync(person);
-            NavigationManager.NavigateTo("/login", true);
-        }
+        
     }
 }

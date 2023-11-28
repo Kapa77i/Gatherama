@@ -1,0 +1,186 @@
+﻿@page "/persondetails"
+
+@using Gatherama.Shared
+@using Microsoft.Maui.Controls.Maps
+@using Microsoft.Maui.Maps
+@using System.Net.Http
+@using System.Text.Json
+@using System.Net.Http.Json;
+@using System
+@using System.Threading.Tasks
+@using Microsoft.Maui.Controls
+@using Gatherama.Services
+@using MongoDB.Bson;
+@using Newtonsoft.Json
+
+
+@inject IJSRuntime js
+@inject ApiService apiService
+@inject NavigationManager NavigationManager
+@inject LoginState loginstate
+
+
+<h3>PersonDetails</h3>
+
+<EditForm Model="@person" Context="formContext">
+
+    <DataAnnotationsValidator />
+
+    <div class="col-lg-4 col-md-12">
+        <label class="form-label" for="FirstName">
+            Firstname:
+        </label>
+        <InputText id="FirstName" Class="form-control" @bind-Value="@person.firstName" />
+        <ValidationMessage For="@(() => person.firstName)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label class="form-label" for="LastName">
+            Lastname:
+        </label>
+        <InputText id="LastName" Class="form-control" @bind-Value="@person.lastName" />
+        <ValidationMessage For="@(() => person.lastName)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label class="form-label" for="UserName">
+            Username:
+        </label>
+        <InputText id="UserName" Class="form-control" @bind-Value="@person.username" />
+        <ValidationMessage For="@(() => person.username)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="Email">
+            Email:
+        </label>
+        <InputText id="Email" Class="form-control" @bind-Value="@person.email" />
+        <ValidationMessage For="@(() => person.email)" />
+    </div>
+
+    <div class="col-lg-4 col-md-12">
+        <label for="password">
+            Password:
+        </label>
+        <InputText id="password" type="password" Class="form-control" @bind-Value="@person.password" />
+        <ValidationMessage For="@(() => person.password)" />
+    </div>
+    <div class="col-lg-4 col-md-12">
+        <label for="repeatPassword">
+            Repeat password:
+        </label>
+        <InputText id="repeatPassword" type="password" Class="form-control" style="margin-left: 15px; margin-bottom: 50px;" @bind-Value="@repeatPassword" />
+        <ValidationMessage For="@(() => repeatPassword)" />
+    </div>
+    <div><button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => Submit(formContext))">Update</button> <button class="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;" @onclick="@(() => OpenDeleteModal(formContext))">Delete</button></div>
+    
+    
+
+    @if (displayValidationErrorMessages)
+    {
+        <div class="col-md-4" style="margin-top:10px">
+            <label>Validation Messages: </label>
+            <ValidationSummary />
+        </div>
+    }
+</EditForm>
+
+@* Delete Modal *@
+@if (deleteModalShown)
+{
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your account? You will be logged out of the system and loose all your findings.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-warning" @onclick="DeleteInfo">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+@code {
+    private string repeatPassword;
+    private PersonDto person = new PersonDto();
+    private List<PersonDto> persons = new List<PersonDto>();
+    private bool isUserFound = false;
+
+    private bool deleteModalShown = false;
+ 
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await apiService.GetPersonsAsync();
+        person = await apiService.GetPersonByIdAsync(loginstate.isSingedin.Id);
+    }
+
+
+    bool displayValidationErrorMessages = false;
+    bool displayUserAddedToDB = false;
+
+    private void HandleInvalidSubmit(EditContext context)
+    {
+        displayValidationErrorMessages = true;
+        displayUserAddedToDB = false;
+    }
+
+    private async void Submit(EditContext formContext)
+    {
+       
+        isUserFound = false;
+        if (person.password != repeatPassword)
+        {
+            await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
+
+        }
+
+        else if (person.username != loginstate.isSingedin.username)
+        {
+            foreach (var item in persons)
+            {
+                if (item.username == person.username)
+                {
+                    await js.InvokeVoidAsync("alert", "Username is already in use");
+                    isUserFound = true;
+                    break;
+                }
+            }
+        }
+        else if (!isUserFound || person.username == loginstate.isSingedin.username)
+        {
+            await apiService.PutPersonAsync(loginstate.isSingedin.Id, person);
+            NavigationManager.NavigateTo("/", true);
+        }
+
+        else
+        {
+            Console.WriteLine("Something went wrong");
+        }
+
+    }
+
+    private void OpenDeleteModal(EditContext formContext)
+    {
+        deleteModalShown = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        deleteModalShown = false;
+
+    }
+
+    protected async void DeleteInfo()
+    { //Needs a code to delete all the spots for this person. 
+        await apiService.DeleteFindingAsync(loginstate.isSingedin.Id);
+        loginstate.SetLogin(false, null);
+        NavigationManager.NavigateTo("/", true);
+    }
+}
