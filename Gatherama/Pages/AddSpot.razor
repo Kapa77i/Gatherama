@@ -114,7 +114,6 @@
                                 url: mush_icon, //
                                 scaledSize: new google.maps.Size(36, 36)//
                             },
-                            optimized: true,
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
@@ -123,7 +122,6 @@
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
                             content: { background: "#0B5CDE" }, //ei toimi
-                            optimized: true,
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
@@ -135,7 +133,6 @@
                     //         url: mush_icon, //
                     //         scaledSize: new google.maps.Size(36, 36)
                     //     },
-                    //     optimized: true,
                     //     title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                     // });
@@ -150,7 +147,6 @@
                                 url: berry_icon,//
                                 scaledSize: new google.maps.Size(46, 46)//
                             },
-                            optimized: true,
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
@@ -158,7 +154,6 @@
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            optimized: true,
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
@@ -169,7 +164,6 @@
                     //         url: berry_icon,//
                     //         scaledSize: new google.maps.Size(46, 46)//
                     //     },
-                    //     optimized: true,
                     //     title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     // });
 
@@ -183,7 +177,6 @@
                                 url: blueberry_icon,//
                                 scaledSize: new google.maps.Size(36, 36)//
                             },
-                            optimized: true,
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
@@ -191,7 +184,6 @@
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            optimized: true,
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
@@ -202,7 +194,6 @@
                     //         url: blueberry_icon,//
                     //         scaledSize: new google.maps.Size(36, 36)//
                     //     },
-                    //     optimized: true,
                     //     title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                     // });
                 }
@@ -464,13 +455,14 @@
 
     //////
     //TESTI
-    // private ValidationMessageStore? messagestore;
-    // private EditContext? editContext;
-    private bool platform = false; 
+    private ValidationMessageStore messagestore;
+    private EditContext editContext;
+
     /////
 
 
 
+    private bool platform = false;
 
     private List<FriendshipDto> friendships { get; set; }
     private List<PersonDto> friends = new List<PersonDto>();
@@ -576,19 +568,28 @@
 
         person = loginstate.isSingedin;
 
-
-        //////////TESTIÄ
-        // editContext = new EditContext(newFinding);
-        // messagestore = new(editContext);
-        if(DeviceInfo.Current.Platform == DevicePlatform.Android)
+        //mikä laite käytössä: Android vai muu (Windows)
+        if (DeviceInfo.Current.Platform == DevicePlatform.Android)
         {
             platform = true;
         }
-        else{ platform = false; }
-        ////////////
+        else { platform = false; }
+
 
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform);
+    }
 
+    protected override Task OnParametersSetAsync()
+    {
+        //////////TESTIÄ
+        // Create EditContext
+        editContext = new EditContext(newFinding);
+        // Create additional message store for the custom validation messages
+        messagestore = new(editContext);
+        // Add additional validation handler
+        editContext.OnValidationRequested += OnValidationRequestedAsync;
+        ////////////
+        return base.OnParametersSetAsync();
     }
 
     protected async void SubmitFinding()
@@ -601,12 +602,69 @@
         newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
-        
 
 
+        bool placeExists = false;
+        PlaceDto existingPlace = new PlaceDto();
+        bool speciesExists = false;
+        SpeciesDto existingSpecies = new SpeciesDto();
 
+        //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
+        foreach(PlaceDto place in places)
+        {
+            if (place.city == newFinding._idPlace.city && place.country == newFinding._idPlace.country && place.lat == newFinding._idPlace.lat && place.lng == newFinding._idPlace.lng)
+            {
+                placeExists = true;
+                existingPlace = place;
+                break;
+            }
+        }
 
+        if (placeExists)//jos paikka olemassa, käytetään vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
+        {
+            newFinding._idPlace = existingPlace;
+        }
+        else//uusi paikka, uudet tiedot ja tietojen tarkistukset, ettei virheellistä tietoa pääse kantaan
+        {
+            Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
 
+            if (newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
+            {
+                //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista --> Onko turha????
+                if (newFinding._idPlace.city == null)
+                {
+                    //ModelState.AddModelError("newFinding._idPlace.city", "City error");
+                    //messagestore.Add(() => newFinding._idPlace.city, "City error");
+                    newFinding._idPlace.city = "Unknown City";
+                }
+
+                if (newFinding._idPlace.country == null)
+                {
+                    newFinding._idPlace.country = "New Country";
+                }
+
+                if (newFinding._idPlace.lat == null)
+                {
+                    if (currentlocation != null)
+                    {
+                        newFinding._idPlace.lat = currentlocation.Latitude;
+                    }
+                    else { newFinding._idPlace.lat = 0; }
+
+                }
+
+                if (newFinding._idPlace.lng == null)
+                {
+                    if (currentlocation != null)
+                    {
+                        newFinding._idPlace.lng = currentlocation.Longitude;
+                    }
+                    else { newFinding._idPlace.lng = 0; }
+                }
+
+            }
+            await apiService.PostPlaceAsync(newFinding._idPlace);
+        }
 
 
 
@@ -616,77 +674,63 @@
 
 
 
-        Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
 
-        if(newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
+        foreach (SpeciesDto spec in species)
         {
-            //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista --> Onko turha????
-            if (newFinding._idPlace.city == null)
+            if (spec.category == newFinding._idSpecies.category && spec.subCategory == newFinding._idSpecies.subCategory && spec.s_name == newFinding._idSpecies.s_name && spec.latin_name == newFinding._idSpecies.latin_name)
             {
-                //ModelState.AddModelError("newFinding._idPlace.city", "City error");
-                //messagestore.Add(() => newFinding._idPlace.city, "City error");
-                newFinding._idPlace.city = "Unknown City";
-            } 
-
-            if (newFinding._idPlace.country == null)
-            {
-                newFinding._idPlace.country = "New Country";
+                speciesExists= true;
+                existingSpecies = spec;
+                break;
             }
-
-            if (newFinding._idPlace.lat == null)
-            {
-                if(currentlocation != null)
-                {
-                    newFinding._idPlace.lat = currentlocation.Latitude;
-                }
-                else{ newFinding._idPlace.lat = 0; }
-
-            }
-
-            if (newFinding._idPlace.lng == null)
-            {
-                if(currentlocation != null)
-                {
-                    newFinding._idPlace.lng = currentlocation.Longitude;
-                }
-                else{ newFinding._idPlace.lng = 0; }
-            }
-
         }
-        await apiService.PostPlaceAsync(newFinding._idPlace);
 
-
-        //latinalainen nimi ja alakatergoria voi puuttua -> merkitään niihin "-", jotta kanta ei kaadu
-
-        if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null )
+        if (speciesExists)
         {
-            if (newFinding._idSpecies.category == null) //Poista purkka?
-            {
-                newFinding._idSpecies.category = "Unknown";
-            }
-
-            if (newFinding._idSpecies.subCategory == null)
-            {
-                newFinding._idSpecies.subCategory = "-";
-            }
-
-            if (newFinding._idSpecies.s_name == null) //Poista purkka?
-            {
-                newFinding._idSpecies.s_name = "Unknown";
-            }
-
-            if (newFinding._idSpecies.latin_name == null)
-            {
-                newFinding._idSpecies.latin_name = "-";
-            }
-
+            newFinding._idSpecies = existingSpecies;
         }
-        await apiService.PostSpeciesAsync(newFinding._idSpecies);
+        else
+        {
+            //latinalainen nimi ja alakatergoria voi puuttua -> merkitään niihin "-", jotta kanta ei kaadu
+
+            if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null)
+            {
+                if (newFinding._idSpecies.category == null) //Poista purkka?
+                {
+                    newFinding._idSpecies.category = "Unknown";
+                }
+
+                if (newFinding._idSpecies.subCategory == null)
+                {
+                    newFinding._idSpecies.subCategory = "-";
+                }
+
+                if (newFinding._idSpecies.s_name == null) //Poista purkka?
+                {
+                    newFinding._idSpecies.s_name = "Unknown";
+                }
+
+                if (newFinding._idSpecies.latin_name == null)
+                {
+                    newFinding._idSpecies.latin_name = "-";
+                }
+
+            }
+            await apiService.PostSpeciesAsync(newFinding._idSpecies);
+        }
+       
 
         //memo voi puuttua -> jos puuttuu, merkitään kantaan "-"
         if (newFinding.memo == null) 
         {
             newFinding.memo = "-";
+        }
+        //Entä jos pv on tulevaisuudessa?
+
+        if(newFinding.datetime > DateTime.Now)
+        {
+            var date = DateTime.Now.Date.ToString().Replace("00.00.00", "");
+            newFinding.datetime = DateTime.Parse(date);
         }
         await apiService.PostFindingAsync(newFinding);
         NavigationManager.NavigateTo("/ownspots", true);
@@ -788,6 +832,30 @@
     {
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
+    }
+
+    private void OnValidationRequestedAsync(object sender, ValidationRequestedEventArgs e)
+    {
+        //clear previous error messages
+        messagestore.Clear();
+
+        //mitä haluat testata
+        bool future = false;
+        //onko päiväys tulevaisuudessa
+        if(newFinding.datetime > DateTime.Now)
+        {
+            future = true;
+        }
+        // While waiting for this async process, OnValidSubmit gets called
+
+        if (future)
+        {
+            // yes, so add a validation message
+            messagestore.Add(() => newFinding.datetime, "The day cannot be in the future.");
+
+            // inform ValidationSummary that a new error message has been added
+            editContext.NotifyValidationStateChanged();
+        }
     }
 
 }
