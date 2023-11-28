@@ -37,6 +37,7 @@ public class Tests
         var response = await apiService.PostPersonAsync(person);
         var responseForDelete = await apiService.GetUserInfoByLogin(person.username, person.password);
 
+        person.Id = response.Id;
         personToDelete.Id = responseForDelete.Id;
 
 
@@ -72,14 +73,22 @@ public class Tests
 
     [Test]
 
-    public async Task Person_Login_Should_Return_Success()
+    public async Task Person_Login_Should_Return_Success_AND_LoginState_Should_Be_True()
     { 
         var httpClient = new HttpClient();
+        var loginState = new LoginState();
         httpClient.BaseAddress = new Uri(_baseEndpoint);
 
         var httpResponse = await httpClient.PostAsJsonAsync("api/Person/login", person);
 
         Assert.That(httpResponse.IsSuccessStatusCode);
+
+        var userinfo = await apiService.GetUserInfoByLogin(person.username, person.password);
+        loginState.SetLogin(true, userinfo);
+
+        Assert.True(loginState.hasLoggedin);
+        Assert.That(loginState.isSingedin.Id, Is.EqualTo(person.Id));
+
 
 
     }
