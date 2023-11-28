@@ -351,6 +351,7 @@
 
     <EditForm Model="newFinding" OnValidSubmit="@SubmitFinding">
         <DataAnnotationsValidator />
+        <ValidationSummary/>
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
             <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
@@ -486,6 +487,11 @@
 
     string placeInfoJS;
 
+    private bool placeExists = false;
+    private PlaceDto existingPlace = new PlaceDto();
+    private bool speciesExists = false;
+    private SpeciesDto existingSpecies = new SpeciesDto();
+
     protected override async Task OnInitializedAsync()
     {
         var dateAndTime = DateTime.Now;
@@ -604,10 +610,7 @@
 
 
 
-        bool placeExists = false;
-        PlaceDto existingPlace = new PlaceDto();
-        bool speciesExists = false;
-        SpeciesDto existingSpecies = new SpeciesDto();
+    
 
         //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
         foreach(PlaceDto place in places)
