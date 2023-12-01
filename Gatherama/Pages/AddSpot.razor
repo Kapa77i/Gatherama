@@ -443,7 +443,10 @@
 
 
     </EditForm>
-
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+    <div>@errorMessage</div>
+    }
  
 
 </body>
@@ -465,20 +468,18 @@
         * 
         * (Opastus pinnipaikalle/osoitteeseen?)
     */
+
+    private string errorMessage;
+    bool isValidated = true;
+
+
+
+
+
     private CancellationTokenSource _cancelTokenSource;
     private bool _isCheckingLocation;
     Location currentlocation = new Location();
     Location cachedlocation;
-
-
-    //////
-    //TESTI
-    private ValidationMessageStore messagestore;
-    private EditContext editContext;
-
-    /////
-
-
 
     private bool platform = false;
 
@@ -602,21 +603,35 @@
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
     }
 
-    protected override Task OnParametersSetAsync()
+    protected void NestedValidation()
     {
-        //////////TESTIÄ
-        // Create EditContext
-        editContext = new EditContext(newFinding);
-        // Create additional message store for the custom validation messages
-        messagestore = new(editContext);
-        // Add additional validation handler
-        editContext.OnValidationRequested += OnValidationRequestedAsync;
-        ////////////
-        return base.OnParametersSetAsync();
+        if (string.IsNullOrEmpty(newFinding._idPlace.city))
+        {
+            errorMessage = "City is required";
+            isValidated = false;
+        }
+        else
+        {
+            errorMessage = null;
+        }
+
+        if (string.IsNullOrEmpty(newFinding._idPlace.country))
+        {
+            errorMessage = "Country is required";
+        }
     }
 
     protected async void SubmitFinding()
     {
+
+        if(newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
+        {
+            await GetCurrentLocation();
+            newFinding._idPlace.lat = currentlocation.Latitude;
+            newFinding._idPlace.lng = currentlocation.Longitude;
+        }
+
+
         //Fetching the information from JS
         placeInfoJS = await JS.InvokeAsync<string>("fetchData");
         string[] splitFetch = placeInfoJS.Split(',');
@@ -625,9 +640,6 @@
         newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
         newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
-
-
-    
 
         //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
         foreach(PlaceDto place in places)
@@ -758,16 +770,7 @@
 
 
 
-
-
-
-
-
-
-
-
-
-    //NOTE! TÄMÄ LOGIIKKA TOIMI ANDROIDILLA
+    //NOTE! TÄMÄ LOGIIKKA TOIMII ANDROIDILLA
 
 
     public async Task<Location> GetCachedLocation()
@@ -854,28 +857,6 @@
             _cancelTokenSource.Cancel();
     }
 
-    private void OnValidationRequestedAsync(object sender, ValidationRequestedEventArgs e)
-    {
-        //clear previous error messages
-        messagestore.Clear();
-
-        //mitä haluat testata
-        bool future = false;
-        //onko päiväys tulevaisuudessa
-        if(newFinding.datetime > DateTime.Now)
-        {
-            future = true;
-        }
-        // While waiting for this async process, OnValidSubmit gets called
-
-        if (future)
-        {
-            // yes, so add a validation message
-            messagestore.Add(() => newFinding.datetime, "The day cannot be in the future.");
-
-            // inform ValidationSummary that a new error message has been added
-            editContext.NotifyValidationStateChanged();
-        }
-    }
+    
 
 }

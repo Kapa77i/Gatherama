@@ -21,7 +21,7 @@ namespace Gatherama.Shared
         //public uint? _idSpecies { get; set; }
         //public uint? _idPerson { get; set; }
         //public uint _idPlace { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Species is required")]
         public virtual SpeciesDto _idSpecies { get; set; } = null!;
         [Required]
         public virtual PersonDto _idPerson { get; set; } = null!;
