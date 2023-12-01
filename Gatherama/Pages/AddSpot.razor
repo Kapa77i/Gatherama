@@ -460,15 +460,6 @@
 
     </EditForm>
 
-  
-        @* @foreach (string error in errorList)
-        {
-            <div class="text-warning">@error</div>
-        } *@
-        
-    
- 
-
 </body>
 
 
@@ -491,45 +482,37 @@
 
     //private List<string> errorList = new List<string>();
     private string[] errorTable = new string[8];
-    bool isValidated = true;
-
-
-
-
-
-    private CancellationTokenSource _cancelTokenSource;
-    private bool _isCheckingLocation;
-    Location currentlocation = new Location();
-    Location cachedlocation;
-
+    private bool isValidated = true;
     private bool platform = false;
+    private bool placeExists = false;
+    private bool speciesExists = false;
+    private PlaceDto existingPlace = new PlaceDto();
+    private SpeciesDto existingSpecies = new SpeciesDto();
+
+    private bool _isCheckingLocation;
+    private Location currentlocation = new Location();
+    private Location cachedlocation;
+    private CancellationTokenSource _cancelTokenSource;
+
+    private string placeInfoJS;
 
     private List<FriendshipDto> friendships { get; set; }
     private List<PersonDto> friends = new List<PersonDto>();
-    public List<FindingDto> allfindings { get; private set; }
-    public List<FindingDto> visiblefindings = new List<FindingDto>();
-    public List<PlaceDto> places { get; private set; }
+    private List<PersonDto> persons { get; set; }
+    private List<FindingDto> allfindings { get; set; }
+    private List<FindingDto> visiblefindings = new List<FindingDto>();
+    private List<PlaceDto> places { get; set; }
     /* public List<FindingDto> findings { get; private set; } */ //turha?
-    public List<PersonDto> persons { get; private set; }
-    public List<SpeciesDto> species { get; private set; }
-    public PersonDto person { get; private set; }
+    private List<SpeciesDto> species { get; set; }
 
+    private PersonDto person { get; set; }
+    private FindingDto postFinding = new FindingDto();
     private FindingDto newFinding = new FindingDto()
     {
-        _idPlace = new PlaceDto { city = "", country = "", lat = 0, lng = 0 },
-        _idSpecies = new SpeciesDto { category = "", subCategory = "", s_name = "", latin_name = "" },
+        _idPlace = new PlaceDto { },
+        _idSpecies = new SpeciesDto { },
         _idPerson = new PersonDto { }
-
     };
-
-    private FindingDto postFinding = new FindingDto();
-
-    string placeInfoJS;
-
-    private bool placeExists = false;
-    private PlaceDto existingPlace = new PlaceDto();
-    private bool speciesExists = false;
-    private SpeciesDto existingSpecies = new SpeciesDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -624,13 +607,31 @@
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
     }
 
-    protected void NestedValidation()
+    //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
+    protected async void NestedValidation() 
     {
+        try
+        {
+            //Fetching the information from JS
+            placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+            string[] splitFetch = placeInfoJS.Split(',');
+            newFinding._idPlace.city = splitFetch[0];
+            newFinding._idPlace.country = splitFetch[1];
+            newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+            newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+            //Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Exception: " + ex);    
+        }
+
         //errorList.Clear();
         for(int i = 0; i < errorTable.Length; i++)
         {
             errorTable[i] = null;
         }
+        isValidated = true;
 
         //Finding
         if (newFinding.datetime == null || newFinding.datetime > DateTime.Now)
@@ -675,7 +676,7 @@
         if (newFinding._idPlace.lat == null || newFinding._idPlace.lng == null){
 
             // errorList.Insert(2,"Coordinates are required");
-            errorTable[2] = "Coordinates is required";
+            errorTable[2] = "Coordinates are required";
             isValidated = false;
         }
 
@@ -713,20 +714,10 @@
 
     }
 
-    protected async void SubmitFinding(bool isValidated)
+    protected bool CheckIfPlaceExists()
     {
-
-        //Fetching the information from JS
-        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
-        string[] splitFetch = placeInfoJS.Split(',');
-        newFinding._idPlace.city = splitFetch[0];
-        newFinding._idPlace.country = splitFetch[1];
-        newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
-        newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
-
-
         //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
-        foreach(PlaceDto place in places)
+        foreach (PlaceDto place in places)
         {
             if (place.city == newFinding._idPlace.city && place.country == newFinding._idPlace.country && place.lat == newFinding._idPlace.lat && place.lng == newFinding._idPlace.lng)
             {
@@ -736,70 +727,38 @@
             }
         }
 
-        if (placeExists)//jos paikka olemassa, käytetään vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
-        {
-            newFinding._idPlace = existingPlace;
-        }
-        else//uusi paikka, uudet tiedot ja tietojen tarkistukset, ettei virheellistä tietoa pääse kantaan
-        {
-            Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
+        return placeExists;
+    }
 
-            if (newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
-            {
-                //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista --> Onko turha????
-                if (newFinding._idPlace.city == null)
-                {
-                    //ModelState.AddModelError("newFinding._idPlace.city", "City error");
-                    //messagestore.Add(() => newFinding._idPlace.city, "City error");
-                    newFinding._idPlace.city = "Unknown City";
-                }
-
-                if (newFinding._idPlace.country == null)
-                {
-                    newFinding._idPlace.country = "New Country";
-                }
-
-                if (newFinding._idPlace.lat == null)
-                {
-                    if (currentlocation != null)
-                    {
-                        newFinding._idPlace.lat = currentlocation.Latitude;
-                    }
-                    else { newFinding._idPlace.lat = 0; }
-
-                }
-
-                if (newFinding._idPlace.lng == null)
-                {
-                    if (currentlocation != null)
-                    {
-                        newFinding._idPlace.lng = currentlocation.Longitude;
-                    }
-                    else { newFinding._idPlace.lng = 0; }
-                }
-
-            }
-            await apiService.PostPlaceAsync(newFinding._idPlace);
-        }
-
-
-
-
-        //Tarkista että kaikissa muuttujissa on arvot!! muuten error
-        //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
-
-
-
-
+    protected bool CheckIfSpeciesExists()
+    {
         foreach (SpeciesDto spec in species)
         {
             if (spec.category == newFinding._idSpecies.category && spec.subCategory == newFinding._idSpecies.subCategory && spec.s_name == newFinding._idSpecies.s_name && spec.latin_name == newFinding._idSpecies.latin_name)
             {
-                speciesExists= true;
+                speciesExists = true;
                 existingSpecies = spec;
                 break;
             }
         }
+        return speciesExists;
+    }
+
+    protected async void SubmitFinding(bool isValidated)
+    {
+        placeExists = CheckIfPlaceExists();
+
+        //jos paikka olemassa, käytetään vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
+        if (placeExists)
+        {
+            newFinding._idPlace = existingPlace;
+        }
+        else 
+        { //uusi paikka lisätään kantaan, tiedot tarkastettu validoinnissa
+            await apiService.PostPlaceAsync(newFinding._idPlace); 
+        }
+
+        speciesExists = CheckIfSpeciesExists();
 
         if (speciesExists)
         {
@@ -807,46 +766,14 @@
         }
         else
         {
-            //latinalainen nimi ja alakatergoria voi puuttua -> merkitään niihin "-", jotta kanta ei kaadu
-
-            if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null)
-            {
-                if (newFinding._idSpecies.category == null) //Poista purkka?
-                {
-                    newFinding._idSpecies.category = "Unknown";
-                }
-
-                if (newFinding._idSpecies.subCategory == null)
-                {
-                    newFinding._idSpecies.subCategory = "-";
-                }
-
-                if (newFinding._idSpecies.s_name == null) //Poista purkka?
-                {
-                    newFinding._idSpecies.s_name = "Unknown";
-                }
-
-                if (newFinding._idSpecies.latin_name == null)
-                {
-                    newFinding._idSpecies.latin_name = "-";
-                }
-
-            }
             await apiService.PostSpeciesAsync(newFinding._idSpecies);
         }
-       
 
-        
-
-        
         await apiService.PostFindingAsync(newFinding);
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
-
-
     //NOTE! TÄMÄ LOGIIKKA TOIMII ANDROIDILLA
-
 
     public async Task<Location> GetCachedLocation()
     {
