@@ -41,7 +41,7 @@
 
         let markers = [];
     
-        function initMap(visiblefindings, person, platform) {
+        function initMap(visiblefindings, person, platform, currentlocation) {
 
             const geocoder = new google.maps.Geocoder();
           
@@ -71,29 +71,46 @@
             locationButton.classList.add("custom-map-control-button");
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
             locationButton.addEventListener("click", () => {
-                // Try HTML5 geolocation.
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const pos = {
-                                lat: position.coords.latitude,
-                                lng: position.coords.longitude,
-                            };
 
-                            //window.alert("Position is: " + pos);
-                            // window.alert("Location found.");
-                            //infoWindow.open(map);
-                            map.setCenter(pos);
+                //jos windows (false) niin käytetään HTML5 geolocation, muuten android and currentlocation parametri
 
-                        },
-                        () => {
-                            handleLocationError(true, infoWindow, map.getCenter());
-                        },
-                    );
-                } else {
-                    // Browser doesn't support Geolocation
-                    handleLocationError(false, infoWindow, map.getCenter());
+                if (platform == false) {
+
+                    //map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
+
+                    // Try HTML5 geolocation.
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const pos = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                                };
+
+                                //window.alert("Position is: " + pos);
+                                // window.alert("Location found.");
+                                //infoWindow.open(map);
+                                map.setCenter(pos);
+
+                            },
+                            () => {
+                                handleLocationError(true, infoWindow, map.getCenter());
+                            },
+                        );
+                    } else {
+                        // Browser doesn't support Geolocation
+                        handleLocationError(false, infoWindow, map.getCenter());
+                    }
                 }
+                else {
+                    //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
+                    if (currentlocation != null) {
+                        map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
+                    }
+                    else { window.alert("Something went wrong with your current location. Try again later.") }
+                }
+                
+                
             });
 
             //Add markers for each place
@@ -121,7 +138,7 @@
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            content: { background: "#0B5CDE" }, //ei toimi
+                            content: { background: "#0B5CDE" }, //ei toimi "#0B5CDE"
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
@@ -582,7 +599,7 @@
         else { platform = false; }
 
 
-        await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform);
+        await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
     }
 
     protected override Task OnParametersSetAsync()
