@@ -11,11 +11,11 @@ namespace Gatherama.Shared
     {
         
         public string Id { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Private is required")]
         public int? _private { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Date is required")]
         public DateTime? datetime { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Amount is required")]
         public string? amount { get; set; } = null!;
         public string? memo { get; set; } = null!;
         //public uint? _idSpecies { get; set; }
