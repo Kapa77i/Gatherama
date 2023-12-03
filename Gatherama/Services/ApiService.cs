@@ -225,10 +225,20 @@ namespace Gatherama.Services
         }
 
         // DELETE an item
-        public async Task DeleteFriendshipAsync(string id)
+        public async Task<FriendshipDto> DeleteFriendshipAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"api/Friendship/{id}");
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/Friendship/{id}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<FriendshipDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
         #endregion
         //MEDIA
@@ -307,10 +317,20 @@ namespace Gatherama.Services
         }
 
         // DELETE an item
-        public async Task DeleteSpeciesAsync(string id)
+        public async Task<SpeciesDto> DeleteSpeciesAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"api/Species/{id}");
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/Species/{id}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<SpeciesDto>();
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+            
         }
         #endregion
     }

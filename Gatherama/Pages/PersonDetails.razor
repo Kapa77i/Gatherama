@@ -76,7 +76,7 @@
         </label>
         <InputText id="repeatPassword" type="password" Class="form-control" @bind-Value="@repeatPassword" />
     </div>
-    <div><button class="btn btn-primary" type="submit" style="margin-bottom: 50px; margin-top: 20px">Update</button> <button class="btn btn-warning" type="submit" style="margin-left: 7px; margin-bottom: 50px; margin-top: 20px"  @onclick="@(() => OpenDeleteModal(formContext))">Delete</button></div>
+    <div><button class="btn btn-primary" type="submit" style="margin-bottom: 50px; margin-top: 20px">Update</button> <button class="btn btn-warning" type="button" style="margin-left: 7px; margin-bottom: 50px; margin-top: 20px"  @onclick="@(() => OpenDeleteModal(formContext))">Delete</button></div>
     
 </EditForm>
 
@@ -114,6 +114,9 @@
 
     private bool deleteModalShown = false;
 
+    private List<FindingDto> allFindings = new List<FindingDto>();
+    private List<FriendshipDto> allFriendships = new List<FriendshipDto>();
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,15 +124,6 @@
         person = await apiService.GetPersonByIdAsync(loginstate.isSingedin.Id);
     }
 
-
-    bool displayValidationErrorMessages = false;
-    bool displayUserAddedToDB = false;
-
-    private void HandleInvalidSubmit(EditContext context)
-    {
-        displayValidationErrorMessages = true;
-        displayUserAddedToDB = false;
-    }
 
     private async void Submit(EditContext formContext)
     {
@@ -139,38 +133,6 @@
             errorTable[i] = null;
         }
         isValidated = true;
-
-
-        isUserFound = false;
-        if (person.password != repeatPassword)
-        {
-            await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
-
-        }
-
-        else if (person.username != loginstate.isSingedin.username)
-        {
-            foreach (var item in persons)
-            {
-                if (item.username == person.username)
-                {
-                    await js.InvokeVoidAsync("alert", "Username is already in use");
-                    isUserFound = true;
-                    break;
-                }
-                if (item.email == person.email)
-                {
-                    await js.InvokeVoidAsync("alert", "Email is already in use");
-                    isUserFound = true;
-                    break;
-                }
-            }
-        }
-
-        else
-        {
-            Console.WriteLine("Something went wrong");
-        }
 
         //Edit input fields validation
         if (string.IsNullOrEmpty(person.firstName))
@@ -194,6 +156,33 @@
             isValidated = false;
         }
 
+        isUserFound = false;
+        if (person.password != repeatPassword)
+        {
+            await js.InvokeVoidAsync("alert", "Password and Repeat password do not match");
+        }
+        else if (person.username != loginstate.isSingedin.username)
+        {
+            foreach (var item in persons)
+            {
+                if (item.username == person.username)
+                {
+                    await js.InvokeVoidAsync("alert", "Username is already in use");
+                    isUserFound = true;
+                    break;
+                }
+                if (item.email == person.email)
+                {
+                    await js.InvokeVoidAsync("alert", "Email is already in use");
+                    isUserFound = true;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("Something went wrong");
+        }
 
         if ((!isUserFound || person.username == loginstate.isSingedin.username) && isValidated == true)
         {
@@ -215,12 +204,30 @@
     }
 
     protected async void DeleteInfo()
-    { //Needs a code to delete all the spots for this person. 
-       // await apiService.DeletePlaceAsync(editFinding._idPlace.Id);
-       // await apiService.DeletePlaceAsync(editFinding._idSpecies.Id);
-       // await apiService.DeleteFindingAsync(Id);
+    { 
+        allFindings = await apiService.GetFindingsAsync();
+        allFriendships = await apiService.GetFriendshipsAsync();
 
-        await apiService.DeleteFindingAsync(loginstate.isSingedin.Id);
+        foreach (var item in allFindings)
+        {
+            if (item._idPerson.Id == loginstate.isSingedin.Id)
+            {
+                await apiService.DeletePlaceAsync(item._idPlace.Id);
+                await apiService.DeleteSpeciesAsync(item._idSpecies.Id);
+                await apiService.DeleteFindingAsync(item.Id);
+            }
+        }
+
+        foreach (var item in allFriendships)
+        {
+            if ((item._idPerson.Id == loginstate.isSingedin.Id) || (item._idFriend.Id == loginstate.isSingedin.Id))
+            {
+                await apiService.DeleteFriendshipAsync(item.Id);
+            }
+           
+        }
+
+        await apiService.DeletePersonAsync(loginstate.isSingedin.Id);
         loginstate.SetLogin(false, null);
         NavigationManager.NavigateTo("/", true);
     }

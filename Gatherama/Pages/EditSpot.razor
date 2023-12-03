@@ -336,9 +336,8 @@
 
     protected async void DeleteFinding()
     {
-        //riittääkö että poistaa pelkän löydöksen, vai pitääkö poistaa myös paikka ja laji?
         await apiService.DeletePlaceAsync(editFinding._idPlace.Id);
-        await apiService.DeletePlaceAsync(editFinding._idSpecies.Id);
+        await apiService.DeleteSpeciesAsync(editFinding._idSpecies.Id);
         await apiService.DeleteFindingAsync(Id);
         NavigationManager.NavigateTo("/ownspots", true);
     }
