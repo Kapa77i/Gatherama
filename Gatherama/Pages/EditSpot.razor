@@ -178,43 +178,47 @@
     <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => LeavePage())">Back to previous page</button>
     @if(editFinding != null)
     {
-        <EditForm Model="@editFinding" Context="formContext">
-            <DataAnnotationsValidator />
+        <EditForm Model="@editFinding" Context="formContext" OnValidSubmit="EditFinding">
             <div class="col-lg-4 col-md-12">
                 <label for="city"> City </label>
                 <InputText id="city" class="form-control" @bind-Value=editFinding._idPlace.city></InputText>
-                <ValidationMessage For="@(() => editFinding._idPlace.city)" />
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[0]</div>
+                }
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="country"> Country </label>
                 <InputText id="country" @bind-Value=editFinding._idPlace.country class="form-control"></InputText>
-                <ValidationMessage For="@(() => editFinding._idPlace.country)" />
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[1]</div>
+                }
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="lat"> Latitude </label>
                 <InputNumber id="lat" @bind-Value=editFinding._idPlace.lat class="form-control"></InputNumber>
-                <ValidationMessage For="@(() => editFinding._idPlace.lat)" />
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="lng"> Longitude </label>
                 <InputNumber id="lng" @bind-Value=editFinding._idPlace.lng class="form-control"></InputNumber>
-                <ValidationMessage For="@(() => editFinding._idPlace.lng)" />
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[2]</div>
+                }
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="findingDate">Add a Date </label>
                 <InputDate id="findingDate" @bind-Value=editFinding.datetime class="form-control"></InputDate>
-                <ValidationMessage For="@(() => editFinding.datetime)" />
             </div>
 
             <div class="col-lg-4 col-md-12">
                 <label for="findindAmount"> Amount </label>
                 <InputText id="findindAmount" @bind-Value=editFinding.amount class="form-control"></InputText>
-                <ValidationMessage For="@(() => editFinding.amount)" />
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="findingMemo"> Memo </label>
-                <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control">Enter memolog here</InputText>
-                <ValidationMessage For="@(() => editFinding.memo)" />
+                <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control"></InputText>
             </div>
 
             <div class="col-lg-4 col-md-12">
@@ -225,7 +229,10 @@
                     <option value="1">Friends</option>
                     <option value="2">Public</option>
                 </InputSelect>
-                <ValidationMessage For="@(() => editFinding._private)" />
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[3]</div>
+                }
             </div>
 
             <div class="col-lg-4 col-md-12">
@@ -235,6 +242,10 @@
                     <option>Berries</option>
                     <option>Mushrooms</option>
                 </InputSelect>
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[4]</div>
+                }
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="speciesSubCategory"> Species Sub Category </label>
@@ -243,13 +254,17 @@
             <div class="col-lg-4 col-md-12">
                 <label for="s_name"> Species Name </label>
                 <InputText id="s_name" @bind-Value="editFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+                @if (errorTable != null)
+                {
+                    <div class="text-warning">@errorTable[5]</div>
+                }
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="latin_name"> Latin name </label>
                 <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
             </div>
             <br />
-            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => EditFinding(formContext))">Change data!</button><button class ="btn btn-warning" type="submit" style="margin-left: 15px; margin-bottom: 50px;" @onclick="() => OpenDeleteModal(formContext)">Delete</button>
+            <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @* @onclick="@(() => EditFinding(formContext))" *@>Change data!</button><button class ="btn btn-warning" type="button" style="margin-left: 15px; margin-bottom: 50px;" @onclick="() => OpenDeleteModal(formContext)">Delete</button>
             
         </EditForm>
     }
@@ -280,7 +295,8 @@
 @code {
     [Parameter]
     public string Id { get; set; }
-
+    private string[] errorTable = new string[8];
+    private bool isValidated = true;
     private FindingDto editFinding = new FindingDto()
     {
         _idPlace = new PlaceDto { },
@@ -303,24 +319,104 @@
 
     protected async void EditFinding(EditContext formContext)
     {
-        //Fetching the information from JS
-        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
-        string[] splitFetch = placeInfoJS.Split(',');
-        editFinding._idPlace.city = splitFetch[0];
-        editFinding._idPlace.country = splitFetch[1];
-        editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
-        editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
-
+        //errorList.Clear();
+        for (int i = 0; i < errorTable.Length; i++)
+        {
+            errorTable[i] = null;
+        }
+        isValidated = true;
         //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+        //Finding
+        if (editFinding.datetime == null || editFinding.datetime > DateTime.Now)
+        {
+            var date = DateTime.Now.Date.ToString().Replace("00.00.00", "");
+            editFinding.datetime = DateTime.Parse(date);
+        }
 
+        if (editFinding._private == null)
+        {
+            //errorList.Insert(3, "Private is required");
+            errorTable[3] = "Private is required";
+            isValidated = false;
+        }
 
+        //memo ja amount voi puuttua -> jos puuttuu, merkitään kantaan "-"
+        if (string.IsNullOrEmpty(editFinding.memo))
+        {
+            editFinding.memo = "-";
+        }
 
-        Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
-        await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
-        await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+        if (string.IsNullOrEmpty(editFinding.amount))
+        {
+            editFinding.amount = "-";
+        }
 
-        await apiService.PutFindingAsync(editFinding.Id, editFinding);
-        NavigationManager.NavigateTo("/addspots", true);
+        //Place
+        if (string.IsNullOrEmpty(editFinding._idPlace.city))
+        {
+            // errorList.Insert(0,"City is required");
+            errorTable[0] = "City is required";
+            isValidated = false;
+        }
+
+        if (string.IsNullOrEmpty(editFinding._idPlace.country))
+        {
+            // errorList.Insert(1,"Country is required");
+            errorTable[1] = "Country is required";
+            isValidated = false;
+        }
+
+        if (editFinding._idPlace.lat == null || editFinding._idPlace.lng == null)
+        {
+            // errorList.Insert(2,"Coordinates are required");
+            errorTable[2] = "Coordinates are required";
+            isValidated = false;
+        }
+
+        //Species
+
+        if (string.IsNullOrEmpty(editFinding._idSpecies.category))
+        {
+            // errorList.Insert(4,"Category is required");
+            errorTable[4] = "Category is required";
+            isValidated = false;
+        }
+
+        if (string.IsNullOrEmpty(editFinding._idSpecies.subCategory))
+        {//ei pakollinen kenttä
+            editFinding._idSpecies.subCategory = "-";
+        }
+
+        if (string.IsNullOrEmpty(editFinding._idSpecies.s_name))
+        {
+            // errorList.Insert(5,"Name of the species is required");
+            errorTable[5] = "Name of the species is required";
+            isValidated = false;
+        }
+
+        if (string.IsNullOrEmpty(editFinding._idSpecies.latin_name))
+        {//ei pakollinen kenttä
+            editFinding._idSpecies.latin_name = "-";
+        }
+
+        //onko tiedot oikein
+        if (isValidated == true)
+        {
+            //Fetching the information from JS
+            placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+            string[] splitFetch = placeInfoJS.Split(',');
+            editFinding._idPlace.city = splitFetch[0];
+            editFinding._idPlace.country = splitFetch[1];
+            editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+            editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+
+            Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
+            await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
+            await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+
+            await apiService.PutFindingAsync(editFinding.Id, editFinding);
+            NavigationManager.NavigateTo("/addspots", true);
+        }
     }
 
     protected void OpenDeleteModal(EditContext formContext)
