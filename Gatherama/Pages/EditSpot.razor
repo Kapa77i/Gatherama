@@ -1,4 +1,5 @@
 ﻿@page "/editspot/{Id}"
+@layout NoMenuLayout
 
 @using Gatherama.Shared
 @using Microsoft.Maui.Controls.Maps
@@ -18,6 +19,7 @@
 @inject ApiService apiService
 @inject NavigationManager NavigationManager
 @inject LoginState loginstate
+<br/>
 
 <h3>Edit your spot </h3>
 
@@ -171,6 +173,7 @@
 
         </div>
     </div>
+    <br />
     <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @onclick="@(() => LeavePage())">Back to previous page</button>
     @if(editFinding != null)
     {
