@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Gatherama.Server.Models;
-using Gatherama.Server.Services;
 using Gatherama.Shared;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
