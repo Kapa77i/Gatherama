@@ -216,6 +216,10 @@
 
     protected async void DeleteInfo()
     { //Needs a code to delete all the spots for this person. 
+       // await apiService.DeletePlaceAsync(editFinding._idPlace.Id);
+       // await apiService.DeletePlaceAsync(editFinding._idSpecies.Id);
+       // await apiService.DeleteFindingAsync(Id);
+
         await apiService.DeleteFindingAsync(loginstate.isSingedin.Id);
         loginstate.SetLogin(false, null);
         NavigationManager.NavigateTo("/", true);

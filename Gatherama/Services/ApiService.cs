@@ -123,10 +123,19 @@ namespace Gatherama.Services
         }
 
         // DELETE an item
-        public async Task DeletePlaceAsync(string id)
+        public async Task<PlaceDto> DeletePlaceAsync(string id)
         {
-            var response = await _httpClient.DeleteAsync($"api/Place/{id}");
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/Place/{id}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<PlaceDto>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
 
 
