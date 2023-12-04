@@ -319,13 +319,14 @@
 
     protected async void EditFinding(EditContext formContext)
     {
-        //errorList.Clear();
         for (int i = 0; i < errorTable.Length; i++)
         {
             errorTable[i] = null;
         }
         isValidated = true;
+
         //Tarkista että kaikissa muuttujissa on arvot!! muuten error
+
         //Finding
         if (editFinding.datetime == null || editFinding.datetime > DateTime.Now)
         {
@@ -335,7 +336,6 @@
 
         if (editFinding._private == null)
         {
-            //errorList.Insert(3, "Private is required");
             errorTable[3] = "Private is required";
             isValidated = false;
         }
@@ -354,21 +354,18 @@
         //Place
         if (string.IsNullOrEmpty(editFinding._idPlace.city))
         {
-            // errorList.Insert(0,"City is required");
             errorTable[0] = "City is required";
             isValidated = false;
         }
 
         if (string.IsNullOrEmpty(editFinding._idPlace.country))
         {
-            // errorList.Insert(1,"Country is required");
             errorTable[1] = "Country is required";
             isValidated = false;
         }
 
         if (editFinding._idPlace.lat == null || editFinding._idPlace.lng == null)
         {
-            // errorList.Insert(2,"Coordinates are required");
             errorTable[2] = "Coordinates are required";
             isValidated = false;
         }
@@ -377,7 +374,6 @@
 
         if (string.IsNullOrEmpty(editFinding._idSpecies.category))
         {
-            // errorList.Insert(4,"Category is required");
             errorTable[4] = "Category is required";
             isValidated = false;
         }
@@ -389,7 +385,6 @@
 
         if (string.IsNullOrEmpty(editFinding._idSpecies.s_name))
         {
-            // errorList.Insert(5,"Name of the species is required");
             errorTable[5] = "Name of the species is required";
             isValidated = false;
         }

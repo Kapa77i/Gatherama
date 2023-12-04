@@ -23,12 +23,6 @@
 
 <p>Here you can add your new gathering spot!</p>
 
-<!--MAPS SEKOILUJA:
-    Tehd‰‰n t‰nne kartta, joka n‰ytt‰‰ vain nykyisen sijainnin ja jossa pystyy syˆtt‰m‰‰n tiedot lˆydˆkselle.
-    OwnSpots sivulle tulee kartta, joka n‰ytt‰‰ kaikki lˆydˆkset mit‰ on henkilˆll‰. Sinne myˆs suodattimet esim lajin perusteella, tai
-    ett‰ n‰ytt‰‰ myˆs kaverien jakamat paikat.
--->
-
 <head>
     <title>Simple Marker</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
@@ -48,7 +42,6 @@
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 12,
                 center: { lat: 62.8893928527832, lng: 27.6920166015625 }, //alkukeskitys Kuopioon
-                //isShowingUser: true, //turha vai Androidille?
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -72,57 +65,23 @@
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
             locationButton.addEventListener("click", () => {
 
-                //jos windows (false) niin k‰ytet‰‰n HTML5 geolocation, muuten android and currentlocation parametri
+                //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
+                if (currentlocation != null) {
 
-                // if (platform == false) {
-
-                //     //map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude }); //T‰m‰ toimii myˆs windowsilla
-
-                //     // Try HTML5 geolocation.
-                //     if (navigator.geolocation) {
-                //         navigator.geolocation.getCurrentPosition(
-                //             (position) => {
-                //                 const pos = {
-                //                     lat: position.coords.latitude,
-                //                     lng: position.coords.longitude,
-                //                 };
-
-                //                 //window.alert("Position is: " + pos);
-                //                 // window.alert("Location found.");
-                //                 //infoWindow.open(map);
-                //                 map.setCenter(pos);
-
-                //             },
-                //             () => {
-                //                 handleLocationError(true, infoWindow, map.getCenter());
-                //             },
-                //         );
-                //     } else {
-                //         // Browser doesn't support Geolocation
-                //         handleLocationError(false, infoWindow, map.getCenter());
-                //     }
-                // }
-               // else {
-                    //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
-                    if (currentlocation != null) {
-
-                        try {
-                            map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
-                        }
-                        catch(err){
-                            // Browser doesn't support Geolocation
-                            handleLocationError(true, infoWindow, map.getCenter());
-                        }
-                        
+                    try {
+                        map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
                     }
-                    else { 
-                       window.alert("Something went wrong with your current location. Try again later.")
+                    catch(err){
                         // Browser doesn't support Geolocation
-                       handleLocationError(true, infoWindow, map.getCenter());
+                        handleLocationError(true, infoWindow, map.getCenter());
                     }
-               // }
-                
-                
+                        
+                }
+                else { 
+                   window.alert("Something went wrong with your current location. Try again later.")
+                    // Browser doesn't support Geolocation
+                   handleLocationError(false, infoWindow, map.getCenter());
+                }
             });
 
             //Add markers for each place
@@ -140,8 +99,8 @@
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
                             icon: {
-                                url: mush_icon, //
-                                scaledSize: new google.maps.Size(36, 36)//
+                                url: mush_icon, 
+                                scaledSize: new google.maps.Size(36, 36)
                             },
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
@@ -150,31 +109,20 @@
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            content: { background: "#0B5CDE" }, //ei toimi "#0B5CDE"
+                           // content: { background: "#0B5CDE" }, //ei toimi "#0B5CDE"
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//jos custom ikonit poissa, n‰kyy androidissa
-                    //         url: mush_icon, //
-                    //         scaledSize: new google.maps.Size(36, 36)
-                    //     },
-                    //     title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
-                    // });
-
                 }
                 else if (find._private == 2) {//toisen julkinen lˆydˆs, merkit‰‰n marjalla
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            icon: {//
-                                url: berry_icon,//
-                                scaledSize: new google.maps.Size(46, 46)//
+                            icon: {
+                                url: berry_icon,
+                                scaledSize: new google.maps.Size(46, 46)
                             },
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
@@ -186,25 +134,15 @@
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//
-                    //         url: berry_icon,//
-                    //         scaledSize: new google.maps.Size(46, 46)//
-                    //     },
-                    //     title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    // });
-
                 }
                 else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            icon: {//
-                                url: blueberry_icon,//
-                                scaledSize: new google.maps.Size(36, 36)//
+                            icon: {
+                                url: blueberry_icon,
+                                scaledSize: new google.maps.Size(36, 36)
                             },
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
@@ -216,15 +154,6 @@
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//
-                    //         url: blueberry_icon,//
-                    //         scaledSize: new google.maps.Size(36, 36)//
-                    //     },
-                    //     title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    // });
                 }
 
                 //format date
@@ -240,7 +169,6 @@
                     var confirmation = window.confirm(info);
                     if (find._idPerson.username === person.username && confirmation == true) {//jos oma lˆydˆs ja k‰ytt‰j‰ painoi "OK"
                         //avaa edit sivu
-                        //var test = window.confirm("Avataan sivu editspot/" + find.id); //find.Id -> UNDEFINED jos Id, tunnistetaan jos id
                         window.location.href = "/editspot/" + find.id; 
                     }
                 })
@@ -481,18 +409,19 @@
         * 
         * Pyyd‰ lupa gps:‰‰n? - android ok!
         * 
-        * Etsi ensin k‰ytt‰j‰n lokaatio ja n‰yt‰ se kartassa sek‰ koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok, android ei ihan
+        * Etsi k‰ytt‰j‰n lokaatio ja kohdista kartta - ok
+        * 
+        * N‰yt‰ karttaan merkitty paikka myˆs koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok
         * 
         * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
         * 
         * (Anna hakea paikan nimell‰ (ja koordinaateilla?))
         * 
-        * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (paitsi android)
+        * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (androidissa toteutettu eri tavalla)
         * 
         * (Opastus pinnipaikalle/osoitteeseen?)
     */
 
-    //private List<string> errorList = new List<string>();
     private string[] errorTable = new string[8];
     private bool isValidated = true;
     private bool platform = false;
@@ -514,7 +443,6 @@
     private List<FindingDto> allfindings { get; set; }
     private List<FindingDto> visiblefindings = new List<FindingDto>();
     private List<PlaceDto> places { get; set; }
-    /* public List<FindingDto> findings { get; private set; } */ //turha?
     private List<SpeciesDto> species { get; set; }
 
     private PersonDto person { get; set; }
@@ -532,7 +460,7 @@
         var date = dateAndTime.Date.ToString().Replace("00.00.00", "");
         newFinding.datetime = DateTime.Parse(date);
 
-        //Androidia ja Data Validaatiota varten
+        //Lokaatiota (erit. Android) ja Data Validaatiota varten
         await GetCurrentLocation();
         if(currentlocation == null)
         {
@@ -638,7 +566,6 @@
             Console.WriteLine("Exception: " + ex);
         }
 
-        //errorList.Clear();
         for(int i = 0; i < errorTable.Length; i++)
         {
             errorTable[i] = null;
@@ -654,7 +581,6 @@
 
         if (newFinding._private == null)
         {
-            //errorList.Insert(3, "Private is required");
             errorTable[3] = "Private is required";
             isValidated = false;
         }
@@ -673,21 +599,18 @@
         //Place
         if (string.IsNullOrEmpty(newFinding._idPlace.city))
         {
-            // errorList.Insert(0,"City is required");
             errorTable[0] = "City is required";
             isValidated = false;
         }
 
         if (string.IsNullOrEmpty(newFinding._idPlace.country))
         {
-            // errorList.Insert(1,"Country is required");
             errorTable[1] = "Country is required";
             isValidated = false;
         }
 
         if (newFinding._idPlace.lat == null || newFinding._idPlace.lng == null){
 
-            // errorList.Insert(2,"Coordinates are required");
             errorTable[2] = "Coordinates are required";
             isValidated = false;
         }
@@ -696,7 +619,6 @@
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.category))
         {
-            // errorList.Insert(4,"Category is required");
             errorTable[4] = "Category is required";
             isValidated = false;
         }
@@ -708,7 +630,6 @@
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.s_name))
         {
-            // errorList.Insert(5,"Name of the species is required");
             errorTable[5] = "Name of the species is required";
             isValidated = false;
         }
