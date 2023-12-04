@@ -402,15 +402,22 @@
         //onko tiedot oikein
         if (isValidated == true)
         {
-            //Fetching the information from JS
-            placeInfoJS = await JS.InvokeAsync<string>("fetchData");
-            string[] splitFetch = placeInfoJS.Split(',');
-            editFinding._idPlace.city = splitFetch[0];
-            editFinding._idPlace.country = splitFetch[1];
-            editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
-            editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+            try{
+                //Fetching the information from JS
+                placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+                string[] splitFetch = placeInfoJS.Split(',');
+                editFinding._idPlace.city = splitFetch[0];
+                editFinding._idPlace.country = splitFetch[1];
+                editFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+                editFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
 
-            Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
+                Console.WriteLine($"City: {editFinding._idPlace.city}, Lat: {editFinding._idPlace.lat}, Lng: {editFinding._idPlace.lng}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex);
+            }
+
             await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
             await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
 
