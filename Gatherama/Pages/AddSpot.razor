@@ -74,41 +74,53 @@
 
                 //jos windows (false) niin käytetään HTML5 geolocation, muuten android and currentlocation parametri
 
-                if (platform == false) {
+                // if (platform == false) {
 
-                    //map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude }); //Tämä toimii myös windowsilla
+                //     //map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude }); //Tämä toimii myös windowsilla
 
-                    // Try HTML5 geolocation.
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const pos = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
+                //     // Try HTML5 geolocation.
+                //     if (navigator.geolocation) {
+                //         navigator.geolocation.getCurrentPosition(
+                //             (position) => {
+                //                 const pos = {
+                //                     lat: position.coords.latitude,
+                //                     lng: position.coords.longitude,
+                //                 };
 
-                                //window.alert("Position is: " + pos);
-                                // window.alert("Location found.");
-                                //infoWindow.open(map);
-                                map.setCenter(pos);
+                //                 //window.alert("Position is: " + pos);
+                //                 // window.alert("Location found.");
+                //                 //infoWindow.open(map);
+                //                 map.setCenter(pos);
 
-                            },
-                            () => {
-                                handleLocationError(true, infoWindow, map.getCenter());
-                            },
-                        );
-                    } else {
-                        // Browser doesn't support Geolocation
-                        handleLocationError(false, infoWindow, map.getCenter());
-                    }
-                }
-                else {
+                //             },
+                //             () => {
+                //                 handleLocationError(true, infoWindow, map.getCenter());
+                //             },
+                //         );
+                //     } else {
+                //         // Browser doesn't support Geolocation
+                //         handleLocationError(false, infoWindow, map.getCenter());
+                //     }
+                // }
+               // else {
                     //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
                     if (currentlocation != null) {
-                        map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
+
+                        try {
+                            map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
+                        }
+                        catch(err){
+                            // Browser doesn't support Geolocation
+                            handleLocationError(true, infoWindow, map.getCenter());
+                        }
+                        
                     }
-                    else { window.alert("Something went wrong with your current location. Try again later.") }
-                }
+                    else { 
+                       window.alert("Something went wrong with your current location. Try again later.")
+                        // Browser doesn't support Geolocation
+                       handleLocationError(true, infoWindow, map.getCenter());
+                    }
+               // }
                 
                 
             });
@@ -706,10 +718,12 @@
             newFinding._idSpecies.latin_name = "-";
         }
 
+
         //onko tiedot oikein
         if(isValidated == true)
         {
-            SubmitFinding(isValidated);
+
+            SubmitFinding();
         }
 
     }
@@ -744,7 +758,7 @@
         return speciesExists;
     }
 
-    protected async void SubmitFinding(bool isValidated)
+    protected async void SubmitFinding()
     {
         placeExists = CheckIfPlaceExists();
 
