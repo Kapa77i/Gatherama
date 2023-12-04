@@ -297,6 +297,10 @@
     public string Id { get; set; }
     private string[] errorTable = new string[8];
     private bool isValidated = true;
+    private bool placeExists = false;
+    private bool speciesExists = false;
+    private PlaceDto existingPlace = new PlaceDto();
+    private SpeciesDto existingSpecies = new SpeciesDto();
     private FindingDto editFinding = new FindingDto()
     {
         _idPlace = new PlaceDto { },
@@ -312,6 +316,8 @@
     protected override async Task OnInitializedAsync()
     {
         editFinding = await apiService.GetFindingByIdAsync(Id);
+        allplaces = await apiService.GetPlacesAsync();
+        allspecies = await apiService.GetSpeciesAsync();
 
         await JS.InvokeVoidAsync("initMap", editFinding);
         await base.OnInitializedAsync();
@@ -413,12 +419,61 @@
                 Console.WriteLine("Exception: " + ex);
             }
 
-            await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
-            await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+            placeExists = CheckIfPlaceExists();
+            //jos paikka olemassa, käytetään vanhaa paikkaa
+            if (placeExists)
+            {
+                editFinding._idPlace = existingPlace;
+            }
+            else
+            {//muokataan paikkaa
+                await apiService.PutPlaceAsync(editFinding._idPlace.Id, editFinding._idPlace);
+            }
+
+            speciesExists = CheckIfSpeciesExists();
+
+            if (speciesExists)
+            {
+                editFinding._idSpecies = existingSpecies;
+            }
+            else
+            {
+                await apiService.PutSpeciesAsync(editFinding._idSpecies.Id, editFinding._idSpecies);
+            }
 
             await apiService.PutFindingAsync(editFinding.Id, editFinding);
             NavigationManager.NavigateTo("/addspots", true);
         }
+    }
+
+    protected bool CheckIfPlaceExists()
+    {
+        //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
+        foreach (PlaceDto place in allplaces)
+        {
+            if (place.city == editFinding._idPlace.city && place.country == editFinding._idPlace.country && place.lat == editFinding._idPlace.lat && place.lng == editFinding._idPlace.lng)
+            {
+                placeExists = true;
+                existingPlace = place;
+                break;
+            }
+        }
+
+        return placeExists;
+    }
+
+    protected bool CheckIfSpeciesExists()
+    {
+        foreach (SpeciesDto spec in allspecies)
+        {
+            if (spec.category == editFinding._idSpecies.category && spec.subCategory == editFinding._idSpecies.subCategory && spec.s_name == editFinding._idSpecies.s_name && spec.latin_name == editFinding._idSpecies.latin_name)
+            {
+                speciesExists = true;
+                existingSpecies = spec;
+                break;
+            }
+        }
+        return speciesExists;
     }
 
     protected void OpenDeleteModal(EditContext formContext)
