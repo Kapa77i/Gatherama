@@ -101,22 +101,22 @@
 
 
         //Edit input fields validation
-        if (string.IsNullOrEmpty(person.firstName))
+        if (string.IsNullOrEmpty(person.firstName) || person.firstName.Length > 25)
         {
             errorTable[0] = "First Name is required";
             isValidated = false;
         }
-        if (string.IsNullOrEmpty(person.lastName))
+        if (string.IsNullOrEmpty(person.lastName) || person.lastName.Length > 25)
         {
             errorTable[1] = "Last Name is required";
             isValidated = false;
         }
-        if (string.IsNullOrEmpty(person.username))
+        if (string.IsNullOrEmpty(person.username) || person.username.Length > 25)
         {
             errorTable[2] = "Username is required";
             isValidated = false;
         }
-        if (string.IsNullOrEmpty(person.email))
+        if (string.IsNullOrEmpty(person.email) || !person.email.Contains("@") || person.email.Length > 45)
         {
             errorTable[3] = "Email is required";
             isValidated = false;
@@ -156,7 +156,7 @@
             if (!isUserFound && isValidated == true)
             {
                 await apiService.PostPersonAsync(person);
-                await js.InvokeVoidAsync("Registration was successful");
+                await js.InvokeVoidAsync("alert","Registration was successful");
                 NavigationManager.NavigateTo("/login", true);
             }
         }
