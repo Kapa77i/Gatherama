@@ -12,10 +12,10 @@
 @inject NavigationManager NavigationManager
 @inject LoginState loginstate
 
-<!--TÄMÄ ON TESTAUKSEEN-->
-@* Friend Request box tarvitaan, eli tässä pitäisi tarkistaa kaikki henkilön omat kaverit:
+
+@* Friend Request box, eli tässä tarkistetaan kaikki henkilön omat kaverit:
 - friendrequest = 1 && friendaccept = 0
--------> väliaikaisratkaisu: talussa oma pending - osio, joka näkyy sekä lähettäjälle että vastaanottajalle
+------->  talussa oma pending - osio, joka näkyy sekä lähettäjälle että vastaanottajalle
 Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko hyväksyä tai hylätä
 - hyväksyntä: friendaccept = 1
 - hylkäys: koko entiteetin poisto
@@ -247,9 +247,9 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
     //Posting friend request
     protected async void SubmitFriendRequest(PersonDto friend)
     {
-        //Tarvitaan buttonista kaverin tiedot, jolle lähetetään kaveripyyntö
+        //buttonista kaverin tiedot, jolle lähetetään kaveripyyntö
         //loginstatesta kirjautuneen käyttäjän tiedot
-        //Friendrequest pitää muuttaa 1
+        //Friendrequest muutetaan 1
         //Friendaccept edelleen 0
         // All this to DB
 
@@ -261,20 +261,14 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
         newFriend.friend_request = 1;
         newFriend.friend_accept = 0;
 
-        //tarkista ettei ystävyyttä ole jo olemassa, ennen kuin lähetät ystäväkutsun
+        //tarkistetaan ettei ystävyyttä ole jo olemassa, ennen kuin lähetetään ystäväkutsu
         if (!friends.Contains(friend) && !pending.Contains(friend))
         {
             await apiService.PostFriendshipAsync(newFriend);
             NavigationManager.NavigateTo("/personlist", true);
         }
-        else
-        {
-            //prompt: Kutsu on jo lähetetty
-        }
 
     }
-
-
 
     //Accepting Friend request
     protected async void AcceptFriendRequest(PersonDto friend)
