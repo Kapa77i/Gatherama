@@ -85,8 +85,8 @@
             });
 
             //Add markers for each place
-            /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit:
-                    - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
+            /* --> funktiossa erottelu mikä julkinen, kaverin jakama ja mikä oma paikka - eri ikonit:
+                    - musta marja: julkinen, sieni: oma, mustikka: kaverit ---- androidissa eri
                 --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                 --> markerit kiinteitä
             */
@@ -103,21 +103,18 @@
                                 scaledSize: new google.maps.Size(36, 36)
                             },
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
                         });
+
                     } else {//jos custom ikonit poissa, näkyy androidissa
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                           // content: { background: "#0B5CDE" }, //ei toimi "#0B5CDE"
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
                         });
-
                     }
                     var publicity = "OWN SPOT:";
                 }
-                else if (find._private == 2) {//toisen julkinen löydös, merkitään marjalla
+                else if (find._private == 2) {//toisen julkinen löydös, merkitään mustalla marjalla
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
@@ -135,7 +132,6 @@
                             map: map,
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
-
                     }
                     var publicity = "PUBLIC SPOT:";
                 }
@@ -167,14 +163,17 @@
                 const formattedDate = formatShortDate(isoDateTime);
 
                 var info = publicity + "\n\nPerson: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
-                if (find._idPerson.username === person.username) {//jos oma löydös, annetaan mahdollisuus muokata / poistaa
+                
+                //jos oma löydös, annetaan mahdollisuus muokata / poistaa
+                if (find._idPerson.username === person.username) {
                     info = info + "\n\nWould you like to edit this information?"
                 }
                 
                 marker.addListener('click', function () {
                     var confirmation = window.confirm(info);
-                    if (find._idPerson.username === person.username && confirmation == true) {//jos oma löydös ja käyttäjä painoi "OK"
-                        //avaa edit sivu
+
+                    //jos oma löydös ja käyttäjä painoi "OK", avataan edit sivu
+                    if (find._idPerson.username === person.username && confirmation == true) {
                         window.location.href = "/editspot/" + find.id; 
                     }
                 })
@@ -184,7 +183,6 @@
         }
 
      
-
         //datetime format
         function formatShortDate(isoDateTime) {
           const date = new Date(isoDateTime);
@@ -196,7 +194,6 @@
         }
 
 
-
         function placeMarkerAndPanTo(latLng, map, geocoder) {
 
             newMarker = new google.maps.Marker({
@@ -205,7 +202,6 @@
                 draggable: true
             });
 
-
             map.panTo(latLng);
 
             // window.alert("Tultiin geocodeen: " + latLng)
@@ -213,7 +209,6 @@
                 lat: parseFloat(latLng.lat()),
                 lng: parseFloat(latLng.lng()),
             };
-
 
             geocoder
                 .geocode({ location: latilng })
@@ -241,7 +236,6 @@
             markers.push(newMarker);
 
             return newMarker;
-
         }
 
         // Sets the map on all markers in the array.
@@ -311,16 +305,13 @@
     @if (mapIsReady == true)
     {
         <div>
-
             <div id="googleMap" style="width:100%;height:400px;"></div>
-
         </div>
     }
     else
     {
         <h5 class="text-center" style="color:#173328">Loading map...Locating spots...<br />Please wait</h5>
     }
-
 
     <EditForm Model="newFinding" OnValidSubmit="@NestedValidation">
         <div class="col-lg-4 col-md-12">
@@ -427,15 +418,15 @@
         * 
         * Etsi käyttäjän lokaatio ja kohdista kartta - ok
         * 
-        * Näytä karttaan merkitty paikka myös koordinaattikentissä (kenttiä pitää pystyä muokkaamaan). - ok
+        * Näytä karttaan klikattu paikka myös koordinaattikentissä (kenttiä pitää pystyä muokkaamaan). - ok
         * 
         * Karttaa pitää pystyä liikuttamaan ja zoomaamaan - OK!
         * 
-        * (Anna hakea paikan nimellä (ja koordinaateilla?))
+        * Custom pins - ok! (Androidissa toteutettu eri tavalla)
         * 
-        * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (androidissa toteutettu eri tavalla)
-        * 
-        * (Opastus pinnipaikalle/osoitteeseen?)
+        * (Additional: Opastus pinnipaikalle/osoitteeseen?)
+        *         
+        * (Additional: Anna hakea paikan nimellä (ja koordinaateilla?))
     */
 
     private bool mapIsReady = false;
@@ -457,14 +448,14 @@
 
     private List<FriendshipDto> friendships { get; set; }
     private List<PersonDto> friends = new List<PersonDto>();
-    private List<PersonDto> persons { get; set; }
+    // private List<PersonDto> persons { get; set; }
     private List<FindingDto> allfindings { get; set; }
     private List<FindingDto> visiblefindings = new List<FindingDto>();
     private List<PlaceDto> places { get; set; }
     private List<SpeciesDto> species { get; set; }
 
     private PersonDto person { get; set; }
-    private FindingDto postFinding = new FindingDto();
+    // private FindingDto postFinding = new FindingDto();
     private FindingDto newFinding = new FindingDto()
     {
         _idPlace = new PlaceDto { },
@@ -490,14 +481,14 @@
             currentlocation = cachedlocation;
         }
 
-        //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
+        //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt, kavereiden jakamat ja henkilön omat toiseen listaan
         allfindings = await apiService.GetFindingsAsync();
 
         // It is not pretty but this is how I got it working the ID thingy
         newFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
         newFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
 
-        persons = await apiService.GetPersonsAsync();
+        // persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
         places = await apiService.GetPlacesAsync();
         friendships = await apiService.GetFriendshipsAsync();
@@ -519,6 +510,7 @@
             }
         }
 
+        //määritetään uuden löydöksen tekijä
         newFinding._idPerson = await apiService.GetPersonByIdAsync(loginstate.isSingedin?.Id);
 
         /*ota kaikki löydökset ja vertaa niitä kirjautuneeseen henkilöön
@@ -527,7 +519,7 @@
             - jos kaverin julkaisema (kavereille), näytä
 
             --> nämä kaikki samaan listaan, joka viedään parametrina initMap() :lle
-                    --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
+                    --> funktiossa erottelu mikä julkinen, kaverin jakama ja mikä oma paikka - eri ikonit
                         - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
                     --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                     --> markerit kiinteät
@@ -535,14 +527,14 @@
 
         foreach(FindingDto find in allfindings)
         {
-            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)
+            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)//julkinen
             {
                 visiblefindings.Add(find);
 
             }
             else
             {
-                foreach(PersonDto friend in friends)
+                foreach(PersonDto friend in friends)//kaverin jakama
                 {
                     if (find._idPerson.Id == friend.Id && find._private == 1)
                     {
@@ -552,6 +544,7 @@
             }
         }
 
+        //kirjautunut henkilö InvokeVoidAsync -metodin parametriksi
         person = loginstate.isSingedin;
 
         //mikä laite käytössä: Android vai muu (Windows)
@@ -561,12 +554,12 @@
         }
         else { platform = false; }
 
+        //Map is done loading
         mapIsReady = true;
         StateHasChanged();
 
+        //Setting map with markers
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
-
-
     }
 
     //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
@@ -665,14 +658,12 @@
         //onko tiedot oikein
         if(isValidated == true)
         {
-
             SubmitFinding();
         }
         else
         {
             this.StateHasChanged();
         }
-
     }
 
     protected bool CheckIfPlaceExists()
@@ -771,8 +762,6 @@
 
         return cachedlocation;
     }
-
-
 
     public async Task<Location> GetCurrentLocation()
     {
