@@ -113,8 +113,9 @@
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
-                        var publicity = "OWN SPOT:";
+
                     }
+                    var publicity = "OWN SPOT:";
                 }
                 else if (find._private == 2) {//toisen julkinen löydös, merkitään marjalla
                     if (platform == false) {
@@ -134,8 +135,9 @@
                             map: map,
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
-                        var publicity = "PUBLIC SPOT:";
+
                     }
+                    var publicity = "PUBLIC SPOT:";
                 }
                 else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
                     if (platform == false) {
@@ -155,8 +157,9 @@
                             map: map,
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
-                        var publicity = "FRIEND'S SPOT:";
+
                     }
+                    var publicity = "FRIEND'S SPOT:";
                 }
 
                 //format date
