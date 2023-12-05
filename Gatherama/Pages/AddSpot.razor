@@ -113,6 +113,7 @@
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
 
                         });
+                        var publicity = "OWN SPOT:";
                     }
                 }
                 else if (find._private == 2) {//toisen julkinen löydös, merkitään marjalla
@@ -133,6 +134,7 @@
                             map: map,
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
+                        var publicity = "PUBLIC SPOT:";
                     }
                 }
                 else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
@@ -153,6 +155,7 @@
                             map: map,
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
+                        var publicity = "FRIEND'S SPOT:";
                     }
                 }
 
@@ -160,7 +163,7 @@
                 const isoDateTime = find.datetime;
                 const formattedDate = formatShortDate(isoDateTime);
 
-                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
+                var info = publicity + "\n\nPerson: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
                 if (find._idPerson.username === person.username) {//jos oma löydös, annetaan mahdollisuus muokata / poistaa
                     info = info + "\n\nWould you like to edit this information?"
                 }
@@ -173,9 +176,11 @@
                     }
                 })
                 
-            });    
-         
+            });
+
         }
+
+     
 
         //datetime format
         function formatShortDate(isoDateTime) {
@@ -300,11 +305,19 @@
 </head>
 <body>
 
-    <div>
+    @if (mapIsReady == true)
+    {
+        <div>
 
-        <div id="googleMap" style="width:100%;height:400px;"></div>
+            <div id="googleMap" style="width:100%;height:400px;"></div>
 
-    </div>
+        </div>
+    }
+    else
+    {
+        <h5 class="text-center" style="color:#173328">Loading map...Locating spots...<br />Please wait</h5>
+    }
+
 
     <EditForm Model="newFinding" OnValidSubmit="@NestedValidation">
         <div class="col-lg-4 col-md-12">
@@ -421,6 +434,8 @@
         * 
         * (Opastus pinnipaikalle/osoitteeseen?)
     */
+
+    private bool mapIsReady = false;
 
     private string[] errorTable = new string[8];
     private bool isValidated = true;
@@ -543,8 +558,12 @@
         }
         else { platform = false; }
 
+        mapIsReady = true;
+        StateHasChanged();
 
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
+
+
     }
 
     //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
@@ -797,7 +816,5 @@
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
     }
-
-    
 
 }
