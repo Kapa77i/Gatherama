@@ -30,10 +30,7 @@
     </div>
     <div>
           <p></p>
-            <button class="btn btn-primary" type="submit" @* @onclick='(Submit)' *@>Login</button>
-        
-            @*This button is just here for demo purposes. It needs to be moved later on from this EditForm. Otherwise it will trigger ValidationMessages*@
-            
+            <button class="btn btn-primary" type="submit" @* @onclick='(Submit)' *@>Login</button>            
             <button class="btn btn-primary" @onclick='() => NavigationManager.NavigateTo("register")'>Register</button>
     </div>    
 </EditForm>
@@ -50,7 +47,6 @@
         var response = await httpClient.PostAsJsonAsync("api/Person/login", person);
         if (response.IsSuccessStatusCode)
         {
-
             var userinfo = await apiService.GetUserInfoByLogin(person.username, person.password);
 
             loginState.SetLogin(true, userinfo);

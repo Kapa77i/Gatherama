@@ -23,35 +23,17 @@ Jos niitä on: näytetään ja annetaan käyttäjälle prompti, jossa voi joko h
 NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
 *@
 
-<h1>Username Status</h1>
+<h3>Username Status</h3>
 @* All users *@
-
-
-
-
 
 @if (persons is not null)
 {
     @if (!pendingFriends.All(p => p.Equals(0)))
     {
-        @* <div class="container">
-        <h3>You have received a Friend Request!</h3>
-        @foreach (var item in pendingFriends)
-        {
-            <div class="row4">
-                <div class="col-sm">@item.username</div>
-                <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button>   <button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></div>
-                <div class="col-sm"></div>
-            </div>
-
-        }
-
-    </div> *@
-
         <div class="container1">
             <p>
                 <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    <h5>You have received a Friend Request!</h5>
+                    <h5>New Friend Request!</h5>
                 </button>
             </p>
             <div class="collapse" id="collapseExample">
@@ -60,7 +42,7 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     <div class="card card-body1">
                         <div class="row4">
                             <div class="col-sm">@item.username</div>
-                            <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button>   <button id="@item.Id" class="btn btn-danger" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></div>
+                            <div class="col-sm"><button id="@item.Id" class="btn btn-primary" type="submit" @onclick="() => AcceptFriendRequest(item)">Accept</button>   <button id="@item.Id" class="btn btn-warning" type="submit" @onclick="() => DeclineFriendRequest(item)">Decline</button></div>
                             <div class="col-sm"></div>
                         </div>
                     </div>
@@ -163,24 +145,6 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
     private bool deleteModalShown = false;
     private PersonDto selectedFriend;
 
-    // protected async void DeleteFriendship(PersonDto friend)
-    // {
-    //     foreach (var item in friendships)
-    //     {
-    //         if (loginstate.isSingedin.username == item._idPerson.username)
-    //         {
-    //             if (friend.username == item._idFriend.username && item.friend_accept == 1 && item.friend_request == 1)
-    //             {
-    //                 newFriend.Id = item.Id;
-    //             }
-    //         }
-
-    //     }
-
-    //     await apiService.DeleteFriendshipAsync(newFriend.Id);
-    //     NavigationManager.NavigateTo("/personlist", true);
-    // }
-
     public PersonDto newFriendship = new PersonDto();
 
     protected override async Task OnInitializedAsync()
@@ -213,11 +177,8 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     {
                         //pending.Add(item._idPerson);
                     }
-
                 }
-
             }
-
         }
 
         //Show received friendship requested
@@ -282,8 +243,8 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     newFriend.Id = item.Id;
                 }
             }
-
         }
+
         newFriend._idFriend = loginstate.isSingedin;
         newFriend._idPerson = friend;
         newFriend.friend_request = 1;
@@ -307,7 +268,6 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     newFriend.Id = item.Id;
                 }
             }
-
         }
 
         await apiService.DeleteFriendshipAsync(newFriend.Id);
@@ -347,11 +307,9 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                         else if ((loginstate.isSingedin.username == item._idPerson.username) && (selectedFriend.username == item._idFriend.username))
                         {
                             newFriend.Id = item.Id;
-                        }
-                        
+                        } 
                     }
                 }
-
             }
 
             await apiService.DeleteFriendshipAsync(newFriend.Id);

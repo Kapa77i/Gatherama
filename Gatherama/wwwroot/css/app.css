@@ -122,7 +122,7 @@ a, .btn-link {
     align-items: center;
 }
 
-    .btn-primary:hover, .btn-primary:focus, .open > .dropdown-toggle.btn-primary {
+    .btn-primary:hover, /*.btn-primary:focus,*/ .close > .dropdown-toggle.btn-primary {
         color: #043313 !important;
         background-color: #fde69c !important;
         border-color: #1861ac !important;
@@ -138,8 +138,6 @@ a, .btn-link {
     color: #fde69c !important;
     background-color: #043313 !important;
 }
-
-
 
 /*    Card juttuja*/
 .card, .card-body {

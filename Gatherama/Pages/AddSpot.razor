@@ -19,7 +19,7 @@
 @inject LoginState loginstate
 
 
-<h1>Add Gathering Spot</h1>
+<h3>Add Gathering Spot</h3>
 
 <p>Here you can add your new gathering spot!</p>
 
@@ -323,7 +323,7 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="country"> Country </label>
+            <label for="country" style="margin-top: 10px"> Country </label>
             <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control"></InputText>
             @if (errorTable != null)
             {
@@ -331,12 +331,12 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="lat"> Latitude </label>
+            <label for="lat" style="margin-top: 10px"> Latitude </label>
             <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control"></InputNumber>
             
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="lng"> Longitude </label>
+            <label for="lng" style="margin-top: 10px"> Longitude </label>
             <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control"></InputNumber>
             @if (errorTable != null)
             {
@@ -344,23 +344,23 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="findingDate">Add a Date </label>
+            <label for="findingDate" style="margin-top: 10px">Add a Date </label>
             <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control"></InputDate>
             
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="findindAmount"> Amount </label>
+            <label for="findindAmount" style="margin-top: 10px"> Amount </label>
             <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control"></InputText>
             
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="findingMemo"> Memo </label>
+            <label for="findingMemo" style="margin-top: 10px"> Memo </label>
             <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control">Enter memolog here</InputText>
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="findindPrivate"> Private or not? </label>
+            <label for="findindPrivate" style="margin-top: 10px"> Private or not? </label>
             <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
                 <option value="">Select...</option>
                 <option value="0">Private</option>
@@ -374,7 +374,7 @@
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="speciesCategory"> Berries or Mushrooms? </label>
+            <label for="speciesCategory" style="margin-top: 10px"> Berries or Mushrooms? </label>
             <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control">
                 <option value="">Select...</option>
                 <option>Berries</option>
@@ -386,11 +386,11 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="speciesSubCategory"> Species Sub Category </label>
-            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+            <label for="speciesSubCategory" style="margin-top: 10px"> Species Sub Category </label>
+            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control" >Enter the Sub Category name here</InputText>
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="s_name"> Species Name </label>
+            <label for="s_name" style="margin-top: 10px"> Species Name </label>
             <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
             @if (errorTable != null)
             {
@@ -398,7 +398,7 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="latin_name"> Latin name </label>
+            <label for="latin_name" style="margin-top: 10px"> Latin name </label>
             <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
         </div>
 
