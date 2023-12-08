@@ -9,10 +9,6 @@ html, body {
 }
 
 footer {
-    /* color: #fde69c;
-    background-color: #043313;
-    border-color: #1861ac;*/
-
     background-image: linear-gradient(180deg, #043610 0%, #173043 50%) !important;
     background-color: #043610 !important;
     color: #fde69c !important;
@@ -95,21 +91,6 @@ a, .btn-link {
     align-content: end;
     flex-wrap:wrap;
 }
-
-
-
-  /*  .btn-link:hover  {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        color: #043313 !important;
-        background-color: #fde69c;
-    }
-*/
-    /*   a:hover {
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        color: #043313 !important;
-        background-color: #fde69c;
-    }
-*/
     table {
     color: #332100 !important;
 }
@@ -150,7 +131,6 @@ a, .btn-link {
 .card-body1 {
     color: #fde69c !important;
     background-color: #829b88 !important;
-    /*border-color: #043313 !important;*/
     border: none;
 }
 
@@ -161,12 +141,6 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
-/*.accordion-collapse collapse show, .accordion-header, .accordion, .accordion-button collapsed,
-.accordion-button.collapsed::after, .accordion-button.collapsed {
-    color: #043313;
-    background-color: #fde69c;
-    border-color: #1861ac;
-}*/
 
 .accordion-button:not(.collapsed) {
     color: #043313;
@@ -192,7 +166,7 @@ border-color: #1861ac;
 }
 
     .carousel-item:nth-child(1) {
-        background-image: url('../Images_Index/shroomsandberries14.png');
+        background-image: url('../Images_Index/shroomsandberries20.png');
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center center;
