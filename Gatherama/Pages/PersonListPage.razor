@@ -84,8 +84,8 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                 {
                 <div class="row2">
                     <div class="col-sm">@item.username</div>
-                    <div class="col-sm">Pending....</div>
-                    <div class="row" />
+                    <div class="col-sm">Pending.... </div>
+                    <div class="col-sm"><button class="btn btn-warning ms-auto" type="button" style="margin-left: 70px;" @onclick="() => OpenDeleteModal(item)">Remove</button></div>
                 </div>
                 }
         </div>
@@ -302,6 +302,11 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                             newFriend.Id = item.Id;
                         } 
                     }
+                }
+                //This is for deleting sent friend request
+                if ((loginstate.isSingedin.username == item._idPerson.username) && (selectedFriend.username == item._idFriend.username) && (item.friend_accept == 0 && item.friend_request == 1))
+                {
+                        newFriend.Id = item.Id;
                 }
             }
 

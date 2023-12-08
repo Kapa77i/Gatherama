@@ -35,7 +35,7 @@ a, .btn-link {
 
 .row1 {
     display: grid;
-    align-items: safe center;
+    align-items: center;
     grid-template-columns: 100px auto;
     background-color: #829b88 !important;
     color: #332100 !important;
@@ -48,8 +48,8 @@ a, .btn-link {
 
 .row2 {
     display: grid;
-    align-items: safe center;
-    grid-template-columns: 100px auto;
+    align-items: center;
+    grid-template-columns: 100px 100px auto;
     background-color: #829b88 !important;
     color: #332100 !important;
     box-shadow: 10px 5px 5px #fde69c;
@@ -61,7 +61,7 @@ a, .btn-link {
 
 .row3 {
     display: grid;
-    align-items: safe center;
+    align-items: center;
     grid-template-columns: 100px auto;
     background-color: #829b88 !important;
     color: #332100 !important;
@@ -74,7 +74,7 @@ a, .btn-link {
 
 .row4 {
     display: grid;
-    align-items: safe center;
+    align-items: center;
     grid-template-columns: 100px auto;
     background-color: #829b88 !important;
     color: #332100 !important;
