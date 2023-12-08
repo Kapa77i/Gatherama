@@ -310,13 +310,24 @@
     }
     else
     {
-        <h5 class="text-center" style="color:#173328">Loading map...Locating spots...<br />Please wait</h5>
+      @*   <h5 class="text-center" style="color:#173328">Loading map...Locating spots...<br />Please wait</h5> *@
+
+ 
+        <p></p>
+        <div class="d-flex justify-content-center">
+        <div>Loading map & spots, please wait</div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>       
     }
 
     <EditForm Model="newFinding" OnValidSubmit="@NestedValidation">
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
-            <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
+            <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city style="background-color: #fcf6e1 !important;"></InputText>
             @if(errorTable!=null)
             {
                 <div class="text-warning">@errorTable[0]</div>
@@ -324,7 +335,7 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="country" style="margin-top: 10px"> Country </label>
-            <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control"></InputText>
+            <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[1]</div>
@@ -332,12 +343,12 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lat" style="margin-top: 10px"> Latitude </label>
-            <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control"></InputNumber>
+            <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
             
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="lng" style="margin-top: 10px"> Longitude </label>
-            <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control"></InputNumber>
+            <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[2]</div>
@@ -345,23 +356,23 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="findingDate" style="margin-top: 10px">Add a Date </label>
-            <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control"></InputDate>
+            <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control" style="background-color: #fcf6e1 !important;"></InputDate>
             
         </div>
 
         <div class="col-lg-4 col-md-12">
             <label for="findindAmount" style="margin-top: 10px"> Amount </label>
-            <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control"></InputText>
+            <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="findingMemo" style="margin-top: 10px"> Memo </label>
-            <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control">Enter memolog here</InputText>
+            <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control" style="background-color: #fcf6e1 !important;">Enter memolog here</InputText>
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="findindPrivate" style="margin-top: 10px"> Private or not? </label>
-            <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
+            <label for="findindPrivate" style="margin-top: 10px" > Private or not? </label>
+            <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control" style="background-color: #fcf6e1 !important;">
                 <option value="">Select...</option>
                 <option value="0">Private</option>
                 <option value="1">Friends</option>
@@ -375,7 +386,7 @@
 
         <div class="col-lg-4 col-md-12">
             <label for="speciesCategory" style="margin-top: 10px"> Berries or Mushrooms? </label>
-            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control">
+            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control" style="background-color: #fcf6e1 !important;">
                 <option value="">Select...</option>
                 <option>Berries</option>
                 <option>Mushrooms</option>
@@ -387,11 +398,11 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="speciesSubCategory" style="margin-top: 10px"> Species Sub Category </label>
-            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control" >Enter the Sub Category name here</InputText>
+            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Sub Category name here</InputText>
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="s_name" style="margin-top: 10px"> Species Name </label>
-            <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+            <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Familiar name name here</InputText>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[5]</div>
@@ -399,7 +410,7 @@
         </div>
         <div class="col-lg-4 col-md-12">
             <label for="latin_name" style="margin-top: 10px"> Latin name </label>
-            <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+            <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Latin name here</InputText>
         </div>
 
         <button class="btn btn-primary" type="submit" style="margin-bottom: 50px; margin-top: 20px">Add a Finding!</button>

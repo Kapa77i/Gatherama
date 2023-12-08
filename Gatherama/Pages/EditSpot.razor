@@ -181,7 +181,7 @@
         <EditForm Model="@editFinding" Context="formContext" OnValidSubmit="EditFinding">
             <div class="col-lg-4 col-md-12">
                 <label for="city" style="margin-top: 10px"> City </label>
-                <InputText id="city" class="form-control" @bind-Value=editFinding._idPlace.city></InputText>
+                <InputText id="city" class="form-control" @bind-Value=editFinding._idPlace.city></InputText style="background-color: #fcf6e1 !important;">
                 @if (errorTable != null)
                 {
                     <div class="text-warning">@errorTable[0]</div>
@@ -189,7 +189,7 @@
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="country" style="margin-top: 10px"> Country </label>
-                <InputText id="country" @bind-Value=editFinding._idPlace.country class="form-control"></InputText>
+                <InputText id="country" @bind-Value=editFinding._idPlace.country class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
                 @if (errorTable != null)
                 {
                     <div class="text-warning">@errorTable[1]</div>
@@ -197,11 +197,11 @@
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="lat" style="margin-top: 10px"> Latitude </label>
-                <InputNumber id="lat" @bind-Value=editFinding._idPlace.lat class="form-control"></InputNumber>
+                <InputNumber id="lat" @bind-Value=editFinding._idPlace.lat class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="lng" style="margin-top: 10px"> Longitude </label>
-                <InputNumber id="lng" @bind-Value=editFinding._idPlace.lng class="form-control"></InputNumber>
+                <InputNumber id="lng" @bind-Value=editFinding._idPlace.lng class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
                 @if (errorTable != null)
                 {
                     <div class="text-warning">@errorTable[2]</div>
@@ -209,21 +209,21 @@
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="findingDate" style="margin-top: 10px">Add a Date </label>
-                <InputDate id="findingDate" @bind-Value=editFinding.datetime class="form-control"></InputDate>
+                <InputDate id="findingDate" @bind-Value=editFinding.datetime class="form-control" style="background-color: #fcf6e1 !important;"></InputDate>
             </div>
 
             <div class="col-lg-4 col-md-12">
                 <label for="findindAmount" style="margin-top: 10px"> Amount </label>
-                <InputText id="findindAmount" @bind-Value=editFinding.amount class="form-control"></InputText>
+                <InputText id="findindAmount" @bind-Value=editFinding.amount class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="findingMemo" style="margin-top: 10px"> Memo </label>
-                <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control"></InputText>
+                <InputText id="findingMemo" @bind-Value=editFinding.memo class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             </div>
 
             <div class="col-lg-4 col-md-12">
                 <label for="findindPrivate" style="margin-top: 10px"> Private or not? </label>
-                <InputSelect id="findindPrivate" @bind-Value=editFinding._private class="form-control">
+                <InputSelect id="findindPrivate" @bind-Value=editFinding._private class="form-control" style="background-color: #fcf6e1 !important;">
                     <option value="">Select...</option>
                     <option value="0">Private</option>
                     <option value="1">Friends</option>
@@ -237,7 +237,7 @@
 
             <div class="col-lg-4 col-md-12">
                 <label for="speciesCategory" style="margin-top: 10px"> Berries or Mushrooms? </label>
-                <InputSelect id="speciesCategory" @bind-Value="editFinding._idSpecies.category" class="form-control">
+                <InputSelect id="speciesCategory" @bind-Value="editFinding._idSpecies.category" class="form-control" style="background-color: #fcf6e1 !important;">
                     <option value="">Select...</option>
                     <option>Berries</option>
                     <option>Mushrooms</option>
@@ -249,11 +249,11 @@
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="speciesSubCategory" style="margin-top: 10px"> Species Sub Category </label>
-                <InputText id="speciesSubCategory" @bind-Value="editFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+                <InputText id="speciesSubCategory" @bind-Value="editFinding._idSpecies.subCategory" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Sub Category name here</InputText>
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="s_name" style="margin-top: 10px"> Species Name </label>
-                <InputText id="s_name" @bind-Value="editFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+                <InputText id="s_name" @bind-Value="editFinding._idSpecies.s_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Familiar name name here</InputText>
                 @if (errorTable != null)
                 {
                     <div class="text-warning">@errorTable[5]</div>
@@ -261,7 +261,7 @@
             </div>
             <div class="col-lg-4 col-md-12">
                 <label for="latin_name" style="margin-top: 10px"> Latin name </label>
-                <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+                <InputText id="latin_name" @bind-Value="editFinding._idSpecies.latin_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Latin name here</InputText>
             </div>
             <br />
             <button class="btn btn-primary" type="submit" style="margin-bottom: 50px;" @* @onclick="@(() => EditFinding(formContext))" *@>Change data!</button><button class ="btn btn-warning" type="button" style="margin-left: 15px; margin-bottom: 50px;" @onclick="() => OpenDeleteModal(formContext)">Delete</button>

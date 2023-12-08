@@ -173,10 +173,6 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
                     {
                         pending.Add(item._idFriend);
                     }
-                    else
-                    {
-                        //pending.Add(item._idPerson);
-                    }
                 }
             }
         }
@@ -202,8 +198,6 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
             }
         }
     }
-
-
 
     //Posting friend request
     protected async void SubmitFriendRequest(PersonDto friend)
@@ -253,7 +247,6 @@ NOTE: kutsun lähettäjä on aina _idPerson, kutsun vastaanottaja _idFriend
         await apiService.PutFriendshipAsync(newFriend.Id, newFriend);
         NavigationManager.NavigateTo("/personlist", true);
     }
-
 
 
     //Declining friend request

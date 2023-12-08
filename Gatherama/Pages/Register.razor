@@ -12,7 +12,7 @@
         <label class="form-label" for="FirstName">
             Firstname:
         </label>
-        <InputText id="FirstName" class="form-control" @bind-Value="@person.firstName" />
+        <InputText id="FirstName" class="form-control" @bind-Value="@person.firstName" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[0]</div>
@@ -23,7 +23,7 @@
         <label class="form-label" for="LastName">
             Lastname:
         </label>
-        <InputText id="LastName" class="form-control" @bind-Value="@person.lastName" />
+        <InputText id="LastName" class="form-control" @bind-Value="@person.lastName" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[1]</div>
@@ -34,7 +34,7 @@
         <label class="form-label" for="UserName">
             Username:
         </label>
-        <InputText id="UserName" class="form-control" @bind-Value="@person.username" />
+        <InputText id="UserName" class="form-control" @bind-Value="@person.username" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[2]</div>
@@ -45,7 +45,7 @@
         <label for="Email">
             Email:
         </label>
-        <InputText id="Email" class="form-control" @bind-Value="@person.email" />
+        <InputText id="Email" class="form-control" @bind-Value="@person.email" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[3]</div>
@@ -57,7 +57,7 @@
         <label for="password">
             Password:
         </label>
-        <InputText id="password" type="password" class="form-control" @bind-Value="@person.password" />
+        <InputText id="password" type="password" class="form-control" @bind-Value="@person.password" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[4]</div>
@@ -68,7 +68,7 @@
         <label for="repeatPassword">
             Repeat password:
         </label>
-        <InputText id="repeatPassword" type="password" class="form-control" @bind-Value="@repeatPassword" />
+        <InputText id="repeatPassword" type="password" class="form-control" @bind-Value="@repeatPassword" style="background-color: #fcf6e1 !important;" />
         @if (errorTable != null)
         {
             <div class="text-warning">@errorTable[5]</div>
