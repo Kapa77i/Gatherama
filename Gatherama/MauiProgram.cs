@@ -1,5 +1,4 @@
-﻿using Gatherama.Data;
-using Gatherama.Services;
+﻿using Gatherama.Services;
 using Gatherama.Shared;
 using Microsoft.Extensions.Logging;
 

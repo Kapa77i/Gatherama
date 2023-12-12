@@ -51,20 +51,6 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Remove="wwwroot\Images_Index\mushroom_icon.svg" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Resources\Images\berry_icon.svg" />
-      <None Remove="Resources\Images\blueberry_icon.svg" />
-      <None Remove="Resources\Images\mushroom_icon.svg" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <MauiImage Include="wwwroot\Images_Index\mushroom_icon.svg" />
-    </ItemGroup>
-
    
 
     <ItemGroup>

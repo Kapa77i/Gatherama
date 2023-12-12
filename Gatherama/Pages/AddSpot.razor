@@ -19,15 +19,9 @@
 @inject LoginState loginstate
 
 
-<h1>Add Gathering Spot</h1>
+<h3>Add Gathering Spot</h3>
 
 <p>Here you can add your new gathering spot!</p>
-
-<!--MAPS SEKOILUJA:
-    Tehdään tänne kartta, joka näyttää vain nykyisen sijainnin ja jossa pystyy syöttämään tiedot löydökselle.
-    OwnSpots sivulle tulee kartta, joka näyttää kaikki löydökset mitä on henkilöllä. Sinne myös suodattimet esim lajin perusteella, tai
-    että näyttää myös kaverien jakamat paikat.
--->
 
 <head>
     <title>Simple Marker</title>
@@ -48,7 +42,6 @@
             const map = new google.maps.Map(document.getElementById("googleMap"), {
                 zoom: 12,
                 center: { lat: 62.8893928527832, lng: 27.6920166015625 }, //alkukeskitys Kuopioon
-                //isShowingUser: true, //turha vai Androidille?
                 fullscreenControl: false,
                 zoomControl: true,
                 streetViewControl: false
@@ -72,50 +65,28 @@
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
             locationButton.addEventListener("click", () => {
 
-                //jos windows (false) niin käytetään HTML5 geolocation, muuten android and currentlocation parametri
+                //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
+                if (currentlocation != null) {
 
-                if (platform == false) {
-
-                    //map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude }); //Tämä toimii myös windowsilla
-
-                    // Try HTML5 geolocation.
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const pos = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
-
-                                //window.alert("Position is: " + pos);
-                                // window.alert("Location found.");
-                                //infoWindow.open(map);
-                                map.setCenter(pos);
-
-                            },
-                            () => {
-                                handleLocationError(true, infoWindow, map.getCenter());
-                            },
-                        );
-                    } else {
-                        // Browser doesn't support Geolocation
-                        handleLocationError(false, infoWindow, map.getCenter());
-                    }
-                }
-                else {
-                    //window.alert("Lokaatio on " + currentlocation.latitude + ", " + currentlocation.longitude);
-                    if (currentlocation != null) {
+                    try {
                         map.setCenter({ lat: currentlocation.latitude, lng: currentlocation.longitude });
                     }
-                    else { window.alert("Something went wrong with your current location. Try again later.") }
+                    catch(err){
+                        // Browser doesn't support Geolocation
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    }
+                        
                 }
-                
-                
+                else { 
+                   window.alert("Something went wrong with your current location. Try again later.")
+                    // Browser doesn't support Geolocation
+                   handleLocationError(false, infoWindow, map.getCenter());
+                }
             });
 
             //Add markers for each place
-            /* --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit:
-                    - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
+            /* --> funktiossa erottelu mikä julkinen, kaverin jakama ja mikä oma paikka - eri ikonit:
+                    - musta marja: julkinen, sieni: oma, mustikka: kaverit ---- androidissa eri
                 --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                 --> markerit kiinteitä
             */
@@ -128,41 +99,29 @@
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
                             icon: {
-                                url: mush_icon, //
-                                scaledSize: new google.maps.Size(36, 36)//
+                                url: mush_icon, 
+                                scaledSize: new google.maps.Size(36, 36)
                             },
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
                         });
+
                     } else {//jos custom ikonit poissa, näkyy androidissa
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            content: { background: "#0B5CDE" }, //ei toimi "#0B5CDE"
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
                         });
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//jos custom ikonit poissa, näkyy androidissa
-                    //         url: mush_icon, //
-                    //         scaledSize: new google.maps.Size(36, 36)
-                    //     },
-                    //     title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-
-                    // });
-
+                    var publicity = "OWN SPOT:";
                 }
-                else if (find._private == 2) {//toisen julkinen löydös, merkitään marjalla
+                else if (find._private == 2) {//toisen julkinen löydös, merkitään mustalla marjalla
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            icon: {//
-                                url: berry_icon,//
-                                scaledSize: new google.maps.Size(46, 46)//
+                            icon: {
+                                url: berry_icon,
+                                scaledSize: new google.maps.Size(46, 46)
                             },
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
@@ -174,25 +133,16 @@
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//
-                    //         url: berry_icon,//
-                    //         scaledSize: new google.maps.Size(46, 46)//
-                    //     },
-                    //     title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    // });
-
+                    var publicity = "PUBLIC SPOT:";
                 }
                 else {//jos ei oma tai julkinen, niin se on kaverin julkaisema
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
-                            icon: {//
-                                url: blueberry_icon,//
-                                scaledSize: new google.maps.Size(36, 36)//
+                            icon: {
+                                url: blueberry_icon,
+                                scaledSize: new google.maps.Size(36, 36)
                             },
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
@@ -203,40 +153,36 @@
                             map: map,
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
+
                     }
-                    // var marker = new google.maps.Marker({
-                    //     position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
-                    //     map: map,
-                    //     icon: {//
-                    //         url: blueberry_icon,//
-                    //         scaledSize: new google.maps.Size(36, 36)//
-                    //     },
-                    //     title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
-                    // });
+                    var publicity = "FRIEND'S SPOT:";
                 }
 
                 //format date
                 const isoDateTime = find.datetime;
                 const formattedDate = formatShortDate(isoDateTime);
 
-                var info = "Person: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
-                if (find._idPerson.username === person.username) {//jos oma löydös, annetaan mahdollisuus muokata / poistaa
+                var info = publicity + "\n\nPerson: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
+                
+                //jos oma löydös, annetaan mahdollisuus muokata / poistaa
+                if (find._idPerson.username === person.username) {
                     info = info + "\n\nWould you like to edit this information?"
                 }
                 
                 marker.addListener('click', function () {
                     var confirmation = window.confirm(info);
-                    if (find._idPerson.username === person.username && confirmation == true) {//jos oma löydös ja käyttäjä painoi "OK"
-                        //avaa edit sivu
-                        //var test = window.confirm("Avataan sivu editspot/" + find.id); //find.Id -> UNDEFINED jos Id, tunnistetaan jos id
+
+                    //jos oma löydös ja käyttäjä painoi "OK", avataan edit sivu
+                    if (find._idPerson.username === person.username && confirmation == true) {
                         window.location.href = "/editspot/" + find.id; 
                     }
                 })
                 
-            });    
-         
+            });
+
         }
 
+     
         //datetime format
         function formatShortDate(isoDateTime) {
           const date = new Date(isoDateTime);
@@ -248,7 +194,6 @@
         }
 
 
-
         function placeMarkerAndPanTo(latLng, map, geocoder) {
 
             newMarker = new google.maps.Marker({
@@ -257,7 +202,6 @@
                 draggable: true
             });
 
-
             map.panTo(latLng);
 
             // window.alert("Tultiin geocodeen: " + latLng)
@@ -265,7 +209,6 @@
                 lat: parseFloat(latLng.lat()),
                 lng: parseFloat(latLng.lng()),
             };
-
 
             geocoder
                 .geocode({ location: latilng })
@@ -293,7 +236,6 @@
             markers.push(newMarker);
 
             return newMarker;
-
         }
 
         // Sets the map on all markers in the array.
@@ -360,61 +302,77 @@
 </head>
 <body>
 
-    <div>
+    @if (mapIsReady == true)
+    {
+        <div>
+            <div id="googleMap" style="width:100%;height:400px;"></div>
+        </div>
+    }
+    else
+    {
+      @*   <h5 class="text-center" style="color:#173328">Loading map...Locating spots...<br />Please wait</h5> *@
 
-        <div id="googleMap" style="width:100%;height:400px;"></div>
-
-    </div>
+ 
+        <p></p>
+        <div class="d-flex justify-content-center">
+        <div>Loading map & spots, please wait</div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>       
+    }
 
     <EditForm Model="newFinding" OnValidSubmit="@NestedValidation">
         <div class="col-lg-4 col-md-12">
             <label for="city"> City </label>
-            <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city></InputText>
+            <InputText id="city" class="form-control" @bind-Value=newFinding._idPlace.city style="background-color: #fcf6e1 !important;"></InputText>
             @if(errorTable!=null)
             {
                 <div class="text-warning">@errorTable[0]</div>
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="country"> Country </label>
-            <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control"></InputText>
+            <label for="country" style="margin-top: 10px"> Country </label>
+            <InputText id="country" @bind-Value=newFinding._idPlace.country class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[1]</div>
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="lat"> Latitude </label>
-            <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control"></InputNumber>
+            <label for="lat" style="margin-top: 10px"> Latitude </label>
+            <InputNumber id="lat" @bind-Value=newFinding._idPlace.lat class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
             
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="lng"> Longitude </label>
-            <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control"></InputNumber>
+            <label for="lng" style="margin-top: 10px"> Longitude </label>
+            <InputNumber id="lng" @bind-Value=newFinding._idPlace.lng class="form-control" style="background-color: #fcf6e1 !important;"></InputNumber>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[2]</div>
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="findingDate">Add a Date </label>
-            <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control"></InputDate>
+            <label for="findingDate" style="margin-top: 10px">Add a Date </label>
+            <InputDate id="findingDate" @bind-Value=newFinding.datetime class="form-control" style="background-color: #fcf6e1 !important;"></InputDate>
             
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="findindAmount"> Amount </label>
-            <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control"></InputText>
+            <label for="findindAmount" style="margin-top: 10px"> Amount </label>
+            <InputText id="findindAmount" @bind-Value=newFinding.amount class="form-control" style="background-color: #fcf6e1 !important;"></InputText>
             
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="findingMemo"> Memo </label>
-            <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control">Enter memolog here</InputText>
+            <label for="findingMemo" style="margin-top: 10px"> Memo </label>
+            <InputText id="findingMemo" @bind-Value=newFinding.memo class="form-control" style="background-color: #fcf6e1 !important;">Enter memolog here</InputText>
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="findindPrivate"> Private or not? </label>
-            <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control">
+            <label for="findindPrivate" style="margin-top: 10px" > Private or not? </label>
+            <InputSelect id="findindPrivate" @bind-Value=newFinding._private class="form-control" style="background-color: #fcf6e1 !important;">
                 <option value="">Select...</option>
                 <option value="0">Private</option>
                 <option value="1">Friends</option>
@@ -427,8 +385,8 @@
         </div>
 
         <div class="col-lg-4 col-md-12">
-            <label for="speciesCategory"> Berries or Mushrooms? </label>
-            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control">
+            <label for="speciesCategory" style="margin-top: 10px"> Berries or Mushrooms? </label>
+            <InputSelect id="speciesCategory" @bind-Value="newFinding._idSpecies.category" class="form-control" style="background-color: #fcf6e1 !important;">
                 <option value="">Select...</option>
                 <option>Berries</option>
                 <option>Mushrooms</option>
@@ -439,35 +397,26 @@
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="speciesSubCategory"> Species Sub Category </label>
-            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control">Enter the Sub Category name here</InputText>
+            <label for="speciesSubCategory" style="margin-top: 10px"> Species Sub Category </label>
+            <InputText id="speciesSubCategory" @bind-Value="newFinding._idSpecies.subCategory" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Sub Category name here</InputText>
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="s_name"> Species Name </label>
-            <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control">Enter the Familiar name name here</InputText>
+            <label for="s_name" style="margin-top: 10px"> Species Name </label>
+            <InputText id="s_name" @bind-Value="newFinding._idSpecies.s_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Familiar name name here</InputText>
             @if (errorTable != null)
             {
                 <div class="text-warning">@errorTable[5]</div>
             }
         </div>
         <div class="col-lg-4 col-md-12">
-            <label for="latin_name"> Latin name </label>
-            <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control">Enter the Latin name here</InputText>
+            <label for="latin_name" style="margin-top: 10px"> Latin name </label>
+            <InputText id="latin_name" @bind-Value="newFinding._idSpecies.latin_name" class="form-control" style="background-color: #fcf6e1 !important;">Enter the Latin name here</InputText>
         </div>
 
         <button class="btn btn-primary" type="submit" style="margin-bottom: 50px; margin-top: 20px">Add a Finding!</button>
 
 
     </EditForm>
-
-  
-        @* @foreach (string error in errorList)
-        {
-            <div class="text-warning">@error</div>
-        } *@
-        
-    
- 
 
 </body>
 
@@ -478,58 +427,52 @@
         * 
         * Pyydä lupa gps:ään? - android ok!
         * 
-        * Etsi ensin käyttäjän lokaatio ja näytä se kartassa sekä koordinaattikentissä (kenttiä pitää pystyä muokkaamaan). - ok, android ei ihan
+        * Etsi käyttäjän lokaatio ja kohdista kartta - ok
+        * 
+        * Näytä karttaan klikattu paikka myös koordinaattikentissä (kenttiä pitää pystyä muokkaamaan). - ok
         * 
         * Karttaa pitää pystyä liikuttamaan ja zoomaamaan - OK!
         * 
-        * (Anna hakea paikan nimellä (ja koordinaateilla?))
+        * Custom pins - ok! (Androidissa toteutettu eri tavalla)
         * 
-        * Custom pins: vain 1 erilainen pin vai esim. eri kategorioille omat (sieni, marja, kala jne.?) - ok! (paitsi android)
-        * 
-        * (Opastus pinnipaikalle/osoitteeseen?)
+        * (Additional: Opastus pinnipaikalle/osoitteeseen?)
+        *         
+        * (Additional: Anna hakea paikan nimellä (ja koordinaateilla?))
     */
 
-    //private List<string> errorList = new List<string>();
+    private bool mapIsReady = false;
+
     private string[] errorTable = new string[8];
-    bool isValidated = true;
-
-
-
-
-
-    private CancellationTokenSource _cancelTokenSource;
-    private bool _isCheckingLocation;
-    Location currentlocation = new Location();
-    Location cachedlocation;
-
+    private bool isValidated = true;
     private bool platform = false;
+    private bool placeExists = false;
+    private bool speciesExists = false;
+    private PlaceDto existingPlace = new PlaceDto();
+    private SpeciesDto existingSpecies = new SpeciesDto();
+
+    private bool _isCheckingLocation;
+    private Location currentlocation = new Location();
+    private Location cachedlocation;
+    private CancellationTokenSource _cancelTokenSource;
+
+    private string placeInfoJS;
 
     private List<FriendshipDto> friendships { get; set; }
     private List<PersonDto> friends = new List<PersonDto>();
-    public List<FindingDto> allfindings { get; private set; }
-    public List<FindingDto> visiblefindings = new List<FindingDto>();
-    public List<PlaceDto> places { get; private set; }
-    /* public List<FindingDto> findings { get; private set; } */ //turha?
-    public List<PersonDto> persons { get; private set; }
-    public List<SpeciesDto> species { get; private set; }
-    public PersonDto person { get; private set; }
+    // private List<PersonDto> persons { get; set; }
+    private List<FindingDto> allfindings { get; set; }
+    private List<FindingDto> visiblefindings = new List<FindingDto>();
+    private List<PlaceDto> places { get; set; }
+    private List<SpeciesDto> species { get; set; }
 
+    private PersonDto person { get; set; }
+    // private FindingDto postFinding = new FindingDto();
     private FindingDto newFinding = new FindingDto()
     {
-        _idPlace = new PlaceDto { city = "", country = "", lat = 0, lng = 0 },
-        _idSpecies = new SpeciesDto { category = "", subCategory = "", s_name = "", latin_name = "" },
+        _idPlace = new PlaceDto { },
+        _idSpecies = new SpeciesDto { },
         _idPerson = new PersonDto { }
-
     };
-
-    private FindingDto postFinding = new FindingDto();
-
-    string placeInfoJS;
-
-    private bool placeExists = false;
-    private PlaceDto existingPlace = new PlaceDto();
-    private bool speciesExists = false;
-    private SpeciesDto existingSpecies = new SpeciesDto();
 
     protected override async Task OnInitializedAsync()
     {
@@ -537,7 +480,7 @@
         var date = dateAndTime.Date.ToString().Replace("00.00.00", "");
         newFinding.datetime = DateTime.Parse(date);
 
-        //Androidia ja Data Validaatiota varten
+        //Lokaatiota (erit. Android) ja Data Validaatiota varten
         await GetCurrentLocation();
         if(currentlocation == null)
         {
@@ -549,14 +492,14 @@
             currentlocation = cachedlocation;
         }
 
-        //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt ja henkilön omat toiseen listaan
+        //Haetaan kaikki löydökset, joista suodatetaan julkiseksi merkityt, kavereiden jakamat ja henkilön omat toiseen listaan
         allfindings = await apiService.GetFindingsAsync();
 
         // It is not pretty but this is how I got it working the ID thingy
         newFinding._idPlace = new PlaceDto { Id = ObjectId.GenerateNewId().ToString() };
         newFinding._idSpecies = new SpeciesDto { Id = ObjectId.GenerateNewId().ToString() };
 
-        persons = await apiService.GetPersonsAsync();
+        // persons = await apiService.GetPersonsAsync();
         species = await apiService.GetSpeciesAsync();
         places = await apiService.GetPlacesAsync();
         friendships = await apiService.GetFriendshipsAsync();
@@ -578,6 +521,7 @@
             }
         }
 
+        //määritetään uuden löydöksen tekijä
         newFinding._idPerson = await apiService.GetPersonByIdAsync(loginstate.isSingedin?.Id);
 
         /*ota kaikki löydökset ja vertaa niitä kirjautuneeseen henkilöön
@@ -586,7 +530,7 @@
             - jos kaverin julkaisema (kavereille), näytä
 
             --> nämä kaikki samaan listaan, joka viedään parametrina initMap() :lle
-                    --> funktiossa erottelu mikä julkinen ja mikä yksityinen paikka - eri ikonit?
+                    --> funktiossa erottelu mikä julkinen, kaverin jakama ja mikä oma paikka - eri ikonit
                         - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
                     --> tarkastelu/muokkauspromptit kun henkilö klikkaa markkeria
                     --> markerit kiinteät
@@ -594,14 +538,14 @@
 
         foreach(FindingDto find in allfindings)
         {
-            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)
+            if(find._idPerson.Id == loginstate.isSingedin.Id || find._private == 2)//julkinen
             {
                 visiblefindings.Add(find);
 
             }
             else
             {
-                foreach(PersonDto friend in friends)
+                foreach(PersonDto friend in friends)//kaverin jakama
                 {
                     if (find._idPerson.Id == friend.Id && find._private == 1)
                     {
@@ -611,6 +555,7 @@
             }
         }
 
+        //kirjautunut henkilö InvokeVoidAsync -metodin parametriksi
         person = loginstate.isSingedin;
 
         //mikä laite käytössä: Android vai muu (Windows)
@@ -620,17 +565,38 @@
         }
         else { platform = false; }
 
+        //Map is done loading
+        mapIsReady = true;
+        StateHasChanged();
 
+        //Setting map with markers
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
     }
 
-    protected void NestedValidation()
+    //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
+    protected async void NestedValidation() 
     {
-        //errorList.Clear();
+        try
+        {
+            //Fetching the information from JS
+            placeInfoJS = await JS.InvokeAsync<string>("fetchData");
+            string[] splitFetch = placeInfoJS.Split(',');
+            newFinding._idPlace.city = splitFetch[0];
+            newFinding._idPlace.country = splitFetch[1];
+            newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
+            newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
+            //Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Exception: " + ex);
+        }
+
         for(int i = 0; i < errorTable.Length; i++)
         {
             errorTable[i] = null;
         }
+        isValidated = true;
 
         //Finding
         if (newFinding.datetime == null || newFinding.datetime > DateTime.Now)
@@ -641,7 +607,6 @@
 
         if (newFinding._private == null)
         {
-            //errorList.Insert(3, "Private is required");
             errorTable[3] = "Private is required";
             isValidated = false;
         }
@@ -660,22 +625,19 @@
         //Place
         if (string.IsNullOrEmpty(newFinding._idPlace.city))
         {
-            // errorList.Insert(0,"City is required");
             errorTable[0] = "City is required";
             isValidated = false;
         }
 
         if (string.IsNullOrEmpty(newFinding._idPlace.country))
         {
-            // errorList.Insert(1,"Country is required");
             errorTable[1] = "Country is required";
             isValidated = false;
         }
 
         if (newFinding._idPlace.lat == null || newFinding._idPlace.lng == null){
 
-            // errorList.Insert(2,"Coordinates are required");
-            errorTable[2] = "Coordinates is required";
+            errorTable[2] = "Coordinates are required";
             isValidated = false;
         }
 
@@ -683,7 +645,6 @@
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.category))
         {
-            // errorList.Insert(4,"Category is required");
             errorTable[4] = "Category is required";
             isValidated = false;
         }
@@ -695,7 +656,6 @@
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.s_name))
         {
-            // errorList.Insert(5,"Name of the species is required");
             errorTable[5] = "Name of the species is required";
             isValidated = false;
         }
@@ -705,28 +665,22 @@
             newFinding._idSpecies.latin_name = "-";
         }
 
+
         //onko tiedot oikein
         if(isValidated == true)
         {
-            SubmitFinding(isValidated);
+            SubmitFinding();
         }
-
+        else
+        {
+            this.StateHasChanged();
+        }
     }
 
-    protected async void SubmitFinding(bool isValidated)
+    protected bool CheckIfPlaceExists()
     {
-
-        //Fetching the information from JS
-        placeInfoJS = await JS.InvokeAsync<string>("fetchData");
-        string[] splitFetch = placeInfoJS.Split(',');
-        newFinding._idPlace.city = splitFetch[0];
-        newFinding._idPlace.country = splitFetch[1];
-        newFinding._idPlace.lat = double.Parse(splitFetch[2], System.Globalization.CultureInfo.InvariantCulture);
-        newFinding._idPlace.lng = double.Parse(splitFetch[3], System.Globalization.CultureInfo.InvariantCulture);
-
-
         //Onko olemassa jo kyseistä paikkaa ja / tai lajia täsmälleen samoilla tiedoilla?
-        foreach(PlaceDto place in places)
+        foreach (PlaceDto place in places)
         {
             if (place.city == newFinding._idPlace.city && place.country == newFinding._idPlace.country && place.lat == newFinding._idPlace.lat && place.lng == newFinding._idPlace.lng)
             {
@@ -736,70 +690,38 @@
             }
         }
 
-        if (placeExists)//jos paikka olemassa, käytetään vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
-        {
-            newFinding._idPlace = existingPlace;
-        }
-        else//uusi paikka, uudet tiedot ja tietojen tarkistukset, ettei virheellistä tietoa pääse kantaan
-        {
-            Console.WriteLine($"City: {newFinding._idPlace.city}, Lat: {newFinding._idPlace.lat}, Lng: {newFinding._idPlace.lng}");
+        return placeExists;
+    }
 
-            if (newFinding._idPlace.city == null || newFinding._idPlace.country == null || newFinding._idPlace.lat == null || newFinding._idPlace.lng == null)
-            {
-                //jos käyttäjä on poistanut jtn näistä generoiduista tiedoista --> Onko turha????
-                if (newFinding._idPlace.city == null)
-                {
-                    //ModelState.AddModelError("newFinding._idPlace.city", "City error");
-                    //messagestore.Add(() => newFinding._idPlace.city, "City error");
-                    newFinding._idPlace.city = "Unknown City";
-                }
-
-                if (newFinding._idPlace.country == null)
-                {
-                    newFinding._idPlace.country = "New Country";
-                }
-
-                if (newFinding._idPlace.lat == null)
-                {
-                    if (currentlocation != null)
-                    {
-                        newFinding._idPlace.lat = currentlocation.Latitude;
-                    }
-                    else { newFinding._idPlace.lat = 0; }
-
-                }
-
-                if (newFinding._idPlace.lng == null)
-                {
-                    if (currentlocation != null)
-                    {
-                        newFinding._idPlace.lng = currentlocation.Longitude;
-                    }
-                    else { newFinding._idPlace.lng = 0; }
-                }
-
-            }
-            await apiService.PostPlaceAsync(newFinding._idPlace);
-        }
-
-
-
-
-        //Tarkista että kaikissa muuttujissa on arvot!! muuten error
-        //Huom. Form Validation ei tunnista sisäkkäisiä objekteja, tehdään tämä käsin
-
-
-
-
+    protected bool CheckIfSpeciesExists()
+    {
         foreach (SpeciesDto spec in species)
         {
             if (spec.category == newFinding._idSpecies.category && spec.subCategory == newFinding._idSpecies.subCategory && spec.s_name == newFinding._idSpecies.s_name && spec.latin_name == newFinding._idSpecies.latin_name)
             {
-                speciesExists= true;
+                speciesExists = true;
                 existingSpecies = spec;
                 break;
             }
         }
+        return speciesExists;
+    }
+
+    protected async void SubmitFinding()
+    {
+        placeExists = CheckIfPlaceExists();
+
+        //jos paikka olemassa, käytetään vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
+        if (placeExists)
+        {
+            newFinding._idPlace = existingPlace;
+        }
+        else 
+        { //uusi paikka lisätään kantaan, tiedot tarkastettu validoinnissa
+            await apiService.PostPlaceAsync(newFinding._idPlace); 
+        }
+
+        speciesExists = CheckIfSpeciesExists();
 
         if (speciesExists)
         {
@@ -807,46 +729,14 @@
         }
         else
         {
-            //latinalainen nimi ja alakatergoria voi puuttua -> merkitään niihin "-", jotta kanta ei kaadu
-
-            if (newFinding._idSpecies.category == null || newFinding._idSpecies.subCategory == null || newFinding._idSpecies.s_name == null || newFinding._idSpecies.latin_name == null)
-            {
-                if (newFinding._idSpecies.category == null) //Poista purkka?
-                {
-                    newFinding._idSpecies.category = "Unknown";
-                }
-
-                if (newFinding._idSpecies.subCategory == null)
-                {
-                    newFinding._idSpecies.subCategory = "-";
-                }
-
-                if (newFinding._idSpecies.s_name == null) //Poista purkka?
-                {
-                    newFinding._idSpecies.s_name = "Unknown";
-                }
-
-                if (newFinding._idSpecies.latin_name == null)
-                {
-                    newFinding._idSpecies.latin_name = "-";
-                }
-
-            }
             await apiService.PostSpeciesAsync(newFinding._idSpecies);
         }
-       
 
-        
-
-        
         await apiService.PostFindingAsync(newFinding);
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
-
-
     //NOTE! TÄMÄ LOGIIKKA TOIMII ANDROIDILLA
-
 
     public async Task<Location> GetCachedLocation()
     {
@@ -883,8 +773,6 @@
 
         return cachedlocation;
     }
-
-
 
     public async Task<Location> GetCurrentLocation()
     {
@@ -931,7 +819,5 @@
         if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
             _cancelTokenSource.Cancel();
     }
-
-    
 
 }
