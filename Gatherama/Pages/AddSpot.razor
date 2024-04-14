@@ -26,7 +26,7 @@
 <head>
     <title>Simple Marker</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBJYKuoWVsb2MFdchEYIihbAb3pN0fFUg&callback=initMap&libraries=&v=weekly" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AddYourApiKeyHere" async defer></script>
     <link rel="stylesheet" href="./style.css" />
     <script src="./app.js"></script>
 
@@ -85,14 +85,14 @@
             });
 
             //Add markers for each place
-            /* --> funktiossa erottelu mik‰ julkinen, kaverin jakama ja mik‰ oma paikka - eri ikonit:
+            /* --> funktiossa erottelu mik√§ julkinen, kaverin jakama ja mik√§ oma paikka - eri ikonit:
                     - musta marja: julkinen, sieni: oma, mustikka: kaverit ---- androidissa eri
-                --> tarkastelu/muokkauspromptit kun henkilˆ klikkaa markkeria
-                --> markerit kiinteit‰
+                --> tarkastelu/muokkauspromptit kun henkil√∂ klikkaa markkeria
+                --> markerit kiinteit√§
             */
 
             visiblefindings.forEach(function (find) {
-                if (find._idPerson.username === person.username) {//jos oma lˆydˆs, merkit‰‰n sienell‰
+                if (find._idPerson.username === person.username) {//jos oma l√∂yd√∂s, merkit√§√§n sienell√§
 
                     if(platform == false) {
                         var marker = new google.maps.Marker({
@@ -105,7 +105,7 @@
                             title: "PRIVATE: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
 
-                    } else {//jos custom ikonit poissa, n‰kyy androidissa
+                    } else {//jos custom ikonit poissa, n√§kyy androidissa
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
@@ -114,7 +114,7 @@
                     }
                     var publicity = "OWN SPOT:";
                 }
-                else if (find._private == 2) {//toisen julkinen lˆydˆs, merkit‰‰n mustalla marjalla
+                else if (find._private == 2) {//toisen julkinen l√∂yd√∂s, merkit√§√§n mustalla marjalla
                     if (platform == false) {
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
@@ -126,7 +126,7 @@
                             title: "PUBLIC: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
-                    else {//jos custom ikonit poissa, n‰kyy androidissa
+                    else {//jos custom ikonit poissa, n√§kyy androidissa
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
@@ -147,7 +147,7 @@
                             title: "FRIEND: \nCity: " + find._idPlace.city + ", \nSpecies: " + find._idSpecies.s_name
                         });
                     }
-                    else {//jos custom ikonit poissa, n‰kyy androidissa
+                    else {//jos custom ikonit poissa, n√§kyy androidissa
                         var marker = new google.maps.Marker({
                             position: { lat: find._idPlace.lat, lng: find._idPlace.lng },
                             map: map,
@@ -164,7 +164,7 @@
 
                 var info = publicity + "\n\nPerson: " + find._idPerson.username + "\nSpecies: " + find._idSpecies.s_name + "\nCategory: " + find._idSpecies.category + "\nCity: " + find._idPlace.city + "\nCountry: " + find._idPlace.country + "\nCoordinates: " + find._idPlace.lat + ", " + find._idPlace.lng + "\nDate: " + formattedDate + "\nAmount: " + find.amount + "\nMemo: " + find.memo;
                 
-                //jos oma lˆydˆs, annetaan mahdollisuus muokata / poistaa
+                //jos oma l√∂yd√∂s, annetaan mahdollisuus muokata / poistaa
                 if (find._idPerson.username === person.username) {
                     info = info + "\n\nWould you like to edit this information?"
                 }
@@ -172,7 +172,7 @@
                 marker.addListener('click', function () {
                     var confirmation = window.confirm(info);
 
-                    //jos oma lˆydˆs ja k‰ytt‰j‰ painoi "OK", avataan edit sivu
+                    //jos oma l√∂yd√∂s ja k√§ytt√§j√§ painoi "OK", avataan edit sivu
                     if (find._idPerson.username === person.username && confirmation == true) {
                         window.location.href = "/editspot/" + find.id; 
                     }
@@ -425,19 +425,19 @@
 @code {
         /*NOTES:
         * 
-        * Pyyd‰ lupa gps:‰‰n? - android ok!
+        * Pyyd√§ lupa gps:√§√§n? - android ok!
         * 
-        * Etsi k‰ytt‰j‰n lokaatio ja kohdista kartta - ok
+        * Etsi k√§ytt√§j√§n lokaatio ja kohdista kartta - ok
         * 
-        * N‰yt‰ karttaan klikattu paikka myˆs koordinaattikentiss‰ (kentti‰ pit‰‰ pysty‰ muokkaamaan). - ok
+        * N√§yt√§ karttaan klikattu paikka my√∂s koordinaattikentiss√§ (kentti√§ pit√§√§ pysty√§ muokkaamaan). - ok
         * 
-        * Karttaa pit‰‰ pysty‰ liikuttamaan ja zoomaamaan - OK!
+        * Karttaa pit√§√§ pysty√§ liikuttamaan ja zoomaamaan - OK!
         * 
         * Custom pins - ok! (Androidissa toteutettu eri tavalla)
         * 
         * (Additional: Opastus pinnipaikalle/osoitteeseen?)
         *         
-        * (Additional: Anna hakea paikan nimell‰ (ja koordinaateilla?))
+        * (Additional: Anna hakea paikan nimell√§ (ja koordinaateilla?))
     */
 
     private bool mapIsReady = false;
@@ -492,7 +492,7 @@
             currentlocation = cachedlocation;
         }
 
-        //Haetaan kaikki lˆydˆkset, joista suodatetaan julkiseksi merkityt, kavereiden jakamat ja henkilˆn omat toiseen listaan
+        //Haetaan kaikki l√∂yd√∂kset, joista suodatetaan julkiseksi merkityt, kavereiden jakamat ja henkil√∂n omat toiseen listaan
         allfindings = await apiService.GetFindingsAsync();
 
         // It is not pretty but this is how I got it working the ID thingy
@@ -504,10 +504,10 @@
         places = await apiService.GetPlacesAsync();
         friendships = await apiService.GetFriendshipsAsync();
 
-        //etsit‰‰n kaikki kirjautuneen henkilˆn kaverit
+        //etsit√§√§n kaikki kirjautuneen henkil√∂n kaverit
         foreach (FriendshipDto friendship in friendships)
         {
-            //jos kirjautunut hlˆ on jonkun kaveri (& kaveruus on hyv‰ksytty)
+            //jos kirjautunut hl√∂ on jonkun kaveri (& kaveruus on hyv√§ksytty)
             if ((loginstate.isSingedin.Id == friendship._idPerson.Id || loginstate.isSingedin.Id == friendship._idFriend.Id) && (friendship.friend_accept == 1 && friendship.friend_request == 1))
             {
                 if(loginstate.isSingedin.Id == friendship._idPerson.Id)
@@ -521,19 +521,19 @@
             }
         }
 
-        //m‰‰ritet‰‰n uuden lˆydˆksen tekij‰
+        //m√§√§ritet√§√§n uuden l√∂yd√∂ksen tekij√§
         newFinding._idPerson = await apiService.GetPersonByIdAsync(loginstate.isSingedin?.Id);
 
-        /*ota kaikki lˆydˆkset ja vertaa niit‰ kirjautuneeseen henkilˆˆn
-            - jos henkilˆn oma lˆydˆs, n‰yt‰
-            - jos toisen henkilˆn julkinen lˆydˆs, n‰yt‰
-            - jos kaverin julkaisema (kavereille), n‰yt‰
+        /*ota kaikki l√∂yd√∂kset ja vertaa niit√§ kirjautuneeseen henkil√∂√∂n
+            - jos henkil√∂n oma l√∂yd√∂s, n√§yt√§
+            - jos toisen henkil√∂n julkinen l√∂yd√∂s, n√§yt√§
+            - jos kaverin julkaisema (kavereille), n√§yt√§
 
-            --> n‰m‰ kaikki samaan listaan, joka vied‰‰n parametrina initMap() :lle
-                    --> funktiossa erottelu mik‰ julkinen, kaverin jakama ja mik‰ oma paikka - eri ikonit
+            --> n√§m√§ kaikki samaan listaan, joka vied√§√§n parametrina initMap() :lle
+                    --> funktiossa erottelu mik√§ julkinen, kaverin jakama ja mik√§ oma paikka - eri ikonit
                         - musta marja: julkinen, sieni: yksityinen, mustikka: kaverit
-                    --> tarkastelu/muokkauspromptit kun henkilˆ klikkaa markkeria
-                    --> markerit kiinte‰t
+                    --> tarkastelu/muokkauspromptit kun henkil√∂ klikkaa markkeria
+                    --> markerit kiinte√§t
         */ 
 
         foreach(FindingDto find in allfindings)
@@ -555,10 +555,10 @@
             }
         }
 
-        //kirjautunut henkilˆ InvokeVoidAsync -metodin parametriksi
+        //kirjautunut henkil√∂ InvokeVoidAsync -metodin parametriksi
         person = loginstate.isSingedin;
 
-        //mik‰ laite k‰ytˆss‰: Android vai muu (Windows)
+        //mik√§ laite k√§yt√∂ss√§: Android vai muu (Windows)
         if (DeviceInfo.Current.Platform == DevicePlatform.Android)
         {
             platform = true;
@@ -573,7 +573,7 @@
         await JS.InvokeVoidAsync("initMap", visiblefindings, person, platform, currentlocation);
     }
 
-    //Huom. Form Validation ei tunnista sis‰kk‰isi‰ objekteja, tehd‰‰n t‰m‰ k‰sin
+    //Huom. Form Validation ei tunnista sis√§kk√§isi√§ objekteja, tehd√§√§n t√§m√§ k√§sin
     protected async void NestedValidation() 
     {
         try
@@ -611,7 +611,7 @@
             isValidated = false;
         }
 
-        //memo ja amount voi puuttua -> jos puuttuu, merkit‰‰n kantaan "-"
+        //memo ja amount voi puuttua -> jos puuttuu, merkit√§√§n kantaan "-"
         if (string.IsNullOrEmpty(newFinding.memo))
         {
             newFinding.memo = "-";
@@ -650,7 +650,7 @@
         }
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.subCategory))
-        {//ei pakollinen kentt‰
+        {//ei pakollinen kentt√§
             newFinding._idSpecies.subCategory = "-";
         }
 
@@ -661,7 +661,7 @@
         }
 
         if (string.IsNullOrEmpty(newFinding._idSpecies.latin_name))
-        {//ei pakollinen kentt‰
+        {//ei pakollinen kentt√§
             newFinding._idSpecies.latin_name = "-";
         }
 
@@ -679,7 +679,7 @@
 
     protected bool CheckIfPlaceExists()
     {
-        //Onko olemassa jo kyseist‰ paikkaa ja / tai lajia t‰sm‰lleen samoilla tiedoilla?
+        //Onko olemassa jo kyseist√§ paikkaa ja / tai lajia t√§sm√§lleen samoilla tiedoilla?
         foreach (PlaceDto place in places)
         {
             if (place.city == newFinding._idPlace.city && place.country == newFinding._idPlace.country && place.lat == newFinding._idPlace.lat && place.lng == newFinding._idPlace.lng)
@@ -711,13 +711,13 @@
     {
         placeExists = CheckIfPlaceExists();
 
-        //jos paikka olemassa, k‰ytet‰‰n vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
+        //jos paikka olemassa, k√§ytet√§√§n vanhaa paikkaa ja uutta paikkaa ei tallenneta kantaan
         if (placeExists)
         {
             newFinding._idPlace = existingPlace;
         }
         else 
-        { //uusi paikka lis‰t‰‰n kantaan, tiedot tarkastettu validoinnissa
+        { //uusi paikka lis√§t√§√§n kantaan, tiedot tarkastettu validoinnissa
             await apiService.PostPlaceAsync(newFinding._idPlace); 
         }
 
@@ -736,7 +736,7 @@
         NavigationManager.NavigateTo("/ownspots", true);
     }
 
-    //NOTE! TƒMƒ LOGIIKKA TOIMII ANDROIDILLA
+    //NOTE! T√ÑM√Ñ LOGIIKKA TOIMII ANDROIDILLA
 
     public async Task<Location> GetCachedLocation()
     {
