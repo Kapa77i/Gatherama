@@ -1,5 +1,12 @@
 # Gathorama app
-- Add items to installations if there are something to be added, and we have discussed as a team if they are nessesary
+- .NET MAUI App that is used to collect mushrooms and berries, record them with details and location information. Location information comes from Google Maps API. The database that was used was MongoDB.
+
+- The project was made as part of my engineering degree at Savonia University of Applied Sciences.
+
+- I was part of a project group that withheld four students. My main area of expertise in this project was **front-end development and Google Maps/Persons pages**. I used my **school Github account named Kapatt1**
+
+- The project was highly successful and we secured a 5/5 grading for it.
+
 
 ## Installations
 
